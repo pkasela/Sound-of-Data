@@ -1,2 +1,2 @@
 # Sound-of-Data
-Pota
+Pota l'é lumbard
