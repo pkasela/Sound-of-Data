@@ -7,7 +7,7 @@ def ncol(x):
     "return the number of columns of a table .tsv"
     return len(re.findall("\\t", x)) + 1
 
-def generate_header(max_length, length=0, header=[]):
+def generate_header(max_length, header=[]):
     "return an header"
     if len(header) == max_length:
         return ",".join(header)
