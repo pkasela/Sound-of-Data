@@ -1,0 +1,6 @@
+Approfondimento sullo schema (e fonte della foto) disponibile su:
+https://musicbrainz.org/doc/MusicBrainz_Database/Schema
+
+
+Dump di musicbrainz.com scaricato da:
+http://ftp.musicbrainz.org/pub/musicbrainz/data/fullexport/
