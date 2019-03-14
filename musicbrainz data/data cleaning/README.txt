@@ -22,4 +22,4 @@ democrazia...
 FEDERICO: eliminare
 MARCO:    
 PRANAV:   
-RICCARDO: 
+RICCARDO: eliminare
