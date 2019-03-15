@@ -167,7 +167,7 @@ if yes_no():
 def convert_tsv_into_csv(x, header):
     "Convert at the speed of the light using cat and sed"
     # write the header of the file
-    with open(x, "w+") as f:
+    with open(x + ".csv", "w+") as f:
         f.write(header + "\n")
     os.system("cat " + x + \
               # find commas and quote the text
@@ -187,6 +187,8 @@ def get_header(x):
 
 path = "./mbdump/"
 for table in list(headers.keys()):
+    print(table, end="")
     # convert it from tsv into csv, adding the header and
     # removing null char
     convert_tsv_into_csv(path + table, get_header(table))
+    print(" -> .csv")
