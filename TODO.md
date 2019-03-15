@@ -3,12 +3,12 @@ TODO LIST:
 # Data Management
 - [ ] Import data
   - [ ] fix .csv
-  - [ ] .csv -> sql
-  - [ ] sql -> .csv denormalizzato
-  - [ ] .csv denormalizzato -> neo4j
+  - [ ] .csv -> pd
+  - [ ] pd -> .csv denormalizzato (con pd.merge)
+  - [ ] .csv denormalizzato -> neo4j (bash)
 - [ ] Tweet
   - [ ] dataset mongodb per analisi di test
-  - [ ] twitter trap
+  - [ ] twitter trap (Kafka 1? kafka 2?)
 
 # Data Semantics
 - [ ] Analisi tweet
