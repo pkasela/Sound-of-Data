@@ -172,9 +172,11 @@ if yes_no():
 def clean_tsv(x, header):
     "Convert at the speed of the light using cat and sed"
     # write the header of the file
-    if headers_in_file:
-        with open(x + ".tsv", "w+") as f:
+    with open(x + ".tsv", "w+") as f:
+        if headers_in_file:
             f.write(header + "\n")
+        else:
+            f.write("")
     # clean the file
     os.system("cat " + x + \
               # find commas and quote the text
