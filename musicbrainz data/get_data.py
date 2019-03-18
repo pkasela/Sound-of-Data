@@ -1,9 +1,14 @@
 import os
 import urllib3
+import threading
 from bs4 import BeautifulSoup as bs
 
 ## this script downloads the latest dump from musicbrainz.org (as .tar.bz2 file)
 ## and prepare it to the import (converting it as a set of .csv files)
+
+# for @Pranav
+# change this line if an header on the top of the file is required
+headers_in_file = False
 
 headers = {
     "artist" : [
@@ -164,31 +169,34 @@ if yes_no():
     os.system("wget -c " + URL + " && tar xvf " + FILE)
 
 
-def convert_tsv_into_csv(x, header):
+def clean_tsv(x, header):
     "Convert at the speed of the light using cat and sed"
     # write the header of the file
-    with open(x + ".csv", "w+") as f:
-        f.write(header + "\n")
+    if headers_in_file:
+        with open(x + ".tsv", "w+") as f:
+            f.write(header + "\n")
+    # clean the file
     os.system("cat " + x + \
               # find commas and quote the text
-              r' | sed -r "s/([^,\t]+),\s?([^,\t]+)/\"\1, \2\"/g"' + \
+              # bug? if a string contains two commas, it does not match
+              #r' | sed -r "s/([^,\t]+),\s?([^,\t]+)/\"\1, \2\"/g"' + \
               # convert in csv
-              r' | sed "s/\t/,/g"' + \
+              #r' | sed "s/\t/,/g"' + \
               # remove null value (\N) \\\N
               r' | sed "s/\\\N//g"' + \
-              " >> " + x + ".csv")
+              " >> " + x + ".tsv")
+    # log the success
+    print(x + " -> .tsv")
 
 
 
 def get_header(x):
     "Get the header of a table"
-    return ",".join(headers[x])
+    return "\t".join(headers[x])
 
 
 path = "./mbdump/"
 for table in list(headers.keys()):
-    print(table, end="")
-    # convert it from tsv into csv, adding the header and
-    # removing null char
-    convert_tsv_into_csv(path + table, get_header(table))
-    print(" -> .csv")
+    # clean the tsv file
+    threading.Thread(target=clean_tsv,
+                     args=[path + table, get_header(table)]).start()
