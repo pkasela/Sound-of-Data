@@ -15,18 +15,21 @@ artist_cool = FOREACH artist GENERATE
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
   '3','Other'),'2','Female'),'1','Male') AS gender,ended;
 
+  
+
+STORE artist_cool INTO
+'/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/artist_pig'
+USING PigStorage('\t','-schema');
+
+
+--un modo carino di salvare i dati
+--STORE artist_cool INTO '<path>'
+--USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE',
+--                                             'UNIX', 'WRITE_OUTPUT_HEADER');
+
 --esempio di limit cosi ricordo la sintassi
 --artist_lim = LIMIT artist 5;
 
 
 --per avere uno UDF (User Defined Function) in PIG:
 --DEFINE test `pig_to_csv.py` SHIP('pig_to_csv.py');
-
-
-STORE artist_cool INTO
-'/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/artist_pig'
-USING PigStorage('\t','-schema');
-
---STORE artist_cool INTO '<path>'
---USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE',
---                                             'UNIX', 'WRITE_OUTPUT_HEADER');

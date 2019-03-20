@@ -22,33 +22,33 @@ headers = {
         "end_date_year",
         "end_date_month",
         "end_date_day",
-        "ended",
         "type",
-        "gender",
         "area",
+        "gender",
+        "comment",
+        "edits_pending",
+        "last_updated",
+        "ended",
         "begin_area",
         "end_area",
-        "cocmment",
-        "edits_pending",
-        "last_updated"
     ],
     "artist_alias" : [
         "id",
         "artist",
         "name",
-        "sort_name",
         "locale",
         "edits_pending",
         "last_updated",
         "type",
+        "sort_name",
         "begin_date_year",
         "begin_date_month",
         "begin_date_day",
         "end_date_year",
         "end_date_month",
         "end_date_day",
-        "ended",
-        "primary_for_locale"
+        "primary_for_locale",
+        "ended"
     ],
     "artist_credit" : [
         "id",
@@ -56,7 +56,7 @@ headers = {
         "artist_count",
         "ref_count",
         "created"
-    ],    
+    ],
     "artist_credit_name" : [
         "artist_credit",
         "position",
@@ -66,30 +66,33 @@ headers = {
     ],
     "gender" : [
         "id",
-        "name"
+        "name",
+        "parent",
+        "child_order",
+        "description",
+        "gid"
     ],
     "label" : [
         "id",
         "gid",
         "name",
-        "sort_name",
-        "type",
-        "label_code",
-        "area",
         "begin_date_year",
         "begin_date_month",
         "begin_date_day",
         "end_date_year",
         "end_date_month",
         "end_date_day",
-        "ended",
+        "label_code",
+        "type",
+        "area",
         "comment",
         "edits_pending",
-        "last_updated"
+        "last_updated",
+        "ended"
     ],
-    "label_alias" : [
-        "id",
-        "label",
+    "label_alias" : [#va visto se tenere o meno
+        "id",        #e se va tenuto bisgona vedere
+        "label",     #se va bene lo schema
         "locale",
         "name",
         "sort_name",
@@ -105,33 +108,51 @@ headers = {
         "ended",
         "primary_for_locale"
     ],
+    "label_type" : [
+        "id",
+        "name",
+        "parent",
+        "child_order",
+        "description",
+        "gid"
+    ],
+    "language" : [
+        "id",
+        "iso_code_2t",
+        "iso_code_2b",
+        "iso_code_1",
+        "name",
+        "frequency",
+        "iso_code_3"
+    ],
     "recording" : [
         "id",
         "gid",
-        "artist_credit",
         "name",
+        "artist_credit",
         "length",
         "comment",
         "edits_pending",
         "last_updated"
+        "video"
     ],
     "release" : [
         "id",
         "gid",
-        "release_group",
-        "artist_credit",
         "name",
-        "barcode",
+        "artist_credit",
+        "release_group",
         "status",
         "packaging",
         "language",
         "script",
+        "barcode",
         "comment",
         "edits_pending",
         "quality",
         "last_updated"
     ],
-    "release_label" : [
+    "release_label" : [#vedere schema e vedere se serve
         "id",
         "release",
         "label",
@@ -150,6 +171,7 @@ headers = {
         "lenght",
         "edits_pending",
         "last_updated"
+        "is_data_track"
     ],
 }
 
