@@ -6,3 +6,5 @@ mbdump/
 demo_results/
 #jupyter stuff
 .ipynb_checkpoints/
+#mac files
+.DS_Store
