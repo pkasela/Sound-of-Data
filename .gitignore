@@ -4,3 +4,5 @@ mbdump/
 *.log
 #could be useful to create and output temp result in this folder
 demo_results/
+#jupyter stuff
+.ipynb_checkpoints/
