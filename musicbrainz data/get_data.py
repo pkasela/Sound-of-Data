@@ -180,8 +180,7 @@ def clean_tsv(x, header):
     # clean the file
     os.system("cat " + x + \
               # find commas and quote the text
-              # bug? if a string contains two commas, it does not match
-              #r' | sed -r "s/([^,\t]+),\s?([^,\t]+)/\"\1, \2\"/g"' + \
+              #r' | sed -r "s/([^,\t]*,[^\t]*)/\"\1\"/g"' + \
               # convert in csv
               #r' | sed "s/\t/,/g"' + \
               # remove null value (\N) \\\N
