@@ -25,7 +25,7 @@ release = LOAD
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/release.tsv'
 USING PigStorage('\t') AS
  (
- id:int, gid:int, name:chararray, artist_credit:int,release_group:int,
+ id:int, gid:chararray, name:chararray, artist_credit:int,release_group:int,
  status:int, packaging:int, language_id:int, script:int, barcode:chararray,
  comment:chararray, edit_pending:int, quality:int, last_updated:chararray
  );
@@ -46,11 +46,11 @@ release_cooler = FOREACH release_cool GENERATE release::id AS id, gid AS gid,
      release_group AS release_group, language_red::language AS language;
 
 STORE artist_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/artist_pig'
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist'
 USING PigStorage('\t','-schema');
 
 STORE release_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/release_pig'
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release'
 USING PigStorage('\t','-schema');
 
 DESCRIBE artist_cooler;
