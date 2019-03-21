@@ -189,6 +189,9 @@ if yes_no():
     FILE = "mbdump.tar.bz2"
     URL += bs(http.request("GET", URL + "LATEST").data, "lxml").get_text()[:-1] + "/" + FILE
     os.system("wget -c " + URL + " && tar xvf " + FILE)
+    #what happens if the file altready exists and I download it? will it
+    #overwrite or will il create a file with name "mbdump(1).tar.bz2"
+    #and could you @MoMo do in a way that the file is saved in the folder '../'?
 
 
 def clean_tsv(x, header):
