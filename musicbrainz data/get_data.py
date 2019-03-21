@@ -192,12 +192,12 @@ if yes_no():
 
 
 def clean_tsv(x, header):
-    "Convert at the speed of the light using cat and sed"
+    "Convert at the speed of the light (300,000,000 m/s) using cat and sed"
     # write the header of the file
     with open(x + ".tsv", "w+") as f:
         if headers_in_file:
             f.write(header + "\n")
-        else:
+        else:#is there a need for else?? for @MoMo
             f.write("")
     # clean the file
     os.system("cat " + x + \
