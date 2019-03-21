@@ -1,6 +1,6 @@
 #[WARN] Anything created and saved either staring with `pig_' or 
 #in the results folder will be removed when the script is executed
-
+cd ../
 #creates a folder (if it doesn't exist [-p]) to store the results
 #note that anything you do in this folder will not be uploaded to git
 #since we included it in the .gitignore file

@@ -1,6 +1,9 @@
 Approfondimento sullo schema (e fonte della foto) disponibile su:
 https://musicbrainz.org/doc/MusicBrainz_Database/Schema
 
+Qua schema corretto (ma senza una foto :( )
+https://zindilis.com/projects/musicbrainz-django-models/_docs/ 
+
 
 Dump di musicbrainz.com scaricato da:
 http://ftp.musicbrainz.org/pub/musicbrainz/data/fullexport/
