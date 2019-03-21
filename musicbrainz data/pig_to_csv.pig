@@ -1,6 +1,7 @@
 -- Pig Script in local later will be changed to work on HDFS
+-- Or I will create a different one
 
---To make the gender attribute more readable
+--To make the gender attribute more readable in artist.tsv
 artist = LOAD
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist.tsv'
 USING PigStorage('\t') AS
@@ -13,6 +14,7 @@ USING PigStorage('\t') AS
  begin_area:int, end_area:int
  );
 
+--FOREACH a GENERATE is kind of of a filter on columns
 artist_cooler = FOREACH artist GENERATE
   id, gid, name, sort_name, type,area,
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
@@ -45,6 +47,34 @@ release_cooler = FOREACH release_cool GENERATE release::id AS id, gid AS gid,
      name AS name,artist_credit AS artist_credit,
      release_group AS release_group, language_red::language AS language;
 
+--combine label and label_type
+
+label = LOAD
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/label.tsv'
+USING PigStorage('\t') AS
+ (
+ id:int, gid:chararray, name:chararray, begin_date_year:int,
+ begin_date_month:int, begin_date_day:int, end_date_year:int,
+ end_date_month:int, end_date_day:int, label_code:int, type_id:int,
+ area:int, comment:chararray, edits_pending:int, last_updated:chararray,
+ ended:chararray
+ );
+
+label_type = LOAD
+'/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/label_type.tsv'
+USING PigStorage('\t') AS
+ (
+ id:int, name:chararray, parent:int, child_order:int,
+ description: chararray, gid:chararray
+ );
+
+label_cool = JOIN label BY type_id LEFT OUTER, label_type BY id;
+
+label_cooler = FOREACH label_cool GENERATE label::id AS id, label::gid AS gid,
+        label::name AS name, label_type::name AS type;
+
+
+--Save the data creating a new folder with the HEADER in the file .pig_header
 STORE artist_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist'
 USING PigStorage('\t','-schema');
@@ -53,24 +83,23 @@ STORE release_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release'
 USING PigStorage('\t','-schema');
 
-DESCRIBE artist_cooler;
-DESCRIBE release_cooler;
-
---followed by cat -pig_HEADER file_1 ... file_n > combined_file.tsv on shell
+STORE label_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_label'
+USING PigStorage('\t','-schema');
+--followed by cat .pig_header file_1 ... file_n > combined_file.tsv on shell
 --As MoMo says it works at the speed of light
 
---un modo carino di salvare i dati
+--Another nice way to store the file
 --STORE artist_cool INTO '<path>'
 --USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE',
 --                                             'UNIX', 'WRITE_OUTPUT_HEADER');
 
---esempio di limit cosi ricordo la sintassi
+--Just an example on how to use LIMIT in PIG
 --artist_lim = LIMIT artist 5;
 
-
---per avere uno UDF (User Defined Function) in PIG:
---mettere all'inizio del file python il commento magico:
+-- For a UDF (User Defined Function) in PIG:
+--write a magic comment on the top of the python file:
 -- #! /path/to/env python<ver>
 --DEFINE test `test.py` SHIP('test.py');
---poi avremmo un comando simile a
+--after defining the script to execute it on the data A use:
 --B = STREAM A THROUGH test;
