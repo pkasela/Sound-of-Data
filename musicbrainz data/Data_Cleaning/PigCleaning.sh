@@ -16,7 +16,7 @@ rm -r ./demo_results/results/*
 #on a hdfs partition, later I will upload a script with the paths
 #changed to the hdfs partition, for now we have the local version
 #which actually might be better since we have low latency.
-pig -x local pig_to_csv.pig
+pig -x local ./Data_Cleaning/PigCleaning.pig
 
 #go to artist result folder and concatenate the files
 cd ./demo_results/pig_artist
