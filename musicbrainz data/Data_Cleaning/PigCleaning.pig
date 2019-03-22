@@ -22,6 +22,22 @@ artist_cooler = FOREACH artist GENERATE
 --Avoided use of join here since we needed only a few REPLACE which takes
 --O(n) time while the join is if I remember correctly O(n^2)
 
+--reduce the arrtibutes of artist_alias
+artist_alias = LOAD
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist_alias.tsv'
+USING PigStorage('\t') AS
+ (
+  id:int, artist:int, name:chararray, local:chararray, edit_pending:int,
+  last_updated:chararray, type:int, sort_name:chararray,
+  begin_date_year:int, begin_date_month:int, begin_date_day:int,
+  end_date_year:int, end_date_month:int, end_date_day:int,
+  primary_for_locale:chararray, ended:chararray
+ );
+
+artist_alias_cooler = FOREACH artist_alias GENERATE id, artist, name, sort_name,
+       type, ended;
+
+
 --combine release and language
 release = LOAD
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/release.tsv'
@@ -73,10 +89,33 @@ label_cool = JOIN label BY type_id LEFT OUTER, label_type BY id;
 label_cooler = FOREACH label_cool GENERATE label::id AS id, label::gid AS gid,
         label::name AS name, label_type::name AS type;
 
+--reduce attribute of track and if needed can be used for JOIN
+-- Because I think we decided not to consider the medium & medium_format
+track = LOAD
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/track.tsv'
+USING PigStorage('\t') AS
+ (
+  id:int, gid:chararray, recording:int, medium:int, position:int,
+  number:chararray, name:chararray, artist_credit:int, lenght:int,
+  edits_pending:int, last_updated:chararray, is_data_track:chararray
+ );
+
+track_cooler = FOREACH track GENERATE id, gid, name, artist_credit, lenght;
+                                --(keep or not ??is_data_track??)
+
+
+--------------------------------------------------------------------------------
+-----------------------------STORAGE----------------------------------------
+----------------------------------------------------------------------
+
 
 --Save the data creating a new folder with the HEADER in the file .pig_header
 STORE artist_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist'
+USING PigStorage('\t','-schema');
+
+STORE artist_alias_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_alias'
 USING PigStorage('\t','-schema');
 
 STORE release_cooler INTO
@@ -85,6 +124,10 @@ USING PigStorage('\t','-schema');
 
 STORE label_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_label'
+USING PigStorage('\t','-schema');
+
+STORE track_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_track'
 USING PigStorage('\t','-schema');
 --followed by cat .pig_header file_1 ... file_n > combined_file.tsv on shell
 --As MoMo says it works at the speed of light
@@ -103,3 +146,7 @@ USING PigStorage('\t','-schema');
 --DEFINE test `test.py` SHIP('test.py');
 --after defining the script to execute it on the data A use:
 --B = STREAM A THROUGH test;
+
+--Done stuff for:
+-- artist, artist_alias, release <- language, label <- label_type, track
+--cat remaining for artist_alias and track

@@ -1,4 +1,4 @@
-#[WARN] Anything created and saved either staring with `pig_' or 
+#[WARN] Anything created and saved either staring with `pig_' or
 #in the results folder will be removed when the script is executed
 cd ../
 #creates a folder (if it doesn't exist [-p]) to store the results
@@ -20,12 +20,18 @@ pig -x local ./Data_Cleaning/PigCleaning.pig
 
 #go to artist result folder and concatenate the files
 cd ./demo_results/pig_artist
-cat .pig_header part-m-00000 part-m-00001 part-m-00002 part-m-00004 part-m-00005 > ../results/artist.tsv
+cat .pig_header part* > ../results/artist.tsv
+#go to artist_alias_folder
+cd ../pig_artist_alias
+cat .pig_header part* > ../results/artist_alias.tsv
 #go to release folder
 cd ../pig_release
 #why only one partition?! I don't understant anymore how this
 #partitioning for PIG works!!
-cat .pig_header part-r-00000 > ../results/release.tsv
+cat .pig_header part* > ../results/release.tsv
 #go to label folder
 cd ../pig_label
-cat .pig_header part-r-00000 > ../results/label.tsv
+cat .pig_header part* > ../results/label.tsv
+#go to track_folder
+cd ../pig_track
+cat .pig_header part* > ../results/track.tsv
