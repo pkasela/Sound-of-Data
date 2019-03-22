@@ -3,7 +3,7 @@
 
 --To make the gender attribute more readable in artist.tsv
 artist = LOAD
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist.tsv'
+ '/mbdump/artist.tsv'
 USING PigStorage('\t') AS
  (
  id:int, gid:chararray, name:chararray, sort_name:chararray,
@@ -24,7 +24,7 @@ artist_cooler = FOREACH artist GENERATE
 
 --reduce the arrtibutes of artist_alias
 artist_alias = LOAD
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist_alias.tsv'
+ '/mbdump/artist_alias.tsv'
 USING PigStorage('\t') AS
  (
   id:int, artist:int, name:chararray, local:chararray, edit_pending:int,
@@ -40,7 +40,7 @@ artist_alias_cooler = FOREACH artist_alias GENERATE id, artist, name, sort_name,
 
 --combine release and language
 release = LOAD
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/release.tsv'
+ '/mbdump/release.tsv'
 USING PigStorage('\t') AS
  (
  id:int, gid:chararray, name:chararray, artist_credit:int,release_group:int,
@@ -49,7 +49,7 @@ USING PigStorage('\t') AS
  );
 
 language = LOAD
-  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/language.tsv'
+  '/mbdump/language.tsv'
 USING PigStorage('\t') AS
  (
  id:int, iso_code_2t:chararray, iso_code_2b:chararray, iso_code_1:chararray,
@@ -66,7 +66,7 @@ release_cooler = FOREACH release_cool GENERATE release::id AS id, gid AS gid,
 --combine label and label_type
 
 label = LOAD
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/label.tsv'
+ '/mbdump/label.tsv'
 USING PigStorage('\t') AS
  (
  id:int, gid:chararray, name:chararray, begin_date_year:int,
@@ -77,7 +77,7 @@ USING PigStorage('\t') AS
  );
 
 label_type = LOAD
-'/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/label_type.tsv'
+'/mbdump/label_type.tsv'
 USING PigStorage('\t') AS
  (
  id:int, name:chararray, parent:int, child_order:int,
@@ -92,7 +92,7 @@ label_cooler = FOREACH label_cool GENERATE label::id AS id, label::gid AS gid,
 --reduce attribute of track and if needed can be used for JOIN
 --I think that we decided not to consider the medium & medium_format
 track = LOAD
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/track.tsv'
+ '/mbdump/track.tsv'
 USING PigStorage('\t') AS
  (
   id:int, gid:chararray, recording:int, medium:int, position:int,
@@ -111,23 +111,23 @@ track_cooler = FOREACH track GENERATE id, gid, name, artist_credit, lenght;
 
 --Save the data creating a new folder with the HEADER in the file .pig_header
 STORE artist_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist'
+ '/demo_results/pig_artist'
 USING PigStorage('\t','-schema');
 
 STORE artist_alias_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_alias'
+ '/demo_results/pig_artist_alias'
 USING PigStorage('\t','-schema');
 
 STORE release_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release'
+ '/demo_results/pig_release'
 USING PigStorage('\t','-schema');
 
 STORE label_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_label'
+ '/demo_results/pig_label'
 USING PigStorage('\t','-schema');
 
 STORE track_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_track'
+ '/demo_results/pig_track'
 USING PigStorage('\t','-schema');
 --followed by cat .pig_header part* > combined_file.tsv on shell
 --As MoMo says it works at the speed of light
