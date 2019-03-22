@@ -2,10 +2,11 @@ TODO LIST:
 
 # Data Management
 - [ ] Import data
-  - [ ] fix .csv
-  - [ ] .csv -> pd
-  - [ ] pd -> .csv denormalizzato (con pd.merge)
-  - [ ] .csv denormalizzato -> neo4j (bash)
+  - [x] fix .tsv
+  - [x] .tsv -> PIG
+  - [x] PIG -> .tsv denormalizzato (con JOIN)
+  - [ ] Decide the tables and their attributes to keep
+  - [ ] .tsv denormalizzato -> neo4j (bash)
 - [ ] Tweet
   - [ ] dataset mongodb per analisi di test
   - [ ] twitter trap (Kafka 1? kafka 2?)
