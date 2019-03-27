@@ -1,8 +1,6 @@
-import pandas as pd
 from kafka import KafkaProducer
 from kafka import SimpleProducer, KafkaClient
 from kafka import KafkaConsumer, TopicPartition
-from json import dumps
 import json
 from __future__ import absolute_import, print_function
 import tweepy
