@@ -16,8 +16,6 @@ access_token=""
 access_token_secret=""
 
 class StdOutListener(StreamListener):
-    #def on_data(self, data):
-    #    producer.send_messages("89", data.encode('utf-8'))
     def on_status(self, status):
         producer.send_messages("89",status._json['text'].encode('utf-8'))
 #Eventualmente print(data)
