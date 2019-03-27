@@ -9,7 +9,7 @@ TODO LIST:
   - [ ] .tsv denormalizzato -> neo4j (bash)
 - [ ] Tweet
   - [ ] dataset mongodb per analisi di test
-  - [ ] twitter trap (Kafka 1? kafka 2?)
+  - [x] Kafka
 
 # Data Semantics
 - [ ] Analisi tweet
