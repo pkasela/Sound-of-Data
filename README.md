@@ -8,8 +8,9 @@ TODO LIST:
   - [ ] Decide the tables and their attributes to keep
   - [ ] .tsv denormalizzato -> neo4j (bash)
 - [ ] Tweet
-  - [ ] dataset mongodb per analisi di test
   - [x] Kafka
+  - [ ] dataset mongodb per analisi di test
+  - [ ] Kafka consumer -> Neo4j
 
 # Data Semantics
 - [ ] Analisi tweet
