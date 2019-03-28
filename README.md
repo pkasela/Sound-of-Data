@@ -9,7 +9,7 @@ TODO LIST:
   - [ ] .tsv denormalizzato -> neo4j (bash)
 - [ ] Tweet
   - [x] Kafka
-  - [ ] dataset mongodb per analisi di test
+  - [ ] Kafka consumer ->  mongodb per analisi di test
   - [ ] Kafka consumer -> Neo4j
 
 # Data Semantics
