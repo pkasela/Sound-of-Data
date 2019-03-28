@@ -9,6 +9,8 @@ mkdir -p ./demo_results
 #It brings up immediately an exception
 rm -rf ./demo_results/pig_*
 #Here we save the ``bella copia'' of the files
+#                 ^            ^
+# @pranav, for curiosity: what editor do you use to have such quotes?
 mkdir -p ./demo_results/results
 rm -r ./demo_results/results/*
 
@@ -17,6 +19,22 @@ rm -r ./demo_results/results/*
 #changed to the hdfs partition, for now we have the local version
 #which actually might be better since we have low latency.
 pig -x local ./Data_Cleaning/PigCleaning.pig
+
+
+# for @pranav: wouldn't it be easier to read using a for loop?
+# assuming it is bash:
+# files=("artist" "artist_alias"
+#        "release"
+#        "label"
+#        "track")
+# cd ./demo_results
+# for f in ${files[@]}  # this line is taken on stackoverflow, so do not ask me
+# do                      # why have we to write "${array[@]}"
+#     cd pig_$f
+#     cat .pig_header part* > "../results/$f.tsv"
+#     cd ./..
+# done
+	
 
 #go to artist result folder and concatenate the files
 cd ./demo_results/pig_artist

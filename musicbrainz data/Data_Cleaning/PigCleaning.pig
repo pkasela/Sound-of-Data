@@ -15,12 +15,17 @@ USING PigStorage('\t') AS
  );
 
 --FOREACH a GENERATE is kind of of a filter on columns
+-- yeah, it's very cool! C:
 artist_cooler = FOREACH artist GENERATE
   id, gid, name, sort_name, type,area,
+  -- very very VERY  V E R Y  cool 
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
   '3','Other'),'2','Female'),'1','Male') AS gender,ended;
 --Avoided use of join here since we needed only a few REPLACE which takes
 --O(n) time while the join is if I remember correctly O(n^2)
+-- @pranav, it should be n×m where n <-nrow(table_1) and m <-nrow(table_2)
+--   so you can use a join without destroying performance, but:
+--   O(n) < O(nm)
 
 --reduce the arrtibutes of artist_alias
 artist_alias = LOAD
@@ -136,6 +141,8 @@ USING PigStorage('\t','-schema');
 --STORE artist_cool INTO '<path>'
 --USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE',
 --                                             'UNIX', 'WRITE_OUTPUT_HEADER');
+--                        ^
+-- no, it is not nice D: what the fuck is it?
 
 --Just an example on how to use LIMIT in PIG
 -- artist_lim = LIMIT artist 5;
