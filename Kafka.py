@@ -15,7 +15,7 @@ access_token_secret=""
 
 class StdOutListener(StreamListener):
     def on_status(self, status):
-        producer.send_messages("89",status._json['text'].encode('utf-8')) #Qualti altri campi oltre user.screen_name, text? 
+        producer.send_messages("89",status._json['text'].encode('utf-8')) #Quali altri campi oltre user.screen_name, text? 
         return True
     def on_error(self, status):
         print (status)
