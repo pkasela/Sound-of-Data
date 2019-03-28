@@ -177,10 +177,9 @@ headers = {
 
 
 
-# download and decompress the file
 def yes_no():
     "Return true/false to an answare"
-    return input("Download the file? (y/N)").lower() == "y"
+    return input("Download the file? [y/N] ").lower() == "y"
 
 if yes_no():
     # get the name of latest dump
@@ -188,11 +187,15 @@ if yes_no():
     URL = "http://ftp.musicbrainz.org/pub/musicbrainz/data/fullexport/"
     FILE = "mbdump.tar.bz2"
     URL += bs(http.request("GET", URL + "LATEST").data, "lxml").get_text()[:-1] + "/" + FILE
-    os.system("wget -c " + URL + " && tar xvf " + FILE)
+    #and could you @MoMo do in a way that the file is saved in the folder '../'?
+    # shall we start with easy things :) - @momo
+    FILE = "../" + FILE
     #what happens if the file altready exists and I download it? will it
     #overwrite or will il create a file with name "mbdump(1).tar.bz2"
-    #and could you @MoMo do in a way that the file is saved in the folder '../'?
-
+    # You are right, I'll patch this - @momo
+    if os.path.isfile(FILE):  # removes the file if already exists
+        os.remove(FILE)
+    os.system("wget -c " + URL + " -O " + FILE + " && tar xf " + FILE)
 
 def clean_tsv(x, header):
     "Convert at the speed of the light (300,000,000 m/s) using cat and sed"
@@ -200,7 +203,9 @@ def clean_tsv(x, header):
     with open(x + ".tsv", "w+") as f:
         if headers_in_file:
             f.write(header + "\n")
-        else:#is there a need for else?? for @MoMo
+        else:
+            # is there a need for else?? for @MoMo
+            # Yes, or the file will be appened and not overwritten - @momo
             f.write("")
     # clean the file
     os.system("cat " + x + \
@@ -221,7 +226,7 @@ def get_header(x):
     return "\t".join(headers[x])
 
 
-path = "./mbdump/"
+path = "../mbdump/"  # .tar.bz file is moved in ../
 for table in list(headers.keys()):
     # clean the tsv file
     threading.Thread(target=clean_tsv,
