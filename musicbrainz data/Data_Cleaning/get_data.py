@@ -215,6 +215,8 @@ def clean_tsv(x, header):
               #r' | sed "s/\t/,/g"' + \
               # remove null value (\N) \\\N
               r' | sed "s/\\\N//g"' + \
+              # escape quotes ( " -> \" ) so that Neo4J can import without problems
+              r' | sed -r "s/\"/\\\\\"/"' + \
               " >> " + x + ".tsv")
     # log the success
     print(x + " -> .tsv")
