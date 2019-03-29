@@ -33,7 +33,7 @@ CREATE INDEX ON :Artist_alias(name);
 USING PERIODIC COMMIT 10000
 LOAD CSV WITH HEADERS FROM "file:///artist_alias_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
 WITH DISTINCT row.id AS id, row.artist AS artist, row.name AS name, row.sort_name AS sort_name, row.type AS type, row.ended AS ended
-create (artist:alias:Artist_alias {id: id, artist:artist, name:name, sort_name:sort_name, type:type, ended:ended});
+create (artist_alias:Artist_alias {id: id, artist:artist, name:name, sort_name:sort_name, type:type, ended:ended});
 
 
 
