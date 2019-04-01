@@ -5,6 +5,7 @@ USING PERIODIC COMMIT 10000
 LOAD CSV WITH HEADERS FROM "file:///track_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
 WITH DISTINCT row.id AS id, row.gid AS gid, row.name AS name, row.artist_credit AS artist_credit, row.lenght AS lenght
 create (track:Track {id: id, gid:gid, name:name, artist_credit:artist_credit, lenght:lenght});
+// (id:Track {name:name})
        
 	   
 CREATE INDEX ON :Release(id);
@@ -14,6 +15,7 @@ USING PERIODIC COMMIT 10000
 LOAD CSV WITH HEADERS FROM "file:///release_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
 WITH DISTINCT row.id AS id, row.gid AS gid, row.name AS name, row.artist_credit AS artist_credit, row.release_group AS release_group, row.language AS language
 create (realease:Release {id: id, gid:gid, name:name, artist_credit:artist_credit, release_group:release_group, language:language});
+// (id:Release {name:name, language:language})
 
 
 
@@ -24,6 +26,8 @@ USING PERIODIC COMMIT 10000
 LOAD CSV WITH HEADERS FROM "file:///artist_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
 WITH DISTINCT row.id AS id, row.gid AS gid, row.name AS name, row.sort_name AS sort_name, row.type AS type, row.area AS area, row.gender AS gender, row.ended AS ended
 create (artist:Artist {id: id, gid:gid, name:name, sort_name:sort_name, type:type, area:area, gender:gender, ended:ended});
+// (id:Artist {name=name, type:type, gender:gender)
+// (:Area {name:area})  nodo fittizio per effettuare query geografiche (si ascoltano più musicisti americani, inglese, italiani, tedeschi...)
 
 
 
@@ -34,6 +38,7 @@ USING PERIODIC COMMIT 10000
 LOAD CSV WITH HEADERS FROM "file:///artist_alias_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
 WITH DISTINCT row.id AS id, row.artist AS artist, row.name AS name, row.sort_name AS sort_name, row.type AS type, row.ended AS ended
 create (artist_alias:Artist_alias {id: id, artist:artist, name:name, sort_name:sort_name, type:type, ended:ended});
+// (id:Artist {name:name})-[sameAs]->(artist:Artist)  in fondo, Bond == James Bond 
 
 
 
@@ -43,3 +48,4 @@ CREATE INDEX ON :Label(name);
 LOAD CSV WITH HEADERS FROM "file:///label_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
 WITH DISTINCT row.id AS id, row.gid AS gid, row.name AS name, row.type AS type 
 create (label:Label {id: id,gid:gid,name: name,type: type});
+// (id:Label {name:name, type:type})
