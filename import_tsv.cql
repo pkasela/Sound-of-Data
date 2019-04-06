@@ -60,6 +60,27 @@ ON CREATE SET artist_alias.artist=artist,
 	      artist_alias.ended=ended;
 // (id:Artist {name:name})-[sameAs]->(artist:Artist)  in fondo, Bond == James Bond 
 
+CREATE INDEX ON :Artist_credit(id);
+CREATE INDEX ON :Artist_credit(name);
+//headers: id	name	artist_count	ref_count	created	
+USING PERIODIC COMMIT 10000
+LOAD CSV WITH HEADERS FROM "file:///artist_credit_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
+WITH DISTINCT row.id AS id, row.name AS name, row.artist_count AS artist_count, row.ref_count AS ref_count, row.created AS created
+MERGE (artist_credit:Artist_credit {id:id})
+ON CREATE SET artist_credit.name=name,
+	      artist_credit.artist_count=artist_count,
+	      artist_credit.ref_count=ref_count,
+	      artist_credit.created=created;
+
+CREATE INDEX ON :Artist_credit_name(artist_credit);
+//headers: artist_credit	position	artist	name
+USING PERIODIC COMMIT 10000
+LOAD CSV WITH HEADERS FROM "file:///artist_credit_name_wo_quotes.tsv" AS row FIELDTERMINATOR '\t'
+WITH DISTINCT row.artist_credit AS artist_credit, row.position AS position, row.artist AS artist, row.name AS name
+MERGE (artist_credit_name:Artist_credit_name {artist_credit:artist_credit})
+ON CREATE SET artist_credit_name.name=name,
+	      artist_credit_name.artist=artist,
+	      artist_credit_name.position=position;
 
 
 CREATE INDEX ON :Label(id);
