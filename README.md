@@ -1,5 +1,9 @@
 TODO LIST:
 
+# Most Important stuff
+
+- [ ] Remove the README_OLD.md file
+
 # Data Management
 - [ ] Import data
   - [x] fix .tsv
