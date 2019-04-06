@@ -95,7 +95,9 @@ ON CREATE SET label.name=name,
     
 //RELAZIONI
 
+    
 //Artist_alias->Artist
+    
 MATCH (a:Artist)
 MATCH (b:Artist_alias)
 WHERE a.id = b.artist
