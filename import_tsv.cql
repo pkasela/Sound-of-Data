@@ -122,7 +122,6 @@ MERGE (b)-[:REFERENCE]->(a);
 
 //Release->Artist_credit    
     
-USING PERIODIC COMMIT 10000
 MATCH (a:Artist_credit)
 MATCH (b:Release)
 WHERE a.id = b.artist_credit
@@ -133,7 +132,6 @@ MERGE (b)-[:REFERENCE]->(a);
 //Track->Artist_credit    
 
 
-USING PERIODIC COMMIT 10000
 MATCH (a:Artist_credit)
 MATCH (b:Track)
 WHERE a.id = b.artist_credit
