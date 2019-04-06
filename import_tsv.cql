@@ -92,3 +92,11 @@ MERGE (label:Label { id:id})
 ON CREATE SET label.name=name,
               label.type=type;
 // (id:Label {name:name, type:type})
+    
+//RELAZIONI
+
+//Artist_alias->Artist
+MATCH (a:Artist)
+MATCH (b:Artist_alias)
+WHERE a.id = b.artist
+MERGE (b)-[:IS]->(a);
