@@ -24,8 +24,19 @@ class Listener(StreamListener):
 	#Here we'll insert NLP function
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
         return True
-    def on_error(self, status):
+
+    def on_error(self, status): 
         print (status)
+        if status_code in [420,500,502,503,504]: 
+            return False 
+	    #returning 'False' in on_data and disconnects the stream
+	
+# 420 when exceed the number of attempts to connect to the API in a window of time
+# 500 when an internal server error has occurred
+# 502 when twitter is down, or being upgraded
+# 503 when twitter servers are overloaded with requests
+# 504 when twitter servers are up but the request couldn’t be serviced due to some failure within the internal stack
+ 
 
 kafka = KafkaClient("localhost:9092")
 producer = SimpleProducer(kafka)
@@ -35,4 +46,6 @@ auth.set_access_token(access_token, access_token_secret)
 
 myListener = Listener() 
 stream = Stream(auth, myListener)
-stream.filter(track="vaxination") #In track we'll insert the list of key words
+
+while True:
+	stream.filter(track="vaxination") #In track we'll insert the list of key words
