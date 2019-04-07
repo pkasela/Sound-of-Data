@@ -17,9 +17,9 @@ with open("secret.json", "r") as f:
     access_token=secret["ACCESS_TOKEN"]
     access_token_secret=secret["ACCESS_TOKEN_SECRET"]
 
-KafkaTopic="89" #Random name, to be decided later, prbably will be tweets :D
+KafkaTopic="Music_Tweets"
 
-class StdOutListener(StreamListener):
+class Listener(StreamListener):
     def on_status(self, status):
 	#Quali altri campi oltre user.screen_name, text?
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
@@ -33,7 +33,6 @@ producer = SimpleProducer(kafka)
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-myListener = StdOutListener() 
-#Why to use StdOutListner instead of Listner (Are there some benefits?)
+myListener = Listener() 
 stream = Stream(auth, myListener)
 stream.filter(track="vaxination")
