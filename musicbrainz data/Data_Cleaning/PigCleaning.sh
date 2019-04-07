@@ -23,7 +23,7 @@ pig -x local ./Data_Cleaning/PigCleaning.pig
 
  # for @pranav: wouldn't it be easier to read using a for loop?
  # Guess you're right and elegant :D
-assuming it is bash:
+ # assuming it is bash:
 files=("artist" "artist_alias"
       "release"
       "label"
