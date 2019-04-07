@@ -21,7 +21,7 @@ KafkaTopic="Music_Tweets"
 
 class Listener(StreamListener):
     def on_status(self, status):
-	#Quali altri campi oltre user.screen_name, text?
+	#Here we'll insert NLP function
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
         return True
     def on_error(self, status):
@@ -35,4 +35,4 @@ auth.set_access_token(access_token, access_token_secret)
 
 myListener = Listener() 
 stream = Stream(auth, myListener)
-stream.filter(track="vaxination")
+stream.filter(track="vaxination") #In track we'll insert the list of key words
