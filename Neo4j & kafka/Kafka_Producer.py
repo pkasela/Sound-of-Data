@@ -21,7 +21,6 @@ KafkaTopic="Music_Tweets"
 
 class Listener(StreamListener):
     def on_status(self, status):
-	#Here we'll insert NLP function
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
         return True
 
