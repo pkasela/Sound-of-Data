@@ -21,35 +21,40 @@ rm -r ./demo_results/results/*
 pig -x local ./Data_Cleaning/PigCleaning.pig
 
 
-# for @pranav: wouldn't it be easier to read using a for loop?
-# assuming it is bash:
-# files=("artist" "artist_alias"
-#        "release"
-#        "label"
-#        "track")
-# cd ./demo_results
-# for f in ${files[@]}  # this line is taken on stackoverflow, so do not ask me
-# do                      # why have we to write "${array[@]}"
-#     cd pig_$f
-#     cat .pig_header part* > "../results/$f.tsv"
-#     cd ./..
+ # for @pranav: wouldn't it be easier to read using a for loop?
+ # Guess you're right and elegant :D
+assuming it is bash:
+files=("artist" "artist_alias"
+      "release"
+      "label"
+      "track")
+cd ./demo_results
+for f in ${files[@]}
+do
+   cd pig_$f
+   cat .pig_header part* > "../results/$f.tsv"
+   cd ./..
 # done
-	
+
 
 #go to artist result folder and concatenate the files
-cd ./demo_results/pig_artist
-cat .pig_header part* > ../results/artist.tsv
+#cd ./demo_results/pig_artist
+#cat .pig_header part* > ../results/artist.tsv
+
 #go to artist_alias_folder
-cd ../pig_artist_alias
-cat .pig_header part* > ../results/artist_alias.tsv
+#cd ../pig_artist_alias
+#cat .pig_header part* > ../results/artist_alias.tsv
+
 #go to release folder
-cd ../pig_release
+#cd ../pig_release
 #why only one partition?! I don't understant anymore how this
 #partitioning for PIG works!!
-cat .pig_header part* > ../results/release.tsv
+#cat .pig_header part* > ../results/release.tsv
+
 #go to label folder
-cd ../pig_label
-cat .pig_header part* > ../results/label.tsv
+#cd ../pig_label
+#cat .pig_header part* > ../results/label.tsv
+
 #go to track_folder
-cd ../pig_track
-cat .pig_header part* > ../results/track.tsv
+#cd ../pig_track
+#cat .pig_header part* > ../results/track.tsv

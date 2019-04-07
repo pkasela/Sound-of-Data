@@ -18,14 +18,14 @@ USING PigStorage('\t') AS
 -- yeah, it's very cool! C:
 artist_cooler = FOREACH artist GENERATE
   id, gid, name, sort_name, type,area,
-  -- very very VERY  V E R Y  cool 
+  -- very very VERY  V E R Y  cool
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
   '3','Other'),'2','Female'),'1','Male') AS gender,ended;
 --Avoided use of join here since we needed only a few REPLACE which takes
 --O(n) time while the join is if I remember correctly O(n^2)
 -- @pranav, it should be n×m where n <-nrow(table_1) and m <-nrow(table_2)
 --   so you can use a join without destroying performance, but:
---   O(n) < O(nm)
+--   O(n) < O(nm), yup the auto join was O(n^2), sorry xD
 
 --reduce the arrtibutes of artist_alias
 artist_alias = LOAD
@@ -143,6 +143,12 @@ USING PigStorage('\t','-schema');
 --                                             'UNIX', 'WRITE_OUTPUT_HEADER');
 --                        ^
 -- no, it is not nice D: what the fuck is it?
+-- @MoMo It's a piggybank hahaha, it's a function of java and
+-- It saves the file with HEADER at the top:
+--   HEADER1, HEADER2, HEADER3,...
+--   Values1, Values2, Values3,...
+-- The only problem is that if we have the file partitioned in more
+-- parts we will have each part with a header of it's own (might be useful)
 
 --Just an example on how to use LIMIT in PIG
 -- artist_lim = LIMIT artist 5;
