@@ -12,7 +12,7 @@ TODO LIST:
   - [ ] Decide the tables and their attributes to keep
   - [ ] .tsv denormalizzato -> neo4j (bash)
 - [ ] Tweet
-  - [x] Kafka
+  - [x] Kafka Producer
   - [ ] Kafka consumer ->  mongodb per analisi di test
   - [ ] Kafka consumer -> Neo4j
 
