@@ -20,8 +20,8 @@ TODO LIST:
 - [ ] Analisi tweet
   - [ ] ricerca esplorativa
   - [ ] trovare fonti di dati
-  - [ ] costruzione modello/i per filtro (Dbpedia Spotlight)
-  - [ ] analisi prestazioni modello/i (L'hanno fatto loro, se non funziona li meniamo)
+  - [ ] costruzione modello/i per filtro 
+  - [ ] analisi prestazioni modello/i 
 
 # Analisi
 - [ ] (?) Rimozione bot
