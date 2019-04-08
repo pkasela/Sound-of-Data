@@ -1,5 +1,9 @@
 TODO LIST:
 
+# Most Important stuff
+
+- [ ] Remove the README_OLD.md file
+
 # Data Management
 - [ ] Import data
   - [x] fix .tsv
@@ -8,7 +12,7 @@ TODO LIST:
   - [ ] Decide the tables and their attributes to keep
   - [ ] .tsv denormalizzato -> neo4j (bash)
 - [ ] Tweet
-  - [x] Kafka
+  - [x] Kafka Producer
   - [ ] Kafka consumer ->  mongodb per analisi di test
   - [ ] Kafka consumer -> Neo4j
 
@@ -16,8 +20,8 @@ TODO LIST:
 - [ ] Analisi tweet
   - [ ] ricerca esplorativa
   - [ ] trovare fonti di dati
-  - [ ] costruzione modello/i per filtro (Dbpedia Spotlight)
-  - [ ] analisi prestazioni modello/i (L'hanno fatto loro, se non funziona li meniamo)
+  - [ ] costruzione modello/i per filtro 
+  - [ ] analisi prestazioni modello/i 
 
 # Analisi
 - [ ] (?) Rimozione bot
