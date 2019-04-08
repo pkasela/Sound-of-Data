@@ -34,7 +34,7 @@ do
    cd pig_$f
    cat .pig_header part* > "../results/$f.tsv"
    cd ./..
-# done
+done
 
 
 #go to artist result folder and concatenate the files
