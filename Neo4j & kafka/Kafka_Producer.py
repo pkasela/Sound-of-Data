@@ -30,7 +30,7 @@ class Listener(StreamListener):
         if status_code in [420,500,502,503,504]:
 	    attempts = attempts + 1
 	    time.sleep(1800) #Sleep for 30 minutes and re-try
-	    print("Timeout in seconds: ", attempts*1800) #Print the time process has been out
+	    print("Timeout in seconds: ", attempts*1800) #Print the time the process has been out
             return False 
 	    #returning 'False' in on_data and disconnects the stream
 	
