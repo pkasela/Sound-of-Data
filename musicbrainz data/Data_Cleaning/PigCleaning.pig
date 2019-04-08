@@ -2,6 +2,7 @@
 -- Or I will create a different one
 
 --To make the gender attribute more readable in artist.tsv
+
 artist = LOAD
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist.tsv'
 USING PigStorage('\t') AS
