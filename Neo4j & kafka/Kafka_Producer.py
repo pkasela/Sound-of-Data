@@ -26,9 +26,17 @@ class Listener(StreamListener):
 
     def on_error(self, status): 
         print (status)
-        if status_code in [420,500,502,503,504]: 
+	attempts = 0 
+        if status_code in [420,500,502,503,504]:
+	    attempts = attempts + 1
+	    time.sleep(1800) #Sleep for 30 minutes and re-try
+	    print("Timeout in seconds: ", attempts*1800) #Print the time process has been out
             return False 
 	    #returning 'False' in on_data and disconnects the stream
+	
+    def on_timeout(self):
+        time.sleep(1800)
+        return True 
 	
 # 420 when exceed the number of attempts to connect to the API in a window of time
 # 500 when an internal server error has occurred
