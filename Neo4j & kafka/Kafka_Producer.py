@@ -54,4 +54,4 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-	stream.filter(track="vaxination") #In track we'll insert the list of key words
+	stream.filter(track="vaxination",languages=["en"]) #In track we'll insert the list of key words
