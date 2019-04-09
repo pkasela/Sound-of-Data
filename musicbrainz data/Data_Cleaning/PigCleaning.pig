@@ -132,11 +132,17 @@ artist_release_cooler = FOREACH artist_release GENERATE artist_id AS START_ID,
 
 
 ---------HERE LIES release_track
-release_track = JOIN artist_release BY release::artist_credit,
-                     track BY artist_credit;
+track_red = FOREACH track GENERATE id, number, artist_credit;
 
-release_track_cooler = FOREACH release_track GENERATE release::id AS START_ID,
-    track::number AS number, track::id AS END_ID, 'CONTAINS' AS TYPE;
+release_red = FOREACH release GENERATE id, artist_credit;
+
+release_track = JOIN track_red BY artist_credit,
+                     release_red BY artist_credit;
+                     --USING 'replicated';
+                    --Thought it would be fast but nope.
+release_track_cooler = FOREACH release_track GENERATE
+    release_red::id AS START_ID, track_red::number AS number,
+    track_red::id AS END_ID, 'CONTAINS' AS TYPE;
 
 
 ---------HERE LIES release_label
@@ -184,9 +190,10 @@ STORE artist_release_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_release'
 USING PigStorage('\t','-schema');
 
-STORE release_track_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_track'
-USING PigStorage('\t','-schema');
+--This one is strong with the Force, too much space only @MoMo can save us now.
+--STORE release_track_cooler INTO
+-- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_track'
+--USING PigStorage('\t','-schema');
 
 STORE release_label_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_label'
@@ -227,6 +234,7 @@ USING PigStorage('\t','-schema');
 -- remaining shell script for cat and sed*
 -- artist_release
 -- release_track
+-- release_label
 
 --*Only problem is that the columns can't start with `:' like in JAVA -.-
 --thus will use sed on the .pig_header in the main script(.sh)

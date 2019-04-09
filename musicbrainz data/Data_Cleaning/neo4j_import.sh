@@ -92,7 +92,7 @@ neo4j-import \
 #        "CONTAINS" AS ":TYPE"
 #   FROM release
 #   JOIN track USING (artist_credit)
-#     ^- This one is a triple JOIN
+#     ^- This one is a triple JOIN, No it's not I'm triple Stupid
 #
 # release_track.tsv (:START_ID, number, :END_ID, :TYPE)
 #
