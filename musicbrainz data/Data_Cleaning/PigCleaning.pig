@@ -18,10 +18,11 @@ USING PigStorage('\t') AS
 --FOREACH a GENERATE is kind of of a filter on columns
 -- yeah, it's very cool! C:
 artist_cooler = FOREACH artist GENERATE
-  id, gid, name, sort_name, type,area,
+  id, gid, name,
   -- very very VERY  V E R Y  cool
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
-  '3','Other'),'2','Female'),'1','Male') AS gender,ended;
+  '3','Other'),'2','Female'),'1','Male') AS gender,
+  type, 'Artist' AS LABEL;
 --Avoided use of join here since we needed only a few REPLACE which takes
 --O(n) time while the join is if I remember correctly O(n^2)
 -- @pranav, it should be n×m where n <-nrow(table_1) and m <-nrow(table_2)
@@ -40,8 +41,7 @@ USING PigStorage('\t') AS
   primary_for_locale:chararray, ended:chararray
  );
 
-artist_alias_cooler = FOREACH artist_alias GENERATE id, artist, name, sort_name,
-       type, ended;
+artist_alias_cooler = FOREACH artist_alias GENERATE id, artist, name, type;
 
 
 --combine release and language
@@ -62,12 +62,12 @@ USING PigStorage('\t') AS
  language:chararray, frequency:int, iso_code_3:chararray
  );
 --From language We need only the id and name(called language here)
-language_red = FOREACH language GENERATE id,language;
+language_red = FOREACH language GENERATE id,language;--red = reduced
 --Left Join the two tables release and language
 release_cool = JOIN release BY language_id LEFT OUTER, language_red BY id;
 release_cooler = FOREACH release_cool GENERATE release::id AS id, gid AS gid,
-     name AS name,artist_credit AS artist_credit,
-     release_group AS release_group, language_red::language AS language;
+     name AS name, release_group AS release_group,
+     language_red::language AS language, 'Release' AS LABEL;
 
 --combine label and label_type
 
@@ -93,7 +93,7 @@ USING PigStorage('\t') AS
 label_cool = JOIN label BY type_id LEFT OUTER, label_type BY id;
 
 label_cooler = FOREACH label_cool GENERATE label::id AS id, label::gid AS gid,
-        label::name AS name, label_type::name AS type;
+        label::name AS name, label_type::name AS type, 'LABEL' AS LABEL;
 
 --reduce attribute of track and if needed can be used for JOIN
 --I think that we decided not to consider the medium & medium_format
@@ -106,8 +106,51 @@ USING PigStorage('\t') AS
   edits_pending:int, last_updated:chararray, is_data_track:chararray
  );
 
-track_cooler = FOREACH track GENERATE id, gid, name, artist_credit, lenght;
-                                --(keep or not ??is_data_track??)
+track_cooler = FOREACH track GENERATE id, gid, name, lenght, 'Track' AS LABEL;
+
+--------------------------------------------------------------------------------
+-----------------------------JOIN tables-------------------------------------
+----------------------------------------------------------------------
+
+
+---------HERE LIES artist_credit
+artist_credit = LOAD
+  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist_credit_name.tsv'
+USING PigStorage('\t') AS
+ (
+  artist_credit:int, position:int, artist_id:int, name:chararray,
+  join_phrase:chararray
+ );
+
+artist_credit_id = FOREACH artist_credit GENERATE artist_credit, artist_id;
+
+artist_release = JOIN release BY artist_credit,
+                      artist_credit_id BY artist_credit;
+
+artist_release_cooler = FOREACH artist_release GENERATE artist_id AS START_ID,
+    release::id AS END_ID, 'RELEASED' AS TYPE;
+
+
+---------HERE LIES release_track
+release_track = JOIN artist_release BY release::artist_credit,
+                     track BY artist_credit;
+
+release_track_cooler = FOREACH release_track GENERATE release::id AS START_ID,
+    track::number AS number, track::id AS END_ID, 'CONTAINS' AS TYPE;
+
+
+---------HERE LIES release_label
+release_label = LOAD
+  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/release_label.tsv'
+USING PigStorage('\t') AS
+ (
+  id:int, release:int, label:int, catlog_number:chararray,
+  last_updated:chararray
+ );
+
+ release_label_cooler = FOREACH release_label GENERATE release as START_ID,
+    label AS END_ID, 'SPONSORED_BY' AS TYPE;
+
 
 
 --------------------------------------------------------------------------------
@@ -135,15 +178,29 @@ USING PigStorage('\t','-schema');
 STORE track_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_track'
 USING PigStorage('\t','-schema');
+
+------ relationship FILES  ----------
+STORE artist_release_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_release'
+USING PigStorage('\t','-schema');
+
+STORE release_track_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_track'
+USING PigStorage('\t','-schema');
+
+STORE release_label_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_label'
+USING PigStorage('\t','-schema');
+
 --followed by cat .pig_header part* > combined_file.tsv on shell
---As MoMo says it works at the speed of light
+--As MoMo says cat works at the speed of light
 
 --Another nice way to store the file
 --STORE artist_cool INTO '<path>'
 --USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE',
 --                                             'UNIX', 'WRITE_OUTPUT_HEADER');
 --                        ^
--- no, it is not nice D: what the fuck is it?
+-- no, it is not nice D: what the fu*k is it?
 -- @MoMo It's a piggybank hahaha, it's a function of java and
 -- It saves the file with HEADER at the top:
 --   HEADER1, HEADER2, HEADER3,...
@@ -166,3 +223,10 @@ USING PigStorage('\t','-schema');
 -- release <- language
 -- label <- label_type
 -- track
+
+-- remaining shell script for cat and sed*
+-- artist_release
+-- release_track
+
+--*Only problem is that the columns can't start with `:' like in JAVA -.-
+--thus will use sed on the .pig_header in the main script(.sh)
