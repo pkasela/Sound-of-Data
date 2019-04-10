@@ -32,31 +32,31 @@ headers = {
         "begin_area",
         "end_area",
     ],
-    "artist_alias" : [
-        "id",
-        "artist",
-        "name",
-        "locale",
-        "edits_pending",
-        "last_updated",
-        "type",
-        "sort_name",
-        "begin_date_year",
-        "begin_date_month",
-        "begin_date_day",
-        "end_date_year",
-        "end_date_month",
-        "end_date_day",
-        "primary_for_locale",
-        "ended"
-    ],
-    "artist_credit" : [
-        "id",
-        "name",
-        "artist_count",
-        "ref_count",
-        "created"
-    ],
+#    "artist_alias" : [
+#        "id",
+#        "artist",
+#        "name",
+#        "locale",
+#        "edits_pending",
+#        "last_updated",
+#        "type",
+#        "sort_name",
+#        "begin_date_year",
+#        "begin_date_month",
+#        "begin_date_day",
+#        "end_date_year",
+#        "end_date_month",
+#        "end_date_day",
+#        "primary_for_locale",
+#        "ended"
+#    ],
+#    "artist_credit" : [
+#        "id",
+#        "name",
+#        "artist_count",
+#        "ref_count",
+#        "created"
+#    ],
     "artist_credit_name" : [
         "artist_credit",
         "position",
@@ -64,14 +64,14 @@ headers = {
         "name",
         "join_phrase"
     ],
-    "gender" : [
-        "id",
-        "name",
-        "parent",
-        "child_order",
-        "description",
-        "gid"
-    ],
+#    "gender" : [
+#        "id",
+#        "name",
+#        "parent",
+#        "child_order",
+#        "description",
+#        "gid"
+#    ],
     "label" : [
         "id",
         "gid",
@@ -90,24 +90,24 @@ headers = {
         "last_updated",
         "ended"
     ],
-    "label_alias" : [#va visto se tenere o meno
-        "id",        #e se va tenuto bisgona vedere
-        "label",     #se va bene lo schema
-        "locale",
-        "name",
-        "sort_name",
-        "edits_pending",
-        "last_updated",
-        "type",
-        "begin_date_year",
-        "begin_date_month",
-        "begin_date_day",
-        "end_date_year",
-        "end_date_month",
-        "end_date_day",
-        "ended",
-        "primary_for_locale"
-    ],
+#    "label_alias" : [#va visto se tenere o meno
+#        "id",        #e se va tenuto bisgona vedere
+#        "label",     #se va bene lo schema
+#        "locale",
+#        "name",
+#        "sort_name",
+#        "edits_pending",
+#        "last_updated",
+#        "type",
+#        "begin_date_year",
+#        "begin_date_month",
+#        "begin_date_day",
+#        "end_date_year",
+#        "end_date_month",
+#        "end_date_day",
+#        "ended",
+#        "primary_for_locale"
+#    ],
     "label_type" : [
         "id",
         "name",
@@ -125,17 +125,17 @@ headers = {
         "frequency",
         "iso_code_3"
     ],
-    "recording" : [
-        "id",
-        "gid",
-        "name",
-        "artist_credit",
-        "length",
-        "comment",
-        "edits_pending",
-        "last_updated"
-        "video"
-    ],
+#    "recording" : [
+#        "id",
+#        "gid",
+#        "name",
+#        "artist_credit",
+#        "length",
+#        "comment",
+#        "edits_pending",
+#        "last_updated"
+#        "video"
+#    ],
     "release" : [
         "id",
         "gid",
@@ -152,13 +152,13 @@ headers = {
         "quality",
         "last_updated"
     ],
-    "release_label" : [#vedere schema e vedere se serve
-        "id",
-        "release",
-        "label",
-        "catalog_number",
-        "last_updated"
-    ],
+#    "release_label" : [#vedere schema e vedere se serve
+#        "id",
+#        "release",
+#        "label",
+#        "catalog_number",
+#        "last_updated"
+#    ],
     "track" : [
         "id",
         "gid",
@@ -198,7 +198,7 @@ if yes_no():
     os.system("wget -c " + URL + " -O " + FILE + " && tar xf " + FILE)
 
 def clean_tsv(x, header):
-    "Convert at the speed of the light (300,000,000 m/s) using cat and sed"
+    "Convert at the speed of the light (299,792,458 m/s) using cat and sed"
     # write the header of the file
     with open(x + ".tsv", "w+") as f:
         if headers_in_file:

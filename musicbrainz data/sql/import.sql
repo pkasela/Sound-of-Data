@@ -6,23 +6,24 @@ CREATE TABLE track (
     number              TEXT NOT NULL,
     artist_credit       INTEGER NOT NULL -- references artist_credit.id
 );
-CREATE INDEX index_track_ac ON track (artist_credit) USING HASH;
 
-LOAD DATA INFILE '/home/fede/Programmi/Sound-of-Data/musicbrainz data/sql/result_track'
+LOAD DATA LOCAL INFILE '/home/pranav/Desktop/result_track'
 INTO TABLE track
 FIELDS TERMINATED BY '\t'
 ENCLOSED BY '\"'
 LINES TERMINATED BY '\n';
 
+CREATE INDEX index_track_ac ON track (artist_credit) USING HASH;
 
 CREATE TABLE release_t (
     id                  TEXT NOT NULL,
     artist_credit       INTEGER NOT NULL -- references artist_credit.id
 );
-CREATE INDEX index_release_ac ON release_t(artist_credit) USING HASH;
 
-LOAD DATA INFILE '/home/fede/Programmi/Sound-of-Data/musicbrainz data/sql/result_release'
+LOAD DATA LOCAL INFILE '/home/pranav/Desktop/result_release'
 INTO TABLE release_t
 FIELDS TERMINATED BY '\t'
 ENCLOSED BY '\"'
 LINES TERMINATED BY '\n';
+
+CREATE INDEX index_release_ac ON release_t(artist_credit) USING HASH;

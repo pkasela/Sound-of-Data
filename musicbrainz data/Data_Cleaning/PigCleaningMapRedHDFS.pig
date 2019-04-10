@@ -1,4 +1,4 @@
--- Pig Script in local later will be changed to work on HDFS
+So  -- Pig Script in local later will be changed to work on HDFS
 -- Or I will create a different one
 
 --To make the gender attribute more readable in artist.tsv
@@ -19,10 +19,8 @@ artist_cooler = FOREACH artist GENERATE
   id, gid, name, sort_name, type,area,
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
   '3','Other'),'2','Female'),'1','Male') AS gender,ended;
---Avoided use of join here since we needed only a few REPLACE which takes
---O(n) time while the join is if I remember correctly O(n^2)
 
---reduce the arrtibutes of artist_alias
+--reduce the attributes of artist_alias
 artist_alias = LOAD
  '/mbdump/artist_alias.tsv'
 USING PigStorage('\t') AS
@@ -101,8 +99,58 @@ USING PigStorage('\t') AS
  );
 
 track_cooler = FOREACH track GENERATE id, gid, name, artist_credit, lenght;
-                                --(keep or not ??is_data_track??)
 
+--------------------------------------------------------------------------------
+-----------------------------JOIN tables-------------------------------------
+----------------------------------------------------------------------
+
+
+---------HERE LIES artist_credit
+artist_credit = LOAD
+  '/mbdump/artist_credit_name.tsv'
+USING PigStorage('\t') AS
+ (
+  artist_credit:int, position:int, artist_id:int, name:chararray,
+  join_phrase:chararray
+ );
+
+artist_credit_id = FOREACH artist_credit GENERATE artist_credit, artist_id;
+
+artist_release = JOIN release BY artist_credit,
+                      artist_credit_id BY artist_credit;
+
+artist_release_cooler = FOREACH artist_release GENERATE artist_id AS START_ID,
+    release::id AS END_ID, 'RELEASED' AS TYPE;
+
+
+---------HERE LIES release_track
+track_red = FOREACH track GENERATE id, number, artist_credit;
+
+release_red = FOREACH release GENERATE id, artist_credit;
+
+
+
+--release_track = JOIN track_red BY artist_credit,
+--                     release_red BY artist_credit;
+                     --USING 'replicated';
+                    --Thought it would be fast but nope.
+--release_track_cooler = FOREACH release_track GENERATE
+--    release_red::id AS START_ID, track_red::number AS number,
+--    track_red::id AS END_ID, 'CONTAINS' AS TYPE;
+
+
+---------HERE LIES release_label
+/*release_label = LOAD
+  '/mbdump/release_label.tsv'
+USING PigStorage('\t') AS
+ (
+  id:int, release:int, label:int, catlog_number:chararray,
+  last_updated:chararray
+ );
+
+ release_label_cooler = FOREACH release_label GENERATE release as START_ID,
+    label AS END_ID, 'SPONSORED_BY' AS TYPE;
+*/
 
 --------------------------------------------------------------------------------
 -----------------------------STORAGE----------------------------------------
@@ -110,7 +158,7 @@ track_cooler = FOREACH track GENERATE id, gid, name, artist_credit, lenght;
 
 
 --Save the data creating a new folder with the HEADER in the file .pig_header
-STORE artist_cooler INTO
+/*STORE artist_cooler INTO
  '/demo_results/pig_artist'
 USING PigStorage('\t','-schema');
 
@@ -128,7 +176,7 @@ USING PigStorage('\t','-schema');
 
 STORE track_cooler INTO
  '/demo_results/pig_track'
-USING PigStorage('\t','-schema');
+USING PigStorage('\t','-schema');*/
 --followed by cat .pig_header part* > combined_file.tsv on shell
 --As MoMo says it works at the speed of light
 

@@ -8,3 +8,5 @@ demo_results/
 .ipynb_checkpoints/
 #mac files
 .DS_Store
+#hive stuff
+metastore_db

@@ -29,7 +29,7 @@ artist_cooler = FOREACH artist GENERATE
 --   so you can use a join without destroying performance, but:
 --   O(n) < O(nm), yup the auto join was O(n^2), sorry xD
 
---reduce the arrtibutes of artist_alias
+--reduce the attributes of artist_alias
 artist_alias = LOAD
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/mbdump/artist_alias.tsv'
 USING PigStorage('\t') AS
