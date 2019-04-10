@@ -2,7 +2,8 @@
 core=4
 
 neo4j-import \
-    --into # buuuuch, the database file
+    --into  # buuuuch, the database file
+            #Let's call it The Annoying Orange
     --delimiter "\t" \
     --quote "\"" \
     --processors $core \
@@ -14,7 +15,6 @@ neo4j-import \
     --relationships release_track.tsv \
     --relationships release_label.tsv
 
-    
 # so, it seems too easy but it is not: we have to change the tsv
 # structure to fit this script, it is not so easy but we have to do
 # it.
@@ -33,7 +33,7 @@ neo4j-import \
 # artist.gid       <-- here the attributes do start
 # artist.name
 # artist.gender
-# artist.type      <-- here the attributes do end
+# artist.type      <-- here the attributes do end (@Question do we need it?)
 # "Artist"         <-- a column just composed by the string "Artist"
 #
 #
@@ -61,11 +61,12 @@ neo4j-import \
 #
 #
 # SELECT id, gid, name, "LABEL" as ":LABEL" FROM label
-# 
-# label.tsv (id, gid, name, :LABEL)
+#
+# label.tsv (id, gid, name, type, :LABEL)
 # label.id
 # label.gid
 # label.name
+# label.type (è type_name rinominato)
 # :LABEL           <-- a column of, ironically, "Label"
 #
 #
@@ -80,6 +81,8 @@ neo4j-import \
 # artist.id        <-- start point, I suggest artist.id
 # release.id       <-- end point, release.id
 # "RELEASED"       <-- the name of the relationship: "RELEASED" (?)
+#    ^- As I mentioned above if you don't know how to name something
+#        thou ought to call it ``Banana''.
 #
 #
 #
@@ -89,6 +92,7 @@ neo4j-import \
 #        "CONTAINS" AS ":TYPE"
 #   FROM release
 #   JOIN track USING (artist_credit)
+#     ^- This one is a triple JOIN, No it's not I'm triple Stupid
 #
 # release_track.tsv (:START_ID, number, :END_ID, :TYPE)
 #

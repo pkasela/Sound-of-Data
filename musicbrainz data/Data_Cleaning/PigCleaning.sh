@@ -1,3 +1,7 @@
+#! /bin/bash
+
+#The above line is needed to tell the system to use bash (not sh)
+
 #[WARN] Anything created and saved either staring with `pig_' or
 #in the results folder will be removed when the script is executed
 cd ../
@@ -11,6 +15,8 @@ rm -rf ./demo_results/pig_*
 #Here we save the ``bella copia'' of the files
 #                 ^            ^
 # @pranav, for curiosity: what editor do you use to have such quotes?
+# @MoMo I use either Atom or Basic Text Editor of Ubuntu (Though not a
+# 					great fan of it, I prefer Atom)
 mkdir -p ./demo_results/results
 rm -r ./demo_results/results/*
 
@@ -24,10 +30,12 @@ pig -x local ./Data_Cleaning/PigCleaning.pig
  # for @pranav: wouldn't it be easier to read using a for loop?
  # Guess you're right and elegant :D
  # assuming it is bash:
-files=("artist" "artist_alias"
-      "release"
-      "label"
-      "track")
+files=("artist"
+       "artist_alias"
+       "release"
+       "label"
+       "track")
+
 cd ./demo_results
 for f in ${files[@]}
 do
