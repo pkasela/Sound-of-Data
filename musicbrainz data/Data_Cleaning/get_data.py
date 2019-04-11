@@ -64,14 +64,14 @@ headers = {
         "name",
         "join_phrase"
     ],
-#    "gender" : [
-#        "id",
-#        "name",
-#        "parent",
-#        "child_order",
-#        "description",
-#        "gid"
-#    ],
+    "gender" : [
+        "id",
+        "name",
+        "parent",
+        "child_order",
+        "description",
+        "gid"
+    ],
     "label" : [
         "id",
         "gid",
@@ -152,13 +152,13 @@ headers = {
         "quality",
         "last_updated"
     ],
-#    "release_label" : [#vedere schema e vedere se serve
-#        "id",
-#        "release",
-#        "label",
-#        "catalog_number",
-#        "last_updated"
-#    ],
+    "release_label" : [#vedere schema e vedere se serve
+        "id",
+        "release",
+        "label",
+        "catalog_number",
+        "last_updated"
+    ],
     "track" : [
         "id",
         "gid",
@@ -196,6 +196,8 @@ if yes_no():
     if os.path.isfile(FILE):  # removes the file if already exists
         os.remove(FILE)
     os.system("wget -c " + URL + " -O " + FILE + " && tar xf " + FILE)
+    #It works this way, but maybe there is a better way
+    os.system("rm -r ../mbdump && mv mbdump ../mbdump")
 
 def clean_tsv(x, header):
     "Convert at the speed of the light (299,792,458 m/s) using cat and sed"
