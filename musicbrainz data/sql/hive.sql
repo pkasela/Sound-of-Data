@@ -1,8 +1,9 @@
-#create the metastore with:
-#schematool -initSchema -dbType derby
-#AND
-#remember to start the metastore with:
-# hive --service metastore
+--create the metastore with:
+-- schematool -initSchema -dbType derby
+--AND
+--remember to start the metastore with:
+-- hive --service metastore
+DROP DATABASE mbdump CASCADE; 
 CREATE DATABASE IF NOT EXISTS mbdump;
 USE mbdump;
 
@@ -13,6 +14,9 @@ DROP TABLE IF EXISTS label;
 DROP TABLE IF EXISTS label_type;
 DROP TABLE IF EXISTS track;
 DROP TABLE IF EXISTS artist_credit;
+DROP TABLE IF EXISTS gender;
+DROP TABLE IF EXISTS artist_credit_name;
+DROP TABLE IF EXISTS release_label;
 
 CREATE TABLE artist (
   id                  INTEGER,
@@ -210,3 +214,4 @@ CREATE TABLE release_track AS (
        (SELECT id, artist_credit FROM track) t
     ON r.artist_credit=t.artist_credit
 );
+
