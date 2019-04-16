@@ -18,21 +18,21 @@ echo "Done creating the folders"
 
 echo "-------------------------------------"
 
-echo "artist.tsv --> hdfs:///mbdump/artist"
+echo "Copying artist.tsv --> hdfs:///mbdump/artist"
 hadoop fs -copyFromLocal artist.tsv /mbdump/artist
-echo "gender.tsv --> hdfs:///mbdump/gender"
+echo "Copying gender.tsv --> hdfs:///mbdump/gender"
 hadoop fs -copyFromLocal gender.tsv /mbdump/gender
-echo "release.tsv --> hdfs:///mbdump/release"
+echo "Copying release.tsv --> hdfs:///mbdump/release"
 hadoop fs -copyFromLocal release.tsv /mbdump/release
-echo "language.tsv --> hdfs:///mbdump/language"
+echo "Copying language.tsv --> hdfs:///mbdump/language"
 hadoop fs -copyFromLocal language.tsv /mbdump/language
-echo "label.tsv --> hdfs:///mbdump/label"
+echo "Copying label.tsv --> hdfs:///mbdump/label"
 hadoop fs -copyFromLocal label.tsv /mbdump/label
-echo "label_type.tsv --> hdfs:///mbdump/label_type"
+echo "Copying label_type.tsv --> hdfs:///mbdump/label_type"
 hadoop fs -copyFromLocal label_type.tsv /mbdump/label_type
-echo "track.tsv --> hdfs:///mbdump/track"
+echo "Copying track.tsv --> hdfs:///mbdump/track"
 hadoop fs -copyFromLocal track.tsv /mbdump/track
-echo "artist_credit_name.tsv --> hdfs:///mbdump/artist_credit_name"
+echo "Copying artist_credit_name.tsv --> hdfs:///mbdump/artist_credit_name"
 hadoop fs -copyFromLocal artist_credit_name.tsv /mbdump/artist_credit_name
-echo "release_label.tsv --> hdfs:///mbdump/release_label"
+echo "Copying release_label.tsv --> hdfs:///mbdump/release_label"
 hadoop fs -copyFromLocal release_label.tsv /mbdump/release_label

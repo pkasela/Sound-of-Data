@@ -4,7 +4,7 @@ import threading
 from bs4 import BeautifulSoup as bs
 
 ## this script downloads the latest dump from musicbrainz.org (as .tar.bz2 file)
-## and prepare it to the import (converting it as a set of .csv files)
+## and prepare it to the import (converting it as a set of .tsv files)
 
 # for @Pranav
 # change this line if an header on the top of the file is required
@@ -152,7 +152,7 @@ headers = {
         "quality",
         "last_updated"
     ],
-    "release_label" : [#vedere schema e vedere se serve
+    "release_label" : [
         "id",
         "release",
         "label",
@@ -187,16 +187,11 @@ if yes_no():
     URL = "http://ftp.musicbrainz.org/pub/musicbrainz/data/fullexport/"
     FILE = "mbdump.tar.bz2"
     URL += bs(http.request("GET", URL + "LATEST").data, "lxml").get_text()[:-1] + "/" + FILE
-    #and could you @MoMo do in a way that the file is saved in the folder '../'?
-    # shall we start with easy things :) - @momo
     FILE = "../" + FILE
-    #what happens if the file altready exists and I download it? will it
-    #overwrite or will il create a file with name "mbdump(1).tar.bz2"
-    # You are right, I'll patch this - @momo
     if os.path.isfile(FILE):  # removes the file if already exists
         os.remove(FILE)
-    os.system("wget -c " + URL + " -O " + FILE + " && tar xf " + FILE)
-    #It works this way, but maybe there is a better way
+    os.system("wget -c " + URL + " -O " + FILE + " && tar xvf " + FILE)
+    #shift the folder where it is needed
     os.system("rm -r ../mbdump && mv mbdump ../mbdump")
 
 def clean_tsv(x, header):
@@ -206,8 +201,6 @@ def clean_tsv(x, header):
         if headers_in_file:
             f.write(header + "\n")
         else:
-            # is there a need for else?? for @MoMo
-            # Yes, or the file will be appened and not overwritten - @momo
             f.write("")
     # clean the file
     os.system("cat " + x + \
@@ -230,8 +223,12 @@ def get_header(x):
     return "\t".join(headers[x])
 
 
-path = "../mbdump/"  # .tar.bz file is moved in ../
-for table in list(headers.keys()):
-    # clean the tsv file
-    threading.Thread(target=clean_tsv,
-                     args=[path + table, get_header(table)]).start()
+def main():
+    path = "../mbdump/"  # .tar.bz file is moved in ../
+    for table in list(headers.keys()):
+        # clean the tsv file
+        threading.Thread(target=clean_tsv,
+                         args=[path + table, get_header(table)]).start()
+
+if __name__=='__main__':
+    main()
