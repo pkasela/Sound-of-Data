@@ -1,25 +1,15 @@
---create the metastore with:
+--create the metastore with (Only for the first time):
 -- schematool -initSchema -dbType derby
 --AND
---remember to start the metastore with:
+--start the metastore with: (not needed if using the embedded metastore)
 -- hive --service metastore
-DROP DATABASE mbdump CASCADE; 
+DROP DATABASE IF EXISTS mbdump CASCADE;
 CREATE DATABASE IF NOT EXISTS mbdump;
 USE mbdump;
 
-DROP TABLE IF EXISTS artist;
-DROP TABLE IF EXISTS release;
-DROP TABLE IF EXISTS language;
-DROP TABLE IF EXISTS label;
-DROP TABLE IF EXISTS label_type;
-DROP TABLE IF EXISTS track;
-DROP TABLE IF EXISTS artist_credit;
-DROP TABLE IF EXISTS gender;
-DROP TABLE IF EXISTS artist_credit_name;
-DROP TABLE IF EXISTS release_label;
 
 CREATE TABLE artist (
-  id                  INTEGER,
+  id                  INT,
   gid                 STRING,
   name                STRING,
   sort_name           STRING,
@@ -29,67 +19,71 @@ CREATE TABLE artist (
   end_date_year       SMALLINT,
   end_date_month      SMALLINT,
   end_date_day        SMALLINT,
-  type                INTEGER, -- references artist_type.id
-  area                INTEGER, -- references area.id
-  gender              INTEGER, -- references gender.id
+  type                INT, -- references artist_type.id
+  area                INT, -- references area.id
+  gender              INT, -- references gender.id
   comment             STRING,
-  edits_pending       INTEGER,
+  edits_pending       INT,
   last_updated        TIMESTAMP,
   ended               BOOLEAN,
-  begin_area          INTEGER, -- references area.id
-  end_area            INTEGER -- references area.id
+  begin_area          INT, -- references area.id
+  end_area            INT -- references area.id
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/artist';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/artist/artist.tsv' INTO TABLE artist;
 
 CREATE TABLE gender (
-    id                  INTEGER,
+    id                  INT,
     name                STRING,
-    parent              INTEGER, -- references gender.id
-    child_order         INTEGER,
+    parent              INT, -- references gender.id
+    child_order         INT,
     description         STRING,
     gid                 STRING
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/gender';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/gender/gender.tsv' INTO TABLE gender;
 
 CREATE TABLE release (
-    id                  INTEGER,
+    id                  INT,
     gid                 STRING,
     name                STRING,
-    artist_credit       INTEGER, -- references artist_credit.id
-    release_group       INTEGER, -- references release_group.id
-    status              INTEGER, -- references release_status.id
-    packaging           INTEGER, -- references release_packaging.id
-    language            INTEGER, -- references language.id
-    script              INTEGER, -- references script.id
+    artist_credit       INT, -- references artist_credit.id
+    release_group       INT, -- references release_group.id
+    status              INT, -- references release_status.id
+    packaging           INT, -- references release_packaging.id
+    language            INT, -- references language.id
+    script              INT, -- references script.id
     barcode             STRING,
     comment             STRING,
-    edits_pending       INTEGER ,
+    edits_pending       INT ,
     quality             SMALLINT,
     last_updated        TIMESTAMP
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/release';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/release/release.tsv' INTO TABLE release;
 
 CREATE TABLE language (
-  id                    INTEGER,
+  id                    INT,
   iso_code_2t           STRING,
   iso_code_2b           STRING,
   iso_code_1            STRING,
   language              STRING,
-  frequency             INTEGER,
+  frequency             INT,
   iso_code_3            STRING
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/language';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/language/language.tsv' INTO TABLE language;
 
 CREATE TABLE label (
-    id                  INTEGER,
+    id                  INT,
     gid                 STRING,
     name                STRING,
     begin_date_year     SMALLINT,
@@ -98,69 +92,74 @@ CREATE TABLE label (
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    label_code          INTEGER,
-    type                INTEGER, -- references label_type.id
-    area                INTEGER, -- references area.id
+    label_code          INT,
+    type                INT, -- references label_type.id
+    area                INT, -- references area.id
     comment             STRING,
-    edits_pending       INTEGER,
+    edits_pending       INT,
     last_updated        TIMESTAMP,
     ended               BOOLEAN
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/label';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/label/label.tsv' INTO TABLE label;
 
 CREATE TABLE label_type (
-    id                  INTEGER,
+    id                  INT,
     name                STRING,
-    parent              INTEGER, -- references label_type.id
-    child_order         INTEGER,
+    parent              INT, -- references label_type.id
+    child_order         INT,
     description         STRING,
     gid                 STRING
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/label_type';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/label_type/label_type.tsv' INTO TABLE label_type;
 
 CREATE TABLE track (
-    id                  INTEGER,
+    id                  INT,
     gid                 STRING,
-    recording           INTEGER, -- references recording.id
-    medium              INTEGER, -- references medium.id
-    position            INTEGER,
+    recording           INT, -- references recording.id
+    medium              INT, -- references medium.id
+    position            INT,
     number              STRING,
     name                STRING,
-    artist_credit       INTEGER, -- references artist_credit.id
-    length              INTEGER,
-    edits_pending       INTEGER,
+    artist_credit       INT, -- references artist_credit.id
+    length              INT,
+    edits_pending       INT,
     last_updated        TIMESTAMP,
     is_data_track       BOOLEAN
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/track';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/track/track.tsv' INTO TABLE track;
 
 CREATE TABLE artist_credit_name (
-    artist_credit       INTEGER, -- PK, references artist_credit.id CASCADE
+    artist_credit       INT, -- PK, references artist_credit.id CASCADE
     position            SMALLINT, -- PK
-    artist              INTEGER, -- references artist.id CASCADE
+    artist              INT, -- references artist.id CASCADE
     name                STRING,
     join_phrase         STRING
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/artist_credit_name';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/artist_credit_name/artist_credit_name.tsv' INTO TABLE artist_credit_name;
 
 CREATE TABLE release_label(
-    id                  INTEGER,
-    release             INTEGER,
-    label               INTEGER,
+    id                  INT,
+    release             INT,
+    label               INT,
     catalog_number      STRING,
     last_updated        STRING
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
-LOCATION '/mbdump/release_label';
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA INPATH '/mbdump/release_label/release_label.tsv' INTO TABLE release_label;
 
 --Done with the loading stuff, now we create the node tables.
 
@@ -192,26 +191,79 @@ CREATE TABLE track_final AS (
 
 --Done with the node tables, now we create the relationship nodes
 
-CREATE TABLE artist_release AS (
-  SELECT ac.artist AS START_ID, r.id AS END_ID, 'RELEASED' AS TYPE
-  FROM (SELECT id, artist_credit FROM release) r
-    JOIN
-       (SELECT artist_credit, artist FROM artist_credit_name) ac
-    ON r.artist_credit = ac.artist_credit
-);
-
 CREATE TABLE release_label_final AS (
   SELECT release AS START_ID, label AS END_ID, 'SPONSORED_BY' AS TYPE
   FROM release_label
 );
 
---This is the heavy one, very heavy
-
-CREATE TABLE release_track AS (
-  SELECT r.id AS START_ID, t.id AS END_ID, 'CONTAINS' AS TYPE
-  FROM (SELECT id, artist_credit FROM release) r
-    JOIN
-       (SELECT id, artist_credit FROM track) t
-    ON r.artist_credit=t.artist_credit
+CREATE TABLE release_artist_credit_final AS (
+  SELECT id AS START_ID, artist_credit AS END_ID, 'RELEASED' AS TYPE
+  FROM release
 );
 
+CREATE TABLE track_artist_credit_final AS (
+  SELECT id AS START_ID, artist_credit AS END_ID, 'TRACK_OF' AS TYPE
+  FROM track
+);
+
+CREATE TABLE artist_artist_credit_final AS (
+  SELECT artist AS START_ID, artist_credit AS END_ID, 'ARTIST_CREDIT' AS TYPE
+  FROM artist_credit_name
+);
+
+--Export the final files
+
+-- For the header of the table
+--hive -e 'use mbdump; set hive.cli.print.header=true;
+--         set hive.resultset.use.unique.column.names=false;
+--         select * from artist_final limit 0;'
+--         > /home/pranav/Desktop/temp/Header
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/artist'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from artist_final;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/release'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from release_final;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/label'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from label_final;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/track'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from track_final;
+
+--artist_final ok
+--release_final ok
+--label_final ok
+--track_final ok
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/release_label'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from release_label_final;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/release_artist_credit'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from release_artist_credit_final;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/track_artist_credit'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from track_artist_credit_final;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/artist_artist_credit'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+select * from artist_artist_credit_final;
+--release_label_final ok
+--release_artist_credit_final ok
+--track_artist_credit_final ok
+--artist_artist_credit_final ok
