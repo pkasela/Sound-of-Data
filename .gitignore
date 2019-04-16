@@ -10,3 +10,13 @@ demo_results/
 .DS_Store
 #hive stuff
 metastore_db
+*.sql.save
+#File from the mbdump tar extraction
+COPYING
+README
+REPLICATION_SEQUENCE
+SCHEMA_SEQUENCE
+TIMESTAMP
+mbdump.tar.bz2
+
+
