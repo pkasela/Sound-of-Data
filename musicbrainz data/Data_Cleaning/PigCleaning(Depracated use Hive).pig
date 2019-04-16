@@ -122,27 +122,18 @@ USING PigStorage('\t') AS
   join_phrase:chararray
  );
 
-artist_credit_id = FOREACH artist_credit GENERATE artist_credit, artist_id;
-
-artist_release = JOIN release BY artist_credit,
-                      artist_credit_id BY artist_credit;
-
-artist_release_cooler = FOREACH artist_release GENERATE artist_id AS START_ID,
-    release::id AS END_ID, 'RELEASED' AS TYPE;
+artist_artist_credit_cooler = FOREACH artist_credit GENERATE
+    artist_credit AS START_ID, artist_id AS END_ID, 'ARTIST_CREDIT' AS TYPE;
 
 
----------HERE LIES release_track
-track_red = FOREACH track GENERATE id, number, artist_credit;
+---------HERE LIES track_artist_credit_cooler
+track_artist_credit_cooler = FOREACH track GENERATE id AS START_ID,
+    artist_credit AS END_ID, 'TRACK_OF' AS TYPE;
 
-release_red = FOREACH release GENERATE id, artist_credit;
 
-release_track = JOIN track_red BY artist_credit,
-                     release_red BY artist_credit;
-                     --USING 'replicated';
-                    --Thought it would be fast but nope.
-release_track_cooler = FOREACH release_track GENERATE
-    release_red::id AS START_ID, track_red::number AS number,
-    track_red::id AS END_ID, 'CONTAINS' AS TYPE;
+---------HERE LIES release_artist_credit_cooler
+release_artist_credit_cooler = FOREACH release GENERATE id AS START_ID,
+    artist_credit AS END_ID, 'RELEASED' AS TYPE;
 
 
 ---------HERE LIES release_label
@@ -186,14 +177,17 @@ STORE track_cooler INTO
 USING PigStorage('\t','-schema');
 
 ------ relationship FILES  ----------
-STORE artist_release_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_release'
+STORE artist_artist_credit_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_artist_credit'
 USING PigStorage('\t','-schema');
 
---This one is strong with the Force, too much space only @MoMo can save us now.
---STORE release_track_cooler INTO
--- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_track'
---USING PigStorage('\t','-schema');
+STORE track_artist_credit_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_track_artist_credit'
+USING PigStorage('\t','-schema');
+
+STORE release_artist_credit_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_artist_credit'
+USING PigStorage('\t','-schema');
 
 STORE release_label_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release_label'
