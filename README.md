@@ -1,8 +1,8 @@
 TODO LIST:
 
-# Most Important stuff
-
-- [ ] Remove the README_OLD.md file
+# DataSet Link
+[Here is the link](https://drive.google.com/drive/u/1/folders/1HVVPPZLErF-mhksggt2WvuVTie1Xd9HI) to the cleaned dataset
+ready hopefully for neo4j
 
 # Data Management
 - [ ] Import data
