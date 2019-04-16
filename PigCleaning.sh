@@ -27,42 +27,38 @@ rm -r ./demo_results/results/*
 pig -x local ./Data_Cleaning/PigCleaning.pig
 
 
- # for @pranav: wouldn't it be easier to read using a for loop?
- # Guess you're right and elegant :D
+cd ./demo_results
+
  # assuming it is bash:
 files=("artist"
-       "artist_alias"
        "release"
        "label"
        "track")
 
-cd ./demo_results
 for f in ${files[@]}
 do
    cd pig_$f
+   #LABEL to :LABEL
+   sed 's/LABEL/:LABEL/' .pig_header > .pig_header.tmp \
+   && mv .pig_header.tmp .pig_header
    cat .pig_header part* > "../results/$f.tsv"
    cd ./..
 done
 
+relation_files=("artist_artist_credit"
+       "release_artist_credit"
+       "release_label"
+       "track_artist_credit")
 
-#go to artist result folder and concatenate the files
-#cd ./demo_results/pig_artist
-#cat .pig_header part* > ../results/artist.tsv
-
-#go to artist_alias_folder
-#cd ../pig_artist_alias
-#cat .pig_header part* > ../results/artist_alias.tsv
-
-#go to release folder
-#cd ../pig_release
-#why only one partition?! I don't understant anymore how this
-#partitioning for PIG works!!
-#cat .pig_header part* > ../results/release.tsv
-
-#go to label folder
-#cd ../pig_label
-#cat .pig_header part* > ../results/label.tsv
-
-#go to track_folder
-#cd ../pig_track
-#cat .pig_header part* > ../results/track.tsv
+for f in ${relation_files[@]}
+do
+  cd pig_$f
+  #START_ID to :START_ID
+  #END_ID to :END_ID
+  #TYPE to :TYPE
+  sed 's/START_ID/:START_ID/' .pig_header | sed 's/END_ID/:END_ID/' \
+  | sed 's/TYPE/:TYPE/' > .pig_header.tmp && mv .pig_header.tmp .pig_header
+  #concatenate the files
+  cat .pig_header part* > "../results/$f.tsv"
+  cd ./..
+done

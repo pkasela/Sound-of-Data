@@ -160,10 +160,6 @@ STORE artist_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist'
 USING PigStorage('\t','-schema');
 
-STORE artist_alias_cooler INTO
- '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_alias'
-USING PigStorage('\t','-schema');
-
 STORE release_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_release'
 USING PigStorage('\t','-schema');
