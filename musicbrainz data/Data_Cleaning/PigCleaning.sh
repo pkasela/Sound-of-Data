@@ -31,6 +31,7 @@ cd ./demo_results
 
  # assuming it is bash:
 files=("artist"
+       "artist_credit"
        "release"
        "label"
        "track")

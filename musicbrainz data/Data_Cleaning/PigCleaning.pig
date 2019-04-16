@@ -22,7 +22,7 @@ artist_cooler = FOREACH artist GENERATE
   -- very very VERY  V E R Y  cool
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
   '3','Other'),'2','Female'),'1','Male') AS gender,
-  type, 'Artist' AS LABEL;
+  type, 'ARTIST' AS LABEL;
 --Avoided use of join here since we needed only a few REPLACE which takes
 --O(n) time while the join is if I remember correctly O(n^2)
 -- @pranav, it should be n×m where n <-nrow(table_1) and m <-nrow(table_2)
@@ -67,7 +67,7 @@ language_red = FOREACH language GENERATE id,language;--red = reduced
 release_cool = JOIN release BY language_id LEFT OUTER, language_red BY id;
 release_cooler = FOREACH release_cool GENERATE release::id AS id, gid AS gid,
      name AS name, release_group AS release_group,
-     language_red::language AS language, 'Release' AS LABEL;
+     language_red::language AS language, 'RELEASE' AS LABEL;
 
 --combine label and label_type
 
@@ -106,7 +106,7 @@ USING PigStorage('\t') AS
   edits_pending:int, last_updated:chararray, is_data_track:chararray
  );
 
-track_cooler = FOREACH track GENERATE id, gid, name, lenght, 'Track' AS LABEL;
+track_cooler = FOREACH track GENERATE id, gid, name, lenght, 'TRACK' AS LABEL;
 
 --------------------------------------------------------------------------------
 -----------------------------JOIN tables-------------------------------------
@@ -122,8 +122,11 @@ USING PigStorage('\t') AS
   join_phrase:chararray
  );
 
+ artist_credit_cooler = FOREACH artist_credit GENERATE artist_credit AS id,
+    artist_id AS artist_id, name AS name, 'ARTIST_CREDIT' AS LABEL;
+
 artist_artist_credit_cooler = FOREACH artist_credit GENERATE
-    artist_credit AS START_ID, artist_id AS END_ID, 'ARTIST_CREDIT' AS TYPE;
+    artist_credit AS START_ID, artist_id AS END_ID, 'ARTIST_ARTIST_CREDIT' AS TYPE;
 
 
 ---------HERE LIES track_artist_credit_cooler
@@ -170,6 +173,10 @@ USING PigStorage('\t','-schema');
 
 STORE track_cooler INTO
  '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_track'
+USING PigStorage('\t','-schema');
+
+STORE artist_credit_cooler INTO
+ '/home/pranav/Desktop/Sound-of-Data/musicbrainz data/demo_results/pig_artist_credit'
 USING PigStorage('\t','-schema');
 
 ------ relationship FILES  ----------

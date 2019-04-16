@@ -1,12 +1,12 @@
 # numbers of CPU core of the machine, default is 4
-core=4
+#core=4
+#By Default it will take the maximum amount of available processors.
 
 neo4j-import \
     --into  # buuuuch, the database file
             #Let's call it The Annoying Orange
     --delimiter "\t" \
     --quote "\"" \
-    --processors $core \
     --nodes artist.tsv \
     --nodes release.tsv \
     --nodes track.tsv \
