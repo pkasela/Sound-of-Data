@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup as bs
 ## this script downloads the latest dump from musicbrainz.org (as .tar.bz2 file)
 ## and prepare it to the import (converting it as a set of .tsv files)
 
-# for @Pranav
 # change this line if an header on the top of the file is required
 headers_in_file = False
 
@@ -178,7 +177,7 @@ headers = {
 
 
 def yes_no():
-    "Return true/false to an answare"
+    "Return true/false to a question"
     return input("Download the file? [y/N] ").lower() == "y"
 
 if yes_no():
@@ -190,7 +189,7 @@ if yes_no():
     FILE = "../" + FILE
     if os.path.isfile(FILE):  # removes the file if already exists
         os.remove(FILE)
-    os.system("wget -c " + URL + " -O " + FILE + " && tar xvf " + FILE)
+    os.system("wget -c " + URL + " -O " + FILE + " && tar xvf " + FILE + " mbdump")
     #shift the folder where it is needed
     os.system("rm -r ../mbdump && mv mbdump ../mbdump")
 
@@ -223,12 +222,8 @@ def get_header(x):
     return "\t".join(headers[x])
 
 
-def main():
-    path = "../mbdump/"  # .tar.bz file is moved in ../
-    for table in list(headers.keys()):
-        # clean the tsv file
-        threading.Thread(target=clean_tsv,
-                         args=[path + table, get_header(table)]).start()
-
-if __name__=='__main__':
-    main()
+path = "../mbdump/"  # .tar.bz file is moved in ../
+for table in list(headers.keys()):
+    # clean the tsv file
+    threading.Thread(target=clean_tsv,
+                     args=[path + table, get_header(table)]).start()

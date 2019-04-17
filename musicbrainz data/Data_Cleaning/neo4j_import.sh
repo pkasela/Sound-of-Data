@@ -1,20 +1,15 @@
 # numbers of CPU core of the machine, default is 4
 #core=4
 #By Default it will take the maximum amount of available processors.
+#main database folder is in /var/lib/neo4j/data/databases/
+cd ../demo_results/results
+neo4j-import --into Sound-of-Data.db --nodes artist.tsv --nodes=release.tsv --nodes=track.tsv --nodes=label.tsv --relationships=release_label.tsv --delimiter="\t" --quote="\""
 
-neo4j-import \
-    --into  # buuuuch, the database file
-            #Let's call it The Annoying Orange
-    --delimiter "\t" \
-    --quote "\"" \
-    --nodes artist.tsv \
-    --nodes release.tsv \
-    --nodes track.tsv \
-    --nodes label.tsv \
-    --relationships artist_release.tsv \
-    --relationships release_track.tsv \
-    --relationships release_label.tsv
+#or use neo4j-admin it should inport in the altready existing db
+#sudo neo4j-admin import --nodes artist.tsv --nodes=release.tsv --nodes=track.tsv --nodes=label.tsv --relationships=release_label.tsv --delimiter="\t" --quote="\""
 
+#sudo cp Sound-of-Data.db /var/lib/neo4j/data/databases/
+sudo mv Sound-of-Data.db /var/lib/neo4j/data/databases/
 # so, it seems too easy but it is not: we have to change the tsv
 # structure to fit this script, it is not so easy but we have to do
 # it.

@@ -18,20 +18,20 @@ rm -rf ./demo_results/pig_*
 # @MoMo I use either Atom or Basic Text Editor of Ubuntu (Though not a
 # 					great fan of it, I prefer Atom)
 mkdir -p ./demo_results/results
-rm -r ./demo_results/results/*
+rm -r ./demo_results/results/*.tsv
 
 #Was able to configure also the MapReduce PIG, but it works only
 #on a hdfs partition, later I will upload a script with the paths
 #changed to the hdfs partition, for now we have the local version
 #which actually might be better since we have low latency.
-pig -x local ./Data_Cleaning/PigCleaning.pig
+#set the SOUND_FOLDER before executing the script
+pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning.pig
 
 
 cd ./demo_results
 
  # assuming it is bash:
 files=("artist"
-       "artist_credit"
        "release"
        "label"
        "track")
@@ -40,16 +40,13 @@ for f in ${files[@]}
 do
    cd pig_$f
    #LABEL to :LABEL
-   sed 's/LABEL/:LABEL/' .pig_header > .pig_header.tmp \
+   sed 's/LABEL/:LABEL/' .pig_header | sed 's/ID/:ID/' > .pig_header.tmp \
    && mv .pig_header.tmp .pig_header
    cat .pig_header part* > "../results/$f.tsv"
    cd ./..
 done
 
-relation_files=("artist_artist_credit"
-       "release_artist_credit"
-       "release_label"
-       "track_artist_credit")
+relation_files=("release_label")
 
 for f in ${relation_files[@]}
 do
