@@ -6,14 +6,14 @@ ready hopefully for neo4j
 
 # Data Management
 - [ ] Import data
-  - [x] fix .tsv
-  - [x] .tsv -> PIG
-  - [x] PIG -> .tsv denormalizzato (con JOIN)
-  - [ ] Decide the tables and their attributes to keep
-  - [ ] .tsv denormalizzato -> neo4j (bash)
+  - [x] fix .tsv with [get_data.py](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/get_data.py)
+  - [x] Decide the tables and their attributes to keep
+  - [x] .tsv -> PIG -> clean .tsv (con JOIN e FILTER(GENERATE for PIG)) with [PigCleaning.sh](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/PigCleaning.sh)
+  - [ ] clean .tsv -> neo4j (bash)
+  - [ ] Scrape down musicBrainz artist using musicBrainz API 
 - [ ] Tweet
   - [x] Kafka Producer
-  - [ ] Kafka consumer ->  mongodb per analisi di test
+  - [ ] Kafka consumer -> MongoDB per analisi di test
   - [ ] Kafka consumer -> Neo4j
 
 # Data Semantics
