@@ -2,7 +2,7 @@ TODO LIST:
 
 # DataSet Link
 [Here is the link](https://drive.google.com/drive/u/1/folders/1HVVPPZLErF-mhksggt2WvuVTie1Xd9HI) to the cleaned dataset
-ready hopefully for neo4j
+ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com/drive/folders/1fXKiLbHYTjd5_9TyrgFK_MRe6xUDlo-8)
 
 # Data Management
 - [ ] Import data
