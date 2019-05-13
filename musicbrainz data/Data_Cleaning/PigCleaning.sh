@@ -34,12 +34,13 @@ cd ./demo_results
 files=("artist"
        "release"
        "label"
-       "track")
+       "recording")
 
 for f in ${files[@]}
 do
    cd pig_$f
    #LABEL to :LABEL
+   #ID to :ID
    sed 's/LABEL/:LABEL/' .pig_header | sed 's/ID/:ID/' > .pig_header.tmp \
    && mv .pig_header.tmp .pig_header
    cat .pig_header part* > "../results/$f.tsv"

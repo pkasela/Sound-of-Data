@@ -4,7 +4,7 @@
 --To make the gender attribute more readable in artist.tsv
 
 artist = LOAD
- '$SOUND_FOLDER/musicbrainz data/mbdump/artist.tsv'
+ '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/artist.tsv'
 USING PigStorage('\t') AS
  (
  id:int, gid:chararray, name:chararray, sort_name:chararray,
@@ -24,30 +24,12 @@ artist_cooler = FOREACH artist GENERATE
   '3','Other'),'2','Female'),'1','Male') AS gender,
   type, 'ARTIST' AS LABEL;
 --Avoided use of join here since we needed only a few REPLACE which takes
---O(n) time while the join is if I remember correctly O(n^2)
--- @pranav, it should be n×m where n <-nrow(table_1) and m <-nrow(table_2)
---   so you can use a join without destroying performance, but:
---   O(n) < O(nm), yup the auto join was O(n^2), sorry xD
-
---reduce the attributes of artist_alias
-/*
-artist_alias = LOAD
- '$SOUND_FOLDER/musicbrainz data/mbdump/artist_alias.tsv'
-USING PigStorage('\t') AS
- (
-  id:int, artist:int, name:chararray, local:chararray, edit_pending:int,
-  last_updated:chararray, type:int, sort_name:chararray,
-  begin_date_year:int, begin_date_month:int, begin_date_day:int,
-  end_date_year:int, end_date_month:int, end_date_day:int,
-  primary_for_locale:chararray, ended:chararray
- );
-
-artist_alias_cooler = FOREACH artist_alias GENERATE id, artist, name, type;
-*/
+--O(n) time while the join is if I remember correctly O(n*m)
+-- where n <-nrow(table_1) and m <-nrow(table_2)
 
 --combine release and language
 release = LOAD
- '$SOUND_FOLDER/musicbrainz data/mbdump/release.tsv'
+ '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release.tsv'
 USING PigStorage('\t') AS
  (
  id:int, gid:chararray, name:chararray, artist_credit:int,release_group:int,
@@ -56,7 +38,7 @@ USING PigStorage('\t') AS
  );
 
 language = LOAD
-  '$SOUND_FOLDER/musicbrainz data/mbdump/language.tsv'
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/language.tsv'
 USING PigStorage('\t') AS
  (
  id:int, iso_code_2t:chararray, iso_code_2b:chararray, iso_code_1:chararray,
@@ -74,7 +56,7 @@ release_cooler = FOREACH release_cool GENERATE gid AS ID,
 --combine label and label_type
 
 label = LOAD
- '$SOUND_FOLDER/musicbrainz data/mbdump/label.tsv'
+ '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/label.tsv'
 USING PigStorage('\t') AS
  (
  id:int, gid:chararray, name:chararray, begin_date_year:int,
@@ -85,7 +67,7 @@ USING PigStorage('\t') AS
  );
 
 label_type = LOAD
-'$SOUND_FOLDER/musicbrainz data/mbdump/label_type.tsv'
+'$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/label_type.tsv'
 USING PigStorage('\t') AS
  (
  id:int, name:chararray, parent:int, child_order:int,
@@ -98,47 +80,51 @@ label_cooler = FOREACH label_cool GENERATE label::gid AS ID,
         label::id AS label_id, label::name AS name,
         label_type::name AS type, 'LABEL' AS LABEL;
 
---reduce attribute of track and if needed can be used for JOIN
---I think that we decided not to consider the medium & medium_format
-track = LOAD
- '$SOUND_FOLDER/musicbrainz data/mbdump/track.tsv'
-USING PigStorage('\t') AS
- (
-  id:int, gid:chararray, recording:int, medium:int, position:int,
-  number:chararray, name:chararray, artist_credit:int, lenght:int,
-  edits_pending:int, last_updated:chararray, is_data_track:chararray
- );
+--reduce attribute of recording and if needed can be used for JOIN
 
-track_cooler = FOREACH track GENERATE gid AS ID, id AS track_id,
-    name, lenght, 'TRACK' AS LABEL;
+recording = LOAD
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/recording.tsv'
+USING PigStorage('\t') AS
+  (
+    id:int, gid:chararray, name:chararray,
+    artist_credit:int,
+    length:int,
+    comment:chararray,
+    edits_pending:int,
+    last_updated:chararray,
+    video:chararray --(booleano)
+  );
+
+recording_cooler = FOREACH recording GENERATE gid AS ID,
+    id AS recording_id, name, length, 'RECORDING' AS LABEL;
 
 --------------------------------------------------------------------------------
 -----------------------------RELATION tables----------------------------
 ----------------------------------------------------------------------
 
-
----------HERE LIES artist_credit
-/*artist_credit = LOAD
-  '$SOUND_FOLDER/musicbrainz data/mbdump/artist_credit_name.tsv'
+---------HERE LIES artist_recording_cooler
+artist_recording = LOAD
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/l_artist_recording'
 USING PigStorage('\t') AS
- (
-  artist_credit:int, position:int, artist_id:int, name:chararray,
-  join_phrase:chararray
- );
+  (
+    id:chararray, link_id:int, artist_id:int, recording_id:int,
+    edits_pending:int, last_updated:chararray, link_order:int,
+    artist_credit:chararray, recording_credit:chararray
+  );
 
-artist_credit_cooler = FOREACH artist_credit GENERATE artist_credit AS ID,
-    artist_id AS artist_id, name AS name, 'ARTIST_CREDIT' AS LABEL;
+artist_recording_freeze = FOREACH artist_recording GENERATE
+    artist_id, recording_id;
 
---JOIN ARTIST and ARTIST CREDITto have artist_gid instead of artist_id
-artist_artist_credit_cooler = FOREACH artist_credit GENERATE
-    artist_credit AS START_ID, artist_id AS END_ID, 'ARTIST_ARTIST_CREDIT' AS TYPE;
+artist_recording_art = JOIN artist_recording_freeze BY artist_id,
+                                artist_cooler BY artist_id;
 
+artist_recording_art_rec = JOIN artist_recording_art BY recording_id,
+                                recording_cooler BY recording_id;
 
----------HERE LIES track_artist_credit_cooler
-track_artist_credit_cooler = FOREACH track GENERATE gid AS START_ID,
-    artist_credit AS END_ID, 'TRACK_OF' AS TYPE;
-
-
+artist_recording_cooler = FOREACH artist_recording_art_rec GENERATE
+    artist_cooler::ID AS START_ID, recording_cooler::ID AS END_ID,
+    'ARTIST_RECORDED' AS TYPE;
+/*
 ---------HERE LIES release_artist_credit_cooler
 release_artist_credit_cooler = FOREACH release GENERATE gid AS START_ID,
     artist_credit AS END_ID, 'RELEASED' AS TYPE;
@@ -146,7 +132,7 @@ release_artist_credit_cooler = FOREACH release GENERATE gid AS START_ID,
 
 ---------HERE LIES release_label
 release_label = LOAD
-  '$SOUND_FOLDER/musicbrainz data/mbdump/release_label.tsv'
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release_label.tsv'
 USING PigStorage('\t') AS
  (
   id:int, release:int, label:int, catlog_number:chararray,
@@ -186,8 +172,8 @@ STORE label_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_label'
 USING PigStorage('\t','-schema');
 
-STORE track_cooler INTO
- '$SOUND_FOLDER/musicbrainz data/demo_results/pig_track'
+STORE recording_cooler INTO
+ '$SOUND_FOLDER/musicbrainz data/demo_results/pig_recording'
 USING PigStorage('\t','-schema');
 
 /*
@@ -212,6 +198,11 @@ USING PigStorage('\t','-schema');
 STORE release_label_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_release_label'
 USING PigStorage('\t','-schema');
+
+STORE artist_recording_cooler INTO
+ '$SOUND_FOLDER/musicbrainz data/demo_results/pig_artist_recording'
+USING PigStorage('\t','-schema');
+
 
 --followed by cat .pig_header part* > combined_file.tsv on shell
 --As MoMo says cat works at the speed of light

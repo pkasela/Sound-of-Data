@@ -31,31 +31,6 @@ headers = {
         "begin_area",
         "end_area",
     ],
-#    "artist_alias" : [
-#        "id",
-#        "artist",
-#        "name",
-#        "locale",
-#        "edits_pending",
-#        "last_updated",
-#        "type",
-#        "sort_name",
-#        "begin_date_year",
-#        "begin_date_month",
-#        "begin_date_day",
-#        "end_date_year",
-#        "end_date_month",
-#        "end_date_day",
-#        "primary_for_locale",
-#        "ended"
-#    ],
-#    "artist_credit" : [
-#        "id",
-#        "name",
-#        "artist_count",
-#        "ref_count",
-#        "created"
-#    ],
     "artist_credit_name" : [
         "artist_credit",
         "position",
@@ -89,24 +64,6 @@ headers = {
         "last_updated",
         "ended"
     ],
-#    "label_alias" : [#va visto se tenere o meno
-#        "id",        #e se va tenuto bisgona vedere
-#        "label",     #se va bene lo schema
-#        "locale",
-#        "name",
-#        "sort_name",
-#        "edits_pending",
-#        "last_updated",
-#        "type",
-#        "begin_date_year",
-#        "begin_date_month",
-#        "begin_date_day",
-#        "end_date_year",
-#        "end_date_month",
-#        "end_date_day",
-#        "ended",
-#        "primary_for_locale"
-#    ],
     "label_type" : [
         "id",
         "name",
@@ -124,17 +81,17 @@ headers = {
         "frequency",
         "iso_code_3"
     ],
-#    "recording" : [
-#        "id",
-#        "gid",
-#        "name",
-#        "artist_credit",
-#        "length",
-#        "comment",
-#        "edits_pending",
-#        "last_updated"
-#        "video"
-#    ],
+    "recording" : [
+        "id",
+        "gid",
+        "name",
+        "artist_credit",
+        "length",
+        "comment",
+        "edits_pending",
+        "last_updated"
+        "video"
+    ],
     "release" : [
         "id",
         "gid",
@@ -157,23 +114,13 @@ headers = {
         "label",
         "catalog_number",
         "last_updated"
-    ],
-    "track" : [
-        "id",
-        "gid",
-        "recording",
-        "medium",
-        "position",
-        "number",
-        "name",
-        "artist_credit",
-        "lenght",
-        "edits_pending",
-        "last_updated"
-        "is_data_track"
-    ],
+    ]
 }
 
+tables = ["artist","release","language","label","label_type",
+          "recording","l_artist_recording","l_artist_release",
+          "l_artist_label","l_label_release","l_label_recording",
+          "l_recording_release"]
 
 
 def yes_no():
@@ -189,16 +136,18 @@ if yes_no():
     FILE = "../" + FILE
     if os.path.isfile(FILE):  # removes the file if already exists
         os.remove(FILE)
+        os.system("rm -r ../mbdump")
     os.system("wget -c " + URL + " -O " + FILE + " && tar xvf " + FILE + " mbdump")
     #shift the folder where it is needed
-    os.system("rm -r ../mbdump && mv mbdump ../mbdump")
+    os.system("mv mbdump ../mbdump_raw")
 
-def clean_tsv(x, header):
+def clean_tsv(x):#, header):
     "Convert at the speed of the light (299,792,458 m/s) using cat and sed"
     # write the header of the file
     with open(x + ".tsv", "w+") as f:
         if headers_in_file:
-            f.write(header + "\n")
+            #f.write(header + "\n")
+            print("Sorry removed this feature")
         else:
             f.write("")
     # clean the file
@@ -222,8 +171,12 @@ def get_header(x):
     return "\t".join(headers[x])
 
 
-path = "../mbdump/"  # .tar.bz file is moved in ../
-for table in list(headers.keys()):
+path = "./mbdump_raw/"
+os.system("mkdir -p ./mbdump")
+for table in tables:
     # clean the tsv file
     threading.Thread(target=clean_tsv,
-                     args=[path + table, get_header(table)]).start()
+                     args=[path + table]).start()
+    os.system("mv ./mbdump_raw/" + table +".tsv ./mbdump")
+
+#os.system("rm -rf ./mbdump_raw") #non lo attivo ancora forse mi serviranno altre tabelle

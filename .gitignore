@@ -1,5 +1,6 @@
 #If someone keeps the dataset in the same folder
 mbdump/
+mbdump_raw/
 #created by PIG scripts
 *.log
 #could be useful to create and output temp result in this folder
