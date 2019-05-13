@@ -122,6 +122,7 @@ tables = ["artist","release","language","label","label_type",
           "l_artist_label","l_label_release","l_label_recording",
           "l_recording_release"]
 
+#Was thinking may be include also release_group (it is the equivalent of an album)
 
 def yes_no():
     "Return true/false to a question"

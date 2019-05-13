@@ -32,9 +32,9 @@ cd ./demo_results
 
  # assuming it is bash:
 files=("artist"
-       "release"
        "label"
-       "recording")
+       "recording"
+       "release")
 
 for f in ${files[@]}
 do
@@ -47,7 +47,12 @@ do
    cd ./..
 done
 
-relation_files=("release_label")
+relation_files=("artist_label"
+                "artist_recording"
+                "artist_release"
+                "label_recording"
+                "label_release"
+                "recording_release")
 
 for f in ${relation_files[@]}
 do
