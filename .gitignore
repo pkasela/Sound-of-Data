@@ -3,6 +3,7 @@ mbdump/
 mbdump_raw/
 #created by PIG scripts
 *.log
+*.pig_header
 #could be useful to create and output temp result in this folder
 demo_results/
 #jupyter stuff

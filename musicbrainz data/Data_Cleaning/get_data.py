@@ -173,11 +173,9 @@ def get_header(x):
 
 
 path = "./mbdump_raw/"
-os.system("mkdir -p ./mbdump")
 for table in tables:
     # clean the tsv file
     threading.Thread(target=clean_tsv,
                      args=[path + table]).start()
-    os.system("mv ./mbdump_raw/" + table +".tsv ./mbdump")
 
-#os.system("rm -rf ./mbdump_raw") #non lo attivo ancora forse mi serviranno altre tabelle
+#os.system("rm -rf ./mbdump_raw") #Usare il file got_data.py dopo

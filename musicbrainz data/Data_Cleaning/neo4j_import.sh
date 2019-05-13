@@ -3,7 +3,7 @@
 #By Default it will take the maximum amount of available processors.
 #main database folder is in /var/lib/neo4j/data/databases/
 cd ../demo_results/results
-neo4j-import --into SoundofData.db --nodes artist.tsv --nodes release.tsv --nodes track.tsv --nodes label.tsv --relationships release_label.tsv --delimiter="\t" --quote="\""
+neo4j-import --into SoundofData.db --nodes artist.tsv --nodes release.tsv --nodes recording.tsv --nodes label.tsv --relationships artist_label.tsv --relationships artist_recording.tsv --relationships artist_release.tsv --relationships label_recording.tsv --relationships label_release.tsv --relationships recording_release.tsv  --delimiter="\t" --quote="\""
 
 #or use neo4j-admin it should inport in the altready existing db
 #sudo neo4j-admin import --nodes artist.tsv --nodes=release.tsv --nodes=track.tsv --nodes=label.tsv --relationships=release_label.tsv --delimiter="\t" --quote="\""

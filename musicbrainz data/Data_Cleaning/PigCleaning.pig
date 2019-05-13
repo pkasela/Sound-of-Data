@@ -117,7 +117,7 @@ USING PigStorage('\t') AS
     artist_credit:chararray, label_credit:chararray
   );
 
-  artist_label_red = FOREACH artist_label GENERATE artist_id, release_id;
+  artist_label_red = FOREACH artist_label GENERATE artist_id, label_id;
 
   artist_label_art = JOIN artist_label_red BY artist_id,
                           artist_cooler BY artist_id;
@@ -132,7 +132,7 @@ USING PigStorage('\t') AS
 ---------HERE LIES artist_recording_cooler
 
 artist_recording = LOAD
-  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/l_artist_recording'
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/l_artist_recording.tsv'
 USING PigStorage('\t') AS
   (
     id:chararray, link_id:int, artist_id:int, recording_id:int,
@@ -193,12 +193,12 @@ label_recording_red = FOREACH label_recording GENERATE label_id, recording_id;
 label_recording_cold = JOIN label_recording_red BY recording_id,
                       recording_cooler BY recording_id;
 
-label_recording_cool = JOIN label_recording_colder BY label_id,
+label_recording_cool = JOIN label_recording_cold BY label_id,
                      label_cooler BY label_id;
 
 label_recording_cooler = FOREACH label_recording_cool GENERATE
-    label_cooler as START_ID,
-    recording_cooler::ID::ID AS END_ID, 'SPONSORED_RECORDING' AS TYPE;
+    label_cooler::ID as START_ID,
+    recording_cooler::ID AS END_ID, 'SPONSORED_RECORDING' AS TYPE;
 
 ---------HERE LIES label_release_cooler
 
@@ -216,7 +216,7 @@ label_release_red = FOREACH label_release GENERATE label_id, release_id;
 label_release_cold = JOIN label_release_red BY release_id,
                       release_cooler BY release_id;
 
-label_release_cool = JOIN label_release_colder BY label_id,
+label_release_cool = JOIN label_release_cold BY label_id,
                      label_cooler BY label_id;
 
 label_release_cooler = FOREACH label_release_cool GENERATE
@@ -240,7 +240,7 @@ recording_release_red = FOREACH recording_release GENERATE
 recording_release_cold = JOIN recording_release_red BY release_id,
                       release_cooler BY release_id;
 
-recording_release_cool = JOIN recording_release_colder BY recording_id,
+recording_release_cool = JOIN recording_release_cold BY recording_id,
                      recording_cooler BY recording_id;
 
 recording_release_cooler = FOREACH recording_release_cool GENERATE
