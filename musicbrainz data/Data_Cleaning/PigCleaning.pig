@@ -22,7 +22,7 @@ USING PigStorage('\t') AS
 --FOREACH a GENERATE is kind of of a filter on columns
 -- yeah, it's very cool! C:
 artist_cooler = FOREACH artist GENERATE
-  gid AS ID, id AS artist_id, name,
+  gid AS ID, id AS artist_id, gid AS gid, name,
   -- very very VERY  V E R Y  cool
   REPLACE(REPLACE(REPLACE(REPLACE(gender,'4','Not Applicable'),
   '3','Other'),'2','Female'),'1','Male') AS gender,
@@ -30,32 +30,6 @@ artist_cooler = FOREACH artist GENERATE
 --Avoided use of join here since we needed only a few REPLACE which takes
 --O(n) time while the join is if I remember correctly O(n*m)
 -- where n <-nrow(table_1) and m <-nrow(table_2)
-
---combine release and language
-release = LOAD
- '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release.tsv'
-USING PigStorage('\t') AS
- (
- id:int, gid:chararray, name:chararray, artist_credit:int,release_group:int,
- status:int, packaging:int, language_id:int, script:int, barcode:chararray,
- comment:chararray, edit_pending:int, quality:int, last_updated:chararray
- );
-
-language = LOAD
-  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/language.tsv'
-USING PigStorage('\t') AS
- (
- id:int, iso_code_2t:chararray, iso_code_2b:chararray, iso_code_1:chararray,
- language:chararray, frequency:int, iso_code_3:chararray
- );
---From language We need only the id and name(called language here)
-language_red = FOREACH language GENERATE id,language;--red = reduced
---Left Join the two tables release and language
-release_cool = JOIN release BY language_id LEFT OUTER, language_red BY id;
-release_cooler = FOREACH release_cool GENERATE gid AS ID,
-     release::id AS release_id,
-     name AS name, release_group AS release_group,
-     language_red::language AS language, 'RELEASE' AS LABEL;
 
 --combine label and label_type
 
@@ -81,7 +55,7 @@ USING PigStorage('\t') AS
 label_cool = JOIN label BY type_id LEFT OUTER, label_type BY id;
 
 label_cooler = FOREACH label_cool GENERATE label::gid AS ID,
-        label::id AS label_id, label::name AS name,
+        label::id AS label_id, label::gid AS gid, label::name AS name,
         label_type::name AS type, 'LABEL' AS LABEL;
 
 --reduce attribute of recording and if needed can be used for JOIN
@@ -100,7 +74,33 @@ USING PigStorage('\t') AS
   );
 
 recording_cooler = FOREACH recording GENERATE gid AS ID,
-    id AS recording_id, name, length, 'RECORDING' AS LABEL;
+    id AS recording_id, gid AS gid, name, length, 'RECORDING' AS LABEL;
+
+--combine release and language
+release = LOAD
+ '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release.tsv'
+USING PigStorage('\t') AS
+ (
+ id:int, gid:chararray, name:chararray, artist_credit:int,release_group:int,
+ status:int, packaging:int, language_id:int, script:int, barcode:chararray,
+ comment:chararray, edit_pending:int, quality:int, last_updated:chararray
+ );
+
+language = LOAD
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/language.tsv'
+USING PigStorage('\t') AS
+ (
+ id:int, iso_code_2t:chararray, iso_code_2b:chararray, iso_code_1:chararray,
+ language:chararray, frequency:int, iso_code_3:chararray
+ );
+--From language We need only the id and name(called language here)
+language_red = FOREACH language GENERATE id,language;--red = reduced
+--Left Join the two tables release and language
+release_cool = JOIN release BY language_id LEFT OUTER, language_red BY id;
+release_cooler = FOREACH release_cool GENERATE gid AS ID,
+     release::id AS release_id, gid AS gid,
+     name AS name, release_group AS release_group,
+     language_red::language AS language, 'RELEASE' AS LABEL;
 
 --------------------------------------------------------------------------------
 -----------------------------RELATION tables----------------------------
@@ -117,17 +117,19 @@ USING PigStorage('\t') AS
     artist_credit:chararray, label_credit:chararray
   );
 
-  artist_label_red = FOREACH artist_label GENERATE artist_id, label_id;
+artist_label_red = FOREACH artist_label GENERATE artist_id, label_id;
 
-  artist_label_art = JOIN artist_label_red BY artist_id,
+artist_label_art = JOIN artist_label_red BY artist_id,
                           artist_cooler BY artist_id;
 
-  artist_label_art_lab = JOIN artist_label_art BY label_id,
+artist_label_art_lab = JOIN artist_label_art BY label_id,
                                   label_cooler BY label_id;
 
-  artist_label_cooler = FOREACH artist_label_art_lab GENERATE
+artist_label_cool = FOREACH artist_label_art_lab GENERATE
       artist_cooler::ID AS START_ID, label_cooler::ID AS END_ID,
       'ARTIST_LABEL' AS TYPE;
+
+artist_label_cooler = DISTINCT artist_label_cool;
 
 ---------HERE LIES artist_recording_cooler
 
@@ -149,9 +151,11 @@ artist_recording_art = JOIN artist_recording_red BY artist_id,
 artist_recording_art_rec = JOIN artist_recording_art BY recording_id,
                                 recording_cooler BY recording_id;
 
-artist_recording_cooler = FOREACH artist_recording_art_rec GENERATE
+artist_recording_cool = FOREACH artist_recording_art_rec GENERATE
     artist_cooler::ID AS START_ID, recording_cooler::ID AS END_ID,
     'ARTIST_RECORDED' AS TYPE;
+
+artist_recording_cooler = DISTINCT artist_recording_cool;
 
 ---------HERE LIES artist_release_cooler
 
@@ -164,18 +168,20 @@ USING PigStorage('\t') AS
     artist_credit:chararray, release_credit:chararray
   );
 
-  artist_release_red = FOREACH artist_release GENERATE
-      artist_id, release_id;
+artist_release_red = FOREACH artist_release GENERATE
+    artist_id, release_id;
 
-  artist_release_art = JOIN artist_release_red BY artist_id,
-                                  artist_cooler BY artist_id;
+artist_release_art = JOIN artist_release_red BY artist_id,
+                                artist_cooler BY artist_id;
 
-  artist_release_art_rel = JOIN artist_release_art BY release_id,
-                                  release_cooler BY release_id;
+artist_release_art_rel = JOIN artist_release_art BY release_id,
+                                release_cooler BY release_id;
 
-  artist_release_cooler = FOREACH artist_release_art_rel GENERATE
-      artist_cooler::ID AS START_ID, release_cooler::ID AS END_ID,
-      'ARTIST_RELEASED' AS TYPE;
+artist_release_cool = FOREACH artist_release_art_rel GENERATE
+    artist_cooler::ID AS START_ID, release_cooler::ID AS END_ID,
+    'ARTIST_RELEASED' AS TYPE;
+
+artist_release_cooler = DISTINCT artist_release_cool;
 
 ---------HERE LIES label_recording_cooler
 
@@ -196,9 +202,11 @@ label_recording_cold = JOIN label_recording_red BY recording_id,
 label_recording_cool = JOIN label_recording_cold BY label_id,
                      label_cooler BY label_id;
 
-label_recording_cooler = FOREACH label_recording_cool GENERATE
+label_recording_coole = FOREACH label_recording_cool GENERATE
     label_cooler::ID as START_ID,
     recording_cooler::ID AS END_ID, 'SPONSORED_RECORDING' AS TYPE;
+
+label_recording_cooler = DISTINCT label_recording_coole;
 
 ---------HERE LIES label_release_cooler
 
@@ -219,9 +227,11 @@ label_release_cold = JOIN label_release_red BY release_id,
 label_release_cool = JOIN label_release_cold BY label_id,
                      label_cooler BY label_id;
 
-label_release_cooler = FOREACH label_release_cool GENERATE
+label_release_coole = FOREACH label_release_cool GENERATE
     label_cooler::ID as START_ID,
     release_cooler::ID AS END_ID, 'SPONSORED_RELEASE' AS TYPE;
+
+label_release_cooler = DISTINCT label_release_coole;
 
 ---------HERE LIES recording_release
 
@@ -243,10 +253,11 @@ recording_release_cold = JOIN recording_release_red BY release_id,
 recording_release_cool = JOIN recording_release_cold BY recording_id,
                      recording_cooler BY recording_id;
 
-recording_release_cooler = FOREACH recording_release_cool GENERATE
+recording_release_coole = FOREACH recording_release_cool GENERATE
     recording_cooler::ID as START_ID,
     release_cooler::ID AS END_ID, 'RECORD_IN_RELEASE' AS TYPE;
 
+recording_release_cooler = DISTINCT recording_release_coole;
 --------------------------------------------------------------------------------
 -----------------------------STORAGE----------------------------------------
 ----------------------------------------------------------------------
@@ -322,13 +333,9 @@ USING PigStorage('\t','-schema');
 -- after defining the script to execute it on the data A use:
 --B = STREAM A THROUGH test;
 
---Done stuff for:
--- artist <- gender(with REPLACE) and artist_alias
--- release <- language
--- label <- label_type
--- recording
+--To count the rows of a `table' do
+-- Total_Rows = FOREACH (GROUP table ALL) GENERATE COUNT(table);
 
--- remaining shell script for cat and sed*
 
---*Only problem is that the columns can't start with `:' like in JAVA -.-
+--*Only problem in PIG is that the columns can't start with `:' like in JAVA :(
 --thus will use sed on the .pig_header in the main script(.sh)
