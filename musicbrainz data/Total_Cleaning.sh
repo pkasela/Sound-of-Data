@@ -7,7 +7,6 @@ read -p "Do you want to pre-process the raw data? [Y,n] >" ans1
 
 if [[ $ans1 == "y" || $ans1 == "Y" ]]; then
   python3 get_data.py
-  python3 got_data.py
 else
   echo "You chose not to pre-process the raw data"
 fi
