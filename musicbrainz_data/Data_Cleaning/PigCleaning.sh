@@ -41,13 +41,15 @@ hadoop fs -rm -r -f /demo_results/*
 hadoop fs -mkdir -p /mbdump
 hadoop fs -mkdir -p /demo_results
 
-./Data_Cleaning/localToHDFS.sh
+cd ./Data_Cleaning
 
-pig -x tez ./Data_Cleaning/PigCleaningHDFS_part1.pig
+./localToHDFS.sh
 
-pig -x tez ./Data_Cleaning/PigCleaningHDFS_part2.pig
+pig -x tez ./PigCleaningHDFS_part1.pig
 
-cd ./demo_results
+pig -x tez ./PigCleaningHDFS_part2.pig
+
+cd ../demo_results
 
 echo "Copying the result from HDFS to the local FS"
 echo "(may take some time, so take a coffee or something)"
