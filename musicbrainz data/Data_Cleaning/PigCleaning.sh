@@ -34,7 +34,8 @@ cd ./demo_results
 files=("artist"
        "label"
        "recording"
-       "release")
+       "release"
+       "release_group")
 
 for f in ${files[@]}
 do
@@ -50,10 +51,14 @@ done
 relation_files=("artist_label"
                 "artist_recording"
                 "artist_release"
+                "artist_release_group"
                 "label_recording"
                 "label_release"
-                "recording_release")
-
+                "label_release_group"
+                "recording_release"
+                "release_release_group")
+                #can't find recording_release_group (it should exist)
+                #release_group can be found in release table itself
 for f in ${relation_files[@]}
 do
   cd pig_$f

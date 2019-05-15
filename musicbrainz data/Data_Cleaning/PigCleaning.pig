@@ -64,13 +64,9 @@ recording = LOAD
   '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/recording.tsv'
 USING PigStorage('\t') AS
   (
-    id:int, gid:chararray, name:chararray,
-    artist_credit:int,
-    length:int,
-    comment:chararray,
-    edits_pending:int,
-    last_updated:chararray,
-    video:chararray --(booleano)
+    id:int, gid:chararray, name:chararray, artist_credit:int,
+    length:int, comment:chararray, edits_pending:int,
+    last_updated:chararray, video:chararray --(booleano)
   );
 
 recording_cooler = FOREACH recording GENERATE gid AS ID,
@@ -81,7 +77,7 @@ release = LOAD
  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release.tsv'
 USING PigStorage('\t') AS
  (
- id:int, gid:chararray, name:chararray, artist_credit:int,release_group:int,
+ id:int, gid:chararray, name:chararray, artist_credit:int,release_group_id:int,
  status:int, packaging:int, language_id:int, script:int, barcode:chararray,
  comment:chararray, edit_pending:int, quality:int, last_updated:chararray
  );
@@ -99,9 +95,20 @@ language_red = FOREACH language GENERATE id,language;--red = reduced
 release_cool = JOIN release BY language_id LEFT OUTER, language_red BY id;
 release_cooler = FOREACH release_cool GENERATE gid AS ID,
      release::id AS release_id, gid AS gid,
-     name AS name, release_group AS release_group,
+     name AS name, release_group_id AS release_group_id,
      language_red::language AS language, 'RELEASE' AS LABEL;
 
+-- Release Group is cleaned here
+release_group = LOAD
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release_group.tsv'
+USING PigStorage('\t') AS
+  (
+   id:int, gid:chararray, name:chararray, artist_credit:int,
+   type:int, comment:chararray, edits_pending:int, last_updated:chararray
+  );
+
+release_group_cooler = FOREACH release_group GENERATE gid AS ID,
+    id AS release_group_id, gid AS gid, name;
 --------------------------------------------------------------------------------
 -----------------------------RELATION tables----------------------------
 ----------------------------------------------------------------------
@@ -183,6 +190,32 @@ artist_release_cool = FOREACH artist_release_art_rel GENERATE
 
 artist_release_cooler = DISTINCT artist_release_cool;
 
+---------HERE LIES artist_release_group_cooler
+
+artist_release_group = LOAD
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/l_artist_release_group.tsv'
+USING PigStorage('\t') AS
+  (
+    id:chararray, link_id:int, artist_id:int, release_group_id:int,
+    edits_pending:int, last_updated:chararray, link_order:int,
+    artist_credit:chararray, release_credit:chararray
+  );
+
+artist_release_group_red = FOREACH artist_release_group GENERATE
+    artist_id, release_group_id;
+
+artist_release_group_art = JOIN artist_release_group_red BY artist_id,
+                                artist_cooler BY artist_id;
+
+artist_release_group_art_rel = JOIN artist_release_group_art BY release_group_id,
+                                release_group_cooler BY release_group_id;
+
+artist_release_group_cool = FOREACH artist_release_group_art_rel GENERATE
+    artist_cooler::ID AS START_ID, release_group_cooler::ID AS END_ID,
+    'ARTIST_RELEASED_GROUP' AS TYPE;
+
+artist_release_group_cooler = DISTINCT artist_release_group_cool;
+
 ---------HERE LIES label_recording_cooler
 
 label_recording = LOAD
@@ -211,13 +244,12 @@ label_recording_cooler = DISTINCT label_recording_coole;
 ---------HERE LIES label_release_cooler
 
 label_release = LOAD
-  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/l_label_release.tsv'
+  '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/release_label.tsv'
 USING PigStorage('\t') AS
-  (
-    id:chararray, link_id:int, label_id:int, release_id:int,
-    edits_pending:int, last_updated:chararray, link_order:int,
-    label_credit:chararray, release_credit:chararray
-  );
+(
+ id:int, release_id:int, label_id:int, catlog_number:chararray,
+ last_updated:chararray
+);
 
 label_release_red = FOREACH label_release GENERATE label_id, release_id;
 
@@ -233,7 +265,7 @@ label_release_coole = FOREACH label_release_cool GENERATE
 
 label_release_cooler = DISTINCT label_release_coole;
 
----------HERE LIES recording_release
+---------HERE LIES recording_release_cooler
 
 recording_release = LOAD
   '$SOUND_FOLDER/musicbrainz data/Data_Cleaning/mbdump/l_recording_release.tsv'
@@ -258,6 +290,17 @@ recording_release_coole = FOREACH recording_release_cool GENERATE
     release_cooler::ID AS END_ID, 'RECORD_IN_RELEASE' AS TYPE;
 
 recording_release_cooler = DISTINCT recording_release_coole;
+
+---------HERE LIES release_release_group_cooler
+release_release_group = JOIN release_cooler by release_group_id,
+                        release_group_cooler by release_group_id;
+
+release_release_group_cool = FOREACH release_release_group GENERATE
+    release_cooler::gid AS START_ID, release_group_cooler::gid AS END_ID,
+    'RELEASE_IN_GROUP' AS TYPE;
+
+release_release_group_cooler = DISTINCT release_release_group_cool;
+
 --------------------------------------------------------------------------------
 -----------------------------STORAGE----------------------------------------
 ----------------------------------------------------------------------
@@ -269,16 +312,20 @@ STORE artist_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_artist'
 USING PigStorage('\t','-schema');
 
-STORE release_cooler INTO
- '$SOUND_FOLDER/musicbrainz data/demo_results/pig_release'
-USING PigStorage('\t','-schema');
-
 STORE label_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_label'
 USING PigStorage('\t','-schema');
 
 STORE recording_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_recording'
+USING PigStorage('\t','-schema');
+
+STORE release_cooler INTO
+ '$SOUND_FOLDER/musicbrainz data/demo_results/pig_release'
+USING PigStorage('\t','-schema');
+
+STORE release_group_cooler INTO
+ '$SOUND_FOLDER/musicbrainz data/demo_results/pig_group_release'
 USING PigStorage('\t','-schema');
 
 ------ relationship FILES  ----------
@@ -295,6 +342,10 @@ STORE artist_release_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_artist_release'
 USING PigStorage('\t','-schema');
 
+STORE artist_release_group_cooler INTO
+ '$SOUND_FOLDER/musicbrainz data/demo_results/pig_artist_release_group'
+USING PigStorage('\t','-schema');
+
 STORE label_recording_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_label_recording'
 USING PigStorage('\t','-schema');
@@ -305,6 +356,10 @@ USING PigStorage('\t','-schema');
 
 STORE recording_release_cooler INTO
  '$SOUND_FOLDER/musicbrainz data/demo_results/pig_recording_release'
+USING PigStorage('\t','-schema');
+
+STORE release_release_group_cooler INTO
+ '$SOUND_FOLDER/musicbrainz data/demo_results/pig_release_release_group'
 USING PigStorage('\t','-schema');
 
 --followed by cat .pig_header part* > combined_file.tsv on shell
