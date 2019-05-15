@@ -16,6 +16,8 @@ echo "Copying l_label_recording.tsv --> hdfs:///mbdump/l_label_recording"
 hadoop fs -copyFromLocal l_label_recording.tsv /mbdump/
 echo "Copying l_label_release.tsv --> hdfs:///mbdump/l_label_release"
 hadoop fs -copyFromLocal l_label_release.tsv /mbdump/
+echo "Copying l_recording_release.tsv --> hdfs:///mbdump/l_recording_release"
+hadoop fs -copyFromLocal l_recording_release.tsv /mbdump/
 echo "Copying label.tsv --> hdfs:///mbdump/label"
 hadoop fs -copyFromLocal label.tsv /mbdump/
 echo "Copying label_type.tsv --> hdfs:///mbdump/label_type"
