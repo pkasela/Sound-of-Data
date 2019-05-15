@@ -45,14 +45,14 @@ cd ./demo_results
 
 echo "Copying the result from HDFS to the local FS"
 echo "(may take some time, so take a coffee or something)"
-hadoop fs -copyToLocal /demo_results/pig_* ./
+hadoop fs -copyToLocal -ignorecrc /demo_results/pig_* ./
 
  # assuming it is bash:
 files=("artist"
        "label"
        "recording"
        "release"
-       "release_group")
+       "group_release")
 
 for f in ${files[@]}
 do
@@ -60,7 +60,7 @@ do
    #LABEL to :LABEL
    #ID to :ID
    sed 's/LABEL/:LABEL/' .pig_header | sed 's/ID/:ID/' > .pig_header.tmp \
-   && mv .pig_header.tmp .pig_header
+   && sudo mv -f .pig_header.tmp .pig_header
    cat .pig_header part* > "../results/$f.tsv"
    cd ./..
 done
@@ -83,7 +83,7 @@ do
   #END_ID to :END_ID
   #TYPE to :TYPE
   sed 's/START_ID/:START_ID/' .pig_header | sed 's/END_ID/:END_ID/' \
-  | sed 's/TYPE/:TYPE/' > .pig_header.tmp && mv .pig_header.tmp .pig_header
+  | sed 's/TYPE/:TYPE/' > .pig_header.tmp && sudo mv .pig_header.tmp .pig_header
   #concatenate the files
   cat .pig_header part* > "../results/$f.tsv"
   cd ./..
