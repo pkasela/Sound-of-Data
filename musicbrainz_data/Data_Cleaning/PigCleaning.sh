@@ -4,7 +4,7 @@
 
 #[WARN] Anything created and saved either staring with `pig_' or
 #in the results folder will be removed when the script is executed
-cd ../
+cd ..
 #creates a folder (if it doesn't exist [-p]) to store the results
 #note that anything you do in this folder will not be uploaded to git
 #since we included it in the .gitignore file
@@ -31,11 +31,17 @@ rm -r ./demo_results/results/*.tsv
 #which actually might be better since we have low latency.
 #set the SOUND_FOLDER before executing the script
 
-cd ../
-export SOUND_FOLDER=$(pwd)
-cd musicbrainz_data/
+#cd ../
+#export SOUND_FOLDER=$(pwd)
+#cd musicbrainz_data/
 
-./localToHDFS
+hadoop fs -rm -r -f /mbdump/*
+hadoop fs -rm -r -f /demo_results/*
+
+hadoop fs -mkdir -p /mbdump
+hadoop fs -mkdir -p /demo_results
+
+./localToHDFS.sh
 
 pig -x tez ./Data_Cleaning/PigCleaningHDFS_part1.pig
 
@@ -45,7 +51,7 @@ cd ./demo_results
 
 echo "Copying the result from HDFS to the local FS"
 echo "(may take some time, so take a coffee or something)"
-hadoop fs -copyToLocal -ignorecrc /demo_results/pig_* ./
+hadoop fs -copyToLocal -ignoreCrc /demo_results/pig_* ./
 
  # assuming it is bash:
 files=("artist"
@@ -71,9 +77,9 @@ relation_files=("artist_label"
                 "artist_release_group"
                 "label_recording"
                 "label_release"
-                "label_release_group"
                 "recording_release"
                 "release_release_group")
+                #"label_release_group" I couldn't find it in PIG file will check later
                 #can't find recording_release_group (it should exist)
                 #release_group can be found in release table itself
 for f in ${relation_files[@]}
