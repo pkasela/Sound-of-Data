@@ -8,15 +8,20 @@ cd ../
 #creates a folder (if it doesn't exist [-p]) to store the results
 #note that anything you do in this folder will not be uploaded to git
 #since we included it in the .gitignore file
+
 mkdir -p ./demo_results
+
 #Delete the old result files, because PIG does not want to overwrite
 #It brings up immediately an exception
+
 rm -rf ./demo_results/pig_*
+
 #Here we save the ``bella copia'' of the files
 #                 ^            ^
 # @pranav, for curiosity: what editor do you use to have such quotes?
 # @MoMo I use either Atom or Basic Text Editor of Ubuntu (Though not a
 # 					great fan of it, I prefer Atom)
+
 mkdir -p ./demo_results/results
 rm -r ./demo_results/results/*.tsv
 
@@ -26,9 +31,9 @@ rm -r ./demo_results/results/*.tsv
 #which actually might be better since we have low latency.
 #set the SOUND_FOLDER before executing the script
 
-cd ../..
+cd ../
 export SOUND_FOLDER=$(pwd)
-cd musicbrainz\ data/Data_Cleaning/
+cd musicbrainz_data/
 
 pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning.pig
 
