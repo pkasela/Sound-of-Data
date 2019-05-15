@@ -25,6 +25,11 @@ rm -r ./demo_results/results/*.tsv
 #changed to the hdfs partition, for now we have the local version
 #which actually might be better since we have low latency.
 #set the SOUND_FOLDER before executing the script
+
+cd ../..
+export SOUND_FOLDER=$(pwd)
+cd musicbrainz\ data/Data_Cleaning/
+
 pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning.pig
 
 

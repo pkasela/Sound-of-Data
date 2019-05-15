@@ -39,7 +39,7 @@ if yes_no():
     os.system("wget -c " + URL1 + " -O " + FILE  + " && tar xvf " + FILE  + " mbdump")
     os.system("wget -c " + URL2 + " -O " + FILE2 + " && tar xvf " + FILE2 + " mbdump")
     #shift the folder where it is needed
-    os.system("mkdir -p ./mbdump_raw")
+    print("The folder containing raw data has been renamed mbdump_raw")
     os.system("mv mbdump mbdump_raw")
 
 def clean_tsv(x):
