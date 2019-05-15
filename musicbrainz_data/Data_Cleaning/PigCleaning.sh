@@ -35,11 +35,17 @@ cd ../
 export SOUND_FOLDER=$(pwd)
 cd musicbrainz_data/
 
-pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning_part1.pig
+./localToHDFS
 
-pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning_part2.pig
+pig -x tez ./Data_Cleaning/PigCleaningHDFS_part1.pig
+
+pig -x tez ./Data_Cleaning/PigCleaningHDFS_part2.pig
 
 cd ./demo_results
+
+echo "Copying the result from HDFS to the local FS"
+echo "(may take some time, so take a coffee or something)"
+hadoop fs -copyToLocal /demo_results/pig_* ./
 
  # assuming it is bash:
 files=("artist"
