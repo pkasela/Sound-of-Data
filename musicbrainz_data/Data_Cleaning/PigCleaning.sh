@@ -41,7 +41,7 @@ hadoop fs -rm -r -f /demo_results/*
 hadoop fs -mkdir -p /mbdump
 hadoop fs -mkdir -p /demo_results
 
-./localToHDFS.sh
+./Data_Cleaning/localToHDFS.sh
 
 pig -x tez ./Data_Cleaning/PigCleaningHDFS_part1.pig
 
