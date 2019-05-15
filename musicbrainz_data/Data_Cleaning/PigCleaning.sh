@@ -35,8 +35,9 @@ cd ../
 export SOUND_FOLDER=$(pwd)
 cd musicbrainz_data/
 
-pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning.pig
+pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning_part1.pig
 
+pig -param SOUND_FOLDER=$SOUND_FOLDER -x local ./Data_Cleaning/PigCleaning_part2.pig
 
 cd ./demo_results
 
