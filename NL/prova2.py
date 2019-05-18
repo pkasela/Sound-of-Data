@@ -153,7 +153,7 @@ for t in txt:
     # aggiungi le parole palesemente straniere
     istances += check_syllabes(t)
     # aggiungi i presunti nomi propri
-    istances += re.findall(r"(?<!\")\b[A-ZÈ]\w+\b", t)
+    istances += re.findall(r"(?<!\")\b[A-ZÈ][a-zàèéìòù]\b", t)
     # elimina gli spazi superflui
     istances = list(map(lambda x: re.sub(r"\s+", "", x), istances))
     # aggiungi le parole tra virgolette
