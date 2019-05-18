@@ -4,17 +4,12 @@ from itertools import permutations
 from itertools import chain as flatten
 
 
-PATH = "./"
-with open(PATH + "prova.txt") as f:
-    txt = f.readlines()
-
-
 CONTRACTIONS = set(["", "cmq", "qls", "qlc", "asap", "fb", "wh",
                     "rt", "dvd"])
 VOCAL = r"[(ai)(ei)(oi)(au)(eu)(ia)(ie)(io)(iu)(ua)(ue)(ui)(uo)" + \
          r"(AI)(EI)(OI)(AU)(EU)(IA)(IE)(IO)(IU)(UA)(UE)(UI)(UO)" + \
-        r"aeiouàèéìòù" + \
-        r"AEIOUÀÈÉÌÒÙ]"
+         r"aeiouàèéìòù" + \
+         r"AEIOUÀÈÉÌÒÙ]"
 CONSONANT = r"[b-df-hj-np-tv-z" + \
              r"B-DF-HJ-NP-TV-Z]"
 ACCEPTED_BETWEEN = set(["a", "o'", "'n'"])
@@ -131,7 +126,8 @@ def try_identify(istances, songs, txt):
     return names, songs, miscellanea
 
 
-for t in txt:
+def get_istances(t):
+    "Get all istances of a text"
     # rimozione link (complicano solamente l'analisi)
     t = re.sub(r"\b(https?:\/\/|www\.|pic\.)[^\b]+", "", t)
     # leggera pulizia della stringa
@@ -169,3 +165,12 @@ for t in txt:
     print("Not sure: ", end="")
     print(miscellanea)
     print("")
+    return names, songs, miscellanea
+
+
+if __name__ == "__main__":
+    PATH = "./"
+    with open(PATH + "prova.txt") as f:
+        txt = f.readlines()
+    for t in txt:
+        get_istances(t)
