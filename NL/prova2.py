@@ -18,7 +18,7 @@ VOCAL = r"[(ai)(ei)(oi)(au)(eu)(ia)(ie)(io)(iu)(ua)(ue)(ui)(uo)" + \
 CONSONANT = r"[b-df-hj-np-tv-z" + \
              r"B-DF-HJ-NP-TV-Z]"
 ACCEPTED_BETWEEN = set(["a", "o'", "'n'"])
-ARTIST_ALBUM = r"\s?\b(de?i|dell[ae]|da|by|[Aa]|[Cc]on|[Gg]li|[Ii]|[Ll][ea])\s"
+ARTIST_ALBUM = r"\s?\b(de?i|dell[ae]|by|[Aa]|[Cc]on|[Gg]li|[Ii]|[Ll][ea])\s"
 
 DICT = enchant.Dict("it_IT")
 
