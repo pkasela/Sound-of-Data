@@ -20,3 +20,22 @@ REPLICATION_SEQUENCE
 SCHEMA_SEQUENCE
 TIMESTAMP
 mbdump*
+
+
+#Files generated from the LaTeX file so we exclude them
+*.aux
+*.gz
+*.idx
+*.log
+*.out
+*.toc
+
+#Files generated from Biblatex so we exclude them
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+
+#R and jupyter checkpoint
+#.Rhistory
+#.ipynb_checkpoints

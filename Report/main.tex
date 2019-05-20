@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Wenneker Article
+% LaTeX Template
+% Version 2.0 (28/2/17)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Vel (vel@LaTeXTemplates.com)
+% Frits Wenneker
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[12pt, a4paper, twocolumn]{article} % 10pt font size (11 and 12 also possible), A4 paper (letterpaper for US letter) and two column layout (remove for one column)
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+\input{structure.tex} % Specifies the document structure and loads requires packages
+
+% \usepackage{textcomp}
+%----------------------------------------------------------------------------------------
+%	ARTICLE INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Sound of Data} % The article title
+
+\author{
+  \authorstyle{
+    % DO NOT TOUCH HSPACEs!! @Momo
+    Riccardo Cervero \hspace{25pt} 000000 \\  % x + 4
+    Marco Ferrario \hspace{44pt}  000000 \\   % x + 23
+    Pranav Kasela \hspace{46.5pt} 000000 \\   % x + 25.5
+    Federico Moiraghi \hspace{21pt} 799735    % x
+  } % Authors
+  \newline\newline
+  \institution{Università degli Studi di Milano Bicocca}
+}
+
+\date{Anno Accademico 2018/19} % Add a date here if you would like one to appear underneath the title block, use \today for the current date, leave empty for no date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+\thispagestyle{firstpage} % Apply the page style for the first page (no headers and footers)
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\lettrineabstract{Obiettivo del progetto è analizzare la discussione mediatica riguardante i soggetti del mondo musicale contemporaneo e passato.
+}
+\hfill
+\newpage
+
+\tableofcontents
+\hfill
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+\part{Introduzione}
+Per raggiungere i traguardi posti dal progetto \textit{Sound of Data}\footnote{\url{https://github.com/pkasela/Sound-of-Data}}, si son dovuti raccogliere dati sufficienti per costruire un \textit{knowledge graph} adeguato alla materia: scaricato un \textit{dump} di \url{musicbrainz.org} come database relazionale (già esportato in formato \textit{Tabular Separated Values} dai manutentori), si è dapprima importato in Apache Hadoop\footnote{\url{https://hadoop.apache.org}} per effettuare una rapida pulizia preliminare e infine esportato in modo tale da costruire un grafo Neo4J\footnote{\url{https://neo4j.com}}.
+Costruita quindi la base di conoscenza su cui operare, si sono raccolti \textit{tweet} in tempo reale grazie ad Apache Kafka\footnote{\url{https://kafka.apache.org}}, per poi analizzarli in automatico con un rudimentale strumento di \textit{instance matching}.
+
+\hfill
+\newpage
+\part{Costruzione dello \textit{knowledge graph}}
+
+\section{Apache Hadoop}
+
+\section{Neo4J}
+
+
+\hfill
+\newpage
+\part{Analisi dei tweet}
+\section{Analisi con Apache Kafka}
+\section{Riconoscimento delle istanze nel testo}
+Data la mole di tweet scaricabili, si è deciso di costruire un strumento di \textit{instance matching} creato \textit{ad hoc} per i tweet.
+Vista la scarsa abilità di algoritmi basati su reti neurali e \textit{deep learning} ad analizzare il breve (e quindi decontestualizzato) testo di un tweet, si è costruito un modello per l'identificazione di ipotetiche entità su cui basarsi per confronti col database (grazie alla API\footnote{\url{https://python-musicbrainzngs.readthedocs.io/en/v0.6/}} offerta da \url{musicbrainz.org} stesso).
+
+\subsection{Identificazione delle entità}
+Le entità sono riconosciute non mediante \textit{machine learning} ma grazie a semplici stratagemmi linguistici.
+Prima di tutto il testo del tweet è ripulito da eventuali abbreviazioni gergali; subito dopo sono ricercate le parole nel testo che non risultano essere italiane: analizzando tweet in lingua italiana, si presume che una stringa in lingua diversa abbia una certa importanza.
+Per fare questo è usato un mero correttore ortografico che evidenzia quali parole non sono riconosciute; di aiuto nel compito è anche una semplice espressione regolare che tenta di stabilire quali parole non seguono la costruzione sillabica italiana (rientrando quindi o nella categoria dei sostantivi della quinta classe o, nei casi fortunati, nelle entità cercate): secondo le regole linguistiche, una sillaba correttamente formata è composta da un numero massimo di tre consonanti seguita da una vocale e da al più una sola consonante (o vocale con suono consonantico, formando quindi un dittongo).
+Alle entità così individuate si aggiungono tutte le parole scritte in maiuscolo (che in un testo di così bassa formalità non sempre coincidono coi nomi propri), anche se a inizio frase.
+Grazie all'uso della punteggiatura (le virgolette) e delle preposizioni, si tenta inoltre di stabilire se l'entità rilevata è un presunto autore o una presunta opera e quindi cercata all'interno del database.
+
+\subsubsection{Prestazioni del modello}
+
+\subsubsection{Margini di miglioramento}
+
+\subsection{Riconoscimento delle entità}
+
+\hfill
+\newpage
+\part{Visualizzazioni dei dati}
+
+\hfill
+\newpage
+\part{Risultati e conclusioni}
+
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\hfill
+\newpage
+\printbibliography[title={Bibliografia}]
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
