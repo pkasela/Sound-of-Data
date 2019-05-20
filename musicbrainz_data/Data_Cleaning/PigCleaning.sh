@@ -45,15 +45,23 @@ cd ./Data_Cleaning
 
 ./localToHDFS.sh
 
+rm -rf mbdump/*
+
 pig -x tez ./PigCleaningHDFS_part1.pig
 
 pig -x tez ./PigCleaningHDFS_part2.pig
+
+#now it has processed the data so we remove the original data
+hadoop fs -rm -rf /mbdump/
 
 cd ../demo_results
 
 echo "Copying the result from HDFS to the local FS"
 echo "(may take some time, so take a coffee or something)"
 hadoop fs -copyToLocal -ignoreCrc /demo_results/pig_* ./
+
+#now everything is copied so let's delete everything in hdfs to save space
+hadoop fs -rm -rf /demo_results/pig_*
 
  # assuming it is bash:
 files=("artist"
@@ -78,7 +86,7 @@ relation_files=("artist_label"
                 "artist_release"
                 "artist_release_group"
                 "label_recording"
-                "label_release"
+                "release_label"
                 "recording_release"
                 "release_release_group")
                 #"label_release_group" I couldn't find it in PIG file will check later

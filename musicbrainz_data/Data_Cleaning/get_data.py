@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import os
 import urllib3
 import threading
@@ -6,19 +8,22 @@ from bs4 import BeautifulSoup as bs
 ## this script downloads the latest dump from musicbrainz.org (as .tar.bz2 file)
 ## and prepare it to the import (converting it as a set of .tsv files)
 
-tables = ["artist","label","label_type","language",
+mbtables = ["artist","label","label_type","language",
           "recording","release","release_group",
           "release_label","l_artist_label",
           "l_artist_recording","l_artist_release",
           "l_artist_release_group","l_label_recording",
           "l_label_release_group","l_recording_release"]
 
-#Was thinking may be include also release_group (it is the equivalent of an album)
-#thus added also l_artist_release_group, l_label_release_group
+#Will check if there are other interesting *_tag to keep
+mbdtables = ["artist_tag","recording_tag","release_tag","tag"]
+
 
 def yes_no():
     "Return true/false to a question"
     return input("Download the file? [y/N] ").lower() == "y"
+
+
 
 if yes_no():
     # get the name of latest dump
@@ -36,8 +41,14 @@ if yes_no():
         os.system("rm -r ./mbdump_raw")
     if os.path.isfile(FILE2):  # removes the file if already exists
         os.remove(FILE2)
-    os.system("wget -c " + URL1 + " -O " + FILE  + " && tar xvf " + FILE  + " mbdump")
-    os.system("wget -c " + URL2 + " -O " + FILE2 + " && tar xvf " + FILE2 + " mbdump")
+    os.system("wget -c " + URL2 + " -O " + FILE2)
+    for mbdtable in mbdtables:
+         os.system("tar xvf " + FILE2 + " mbdump/" + mbdtable + " --checkpoint=.10000")
+    os.remove(FILE2) #remove the tar file since it has been extracted
+    os.system("wget -c " + URL1 + " -O " + FILE)
+    for mbtable in mbtables:
+        os.system("tar xvf " + FILE  + " mbdump/" + mbtable + " --checkpoint=.10000")
+    os.remove(FILE) #remove the tar file since it has been extracted
     #shift the folder where it is needed
     print("The folder containing raw data has been renamed mbdump_raw")
     os.system("mv mbdump mbdump_raw")
@@ -66,7 +77,7 @@ def clean_tsv(x):
 
 path = "./mbdump_raw/"
 os.system("mkdir -p ./mbdump")
-for table in tables:
+for table in mbtables + mbdtables:
     # clean the tsv file
     threading.Thread(target=clean_tsv,
                      args=[path + table]).start()

@@ -176,7 +176,7 @@ artist_release_group_cool = FOREACH artist_release_group_art_rel GENERATE
 
 artist_release_group_cooler = DISTINCT artist_release_group_cool;
 
----------HERE LIES label_release_cooler
+---------HERE LIES label_release_cooler (actually release_label)
 
 label_release = LOAD
   '/mbdump/release_label.tsv'
@@ -247,7 +247,7 @@ STORE artist_release_group_cooler INTO
  '/demo_results/pig_artist_release_group'
 USING PigStorage('\t','-schema');
 
-STORE label_release_cooler INTO
+STORE release_label_cooler INTO
  '/demo_results/pig_label_release'
 USING PigStorage('\t','-schema');
 
