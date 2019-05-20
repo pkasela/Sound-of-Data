@@ -4,26 +4,22 @@ from itertools import permutations
 from itertools import chain as flatten
 
 
-PATH = "./"
-with open(PATH + "prova.txt") as f:
-    txt = f.readlines()
-
-
 CONTRACTIONS = set(["", "cmq", "qls", "qlc", "asap", "fb", "wh",
                     "rt", "dvd"])
 VOCAL = r"[(ai)(ei)(oi)(au)(eu)(ia)(ie)(io)(iu)(ua)(ue)(ui)(uo)" + \
          r"(AI)(EI)(OI)(AU)(EU)(IA)(IE)(IO)(IU)(UA)(UE)(UI)(UO)" + \
-        r"aeiouàèéìòù" + \
-        r"AEIOUÀÈÉÌÒÙ]"
+         r"aeiouàèéìòù" + \
+         r"AEIOUÀÈÉÌÒÙ]"
 CONSONANT = r"[b-df-hj-np-tv-z" + \
              r"B-DF-HJ-NP-TV-Z]"
 ACCEPTED_BETWEEN = set(["a", "o'", "'n'"])
+ARTIST_ALBUM = r"\s?\b(de?i|dell[ae]|by|[Aa]|[Cc]on|[Gg]li|[Ii]|[Ll][ea])\s"
 
 DICT = enchant.Dict("it_IT")
 
 
 def check_enchant(txt):
-    "Check if the word is in the italian dictionary"   
+    "Check if the word is in the italian dictionary"
     return list(filter(lambda x: not DICT.check(x),
                        re.findall(r"\b\S+\b", txt)))
 
@@ -101,7 +97,37 @@ def concat_words(istances, txt):
     return istances
 
 
-for t in txt:
+def resplit_istances(istances, txt):
+    "Split the beginning of a sentence by the rest of the istance"
+    istances_new = set()
+    for i in istances:
+        istances_new |= set([i])
+        if len(re.findall(r"\s+", i)) == 0:
+            continue
+        if bool(re.search(r"^" + re.escape(i), txt)) or \
+           bool(re.search(r"[\.\:\;\?\!]" + re.escape(i), txt)):
+            i_splitted = i.split()
+            istances_new |= set([i_splitted[0]] + [" ".join(i_splitted[1:])])
+    return istances_new
+
+
+def try_identify(istances, songs, txt):
+    "Try to identify if it is a person or a song"
+    names = set()
+    miscellanea = set()
+    for i in istances:
+        if bool(re.search(ARTIST_ALBUM + re.escape(i), txt)) or \
+           bool(re.search(r"[@#]" + re.escape(i), txt)):
+            names |= set([i])
+        elif bool(re.search(re.escape(i) + ARTIST_ALBUM, txt)):
+            songs |= set([i])
+        else:
+            miscellanea |= set([i])
+    return names, songs, miscellanea
+
+
+def get_istances(t):
+    "Get all istances of a text"
     # rimozione link (complicano solamente l'analisi)
     t = re.sub(r"\b(https?:\/\/|www\.|pic\.)[^\b]+", "", t)
     # leggera pulizia della stringa
@@ -111,8 +137,8 @@ for t in txt:
     # vediamo di che si tratta...
     print(t)
     # individua gli hashtag
-    hashtag = list(map(expand_hashtag, re.findall(r"(?<=#)\w+", t)))
-    t = re.sub(r"\#\S+\b", "", t)
+    hashtag = list(map(expand_hashtag, re.findall(r"(?<=[#|@])\w+", t)))
+    t = re.sub(r"\#[a-zàèéìòù]+\b", "", t)
     hashtag = list(flatten(*hashtag))
     # controlla gli hashtag
     hashtag = list(filter(lambda x: check_enchant(x), hashtag))
@@ -122,9 +148,29 @@ for t in txt:
     istances += list(filter(expand_contraction, hashtag))
     # aggiungi le parole palesemente straniere
     istances += check_syllabes(t)
+    # aggiungi i presunti nomi propri
+    istances += re.findall(r"(?<!\")\b[A-ZÈ][a-zàèéìòù]\b", t)
     # elimina gli spazi superflui
     istances = list(map(lambda x: re.sub(r"\s+", "", x), istances))
+    # aggiungi le parole tra virgolette
+    songs = set(map(lambda e: re.sub("\"", "", e), re.findall(r"\".+?\"", t)))
     # concatena le istanze
     istances = concat_words(set(istances), t)
-    print(istances)
+    istances = resplit_istances(istances, t)
+    names, songs, miscellanea = try_identify(istances, songs, t)
+    print("People: ", end="")
+    print(names)
+    print("Songs: ", end="")
+    print(songs)
+    print("Not sure: ", end="")
+    print(miscellanea)
     print("")
+    return names, songs, miscellanea
+
+
+if __name__ == "__main__":
+    PATH = "./"
+    with open(PATH + "prova.txt") as f:
+        txt = f.readlines()
+    for t in txt:
+        get_istances(t)
