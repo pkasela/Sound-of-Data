@@ -16,7 +16,6 @@ neo4j-import \
   --relationships artist_release_group.tsv \
   --relationships label_recording.tsv \
   --relationships release_label.tsv \
-  --relationships label_release_group.tsv \
   --relationships recording_release.tsv \
   --relationships release_release_group.tsv  \
   --delimiter="\t" \
