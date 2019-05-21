@@ -87,7 +87,16 @@ def clean_tsv(x):
 
 path = "./mbdump_raw/"
 os.system("mkdir -p ./mbdump")
+threads = []
 for table in mbtables + mbdtables:
     # clean the tsv file
-    threading.Thread(target=clean_tsv,
-                     args=[path + table]).start()
+    threads.append(threading.Thread(target=clean_tsv,
+                     args=[path + table]))
+
+for t in threads:
+    t.start()
+
+for t in threads:
+    t.join()   
+
+print("Finished")

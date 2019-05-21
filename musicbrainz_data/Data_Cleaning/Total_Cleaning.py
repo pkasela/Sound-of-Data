@@ -4,7 +4,6 @@ def yes_no():
     "Return true/false to a question"
     return input("> ").lower() == "y"
 
-os.chdir("./Data_Cleaning") #change the directory 'coz everything is there
 
 print("Do You want to execute everything?[Y,n]")
 if yes_no():
