@@ -42,13 +42,23 @@ if yes_no():
     if os.path.isfile(FILE2):  # removes the file if already exists
         os.remove(FILE2)
     os.system("wget -c " + URL2 + " -O " + FILE2)
+
+    f = open("mbdtables.txt","w")
     for mbdtable in mbdtables:
-         os.system("tar xvf " + FILE2 + " mbdump/" + mbdtable + " --checkpoint=.10000")
+        f.write("mbdump/" + mbdtable + "\n")
+    f.close()
+    os.system("tar xvf " + FILE2 + " --files-from mbdtables.txt"+ " --checkpoint=.10000")
     os.remove(FILE2) #remove the tar file since it has been extracted
+    os.remove("mbdtables.txt")
     os.system("wget -c " + URL1 + " -O " + FILE)
+
+    f = open("mbtables.txt","w")
     for mbtable in mbtables:
-        os.system("tar xvf " + FILE  + " mbdump/" + mbtable + " --checkpoint=.10000")
+        f.write("mbdump/" + mbtable + "\n")
+    f.close()
+    os.system("tar xvf " + FILE  + " --files-from mbtables.txt" + " --checkpoint=.10000")
     os.remove(FILE) #remove the tar file since it has been extracted
+    os.remove("mbtables.txt")
     #shift the folder where it is needed
     print("The folder containing raw data has been renamed mbdump_raw")
     os.system("mv mbdump mbdump_raw")
