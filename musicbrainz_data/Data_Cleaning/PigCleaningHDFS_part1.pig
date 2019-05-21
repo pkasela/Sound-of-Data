@@ -94,7 +94,7 @@ USING PigStorage('\t') AS
   );
 
 release_group_cooler = FOREACH release_group GENERATE gid AS ID,
-    id AS release_group_id, gid AS gid, name;
+    id AS release_group_id, gid AS gid, name, 'RELEASE_GROUP' AS LABEL;
 --------------------------------------------------------------------------------
 -----------------------------RELATION tables----------------------------
 ----------------------------------------------------------------------
