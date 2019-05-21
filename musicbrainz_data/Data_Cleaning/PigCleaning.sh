@@ -55,7 +55,7 @@ pig -x tez ./PigCleaningHDFS_part1.pig
 pig -x tez ./PigCleaningHDFS_part2.pig
 
 #now it has processed the data so we remove the original data
-hadoop fs -rm -rf /mbdump/
+hadoop fs -rm -r /mbdump
 
 cd ../demo_results
 
@@ -64,7 +64,7 @@ echo "(may take some time, so take a coffee or something)"
 hadoop fs -copyToLocal -ignoreCrc /demo_results/pig_* ./
 
 #now everything is copied so let's delete everything in hdfs to save space
-hadoop fs -rm -rf /demo_results/pig_*
+hadoop fs -rm -r /demo_results/pig_*
 
  # assuming it is bash:
 files=("artist"
@@ -106,3 +106,5 @@ do
   cat .pig_header part* > "../results/$f.tsv"
   cd ./..
 done
+
+rm -rf ./pig_*

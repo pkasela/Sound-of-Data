@@ -28,8 +28,12 @@ sudo mv /var/lib/neo4j/data/databases/graph.db /var/lib/neo4j/data/databases/gra
 # Shift the database to the right folder
 sudo mv SoundofData.db /var/lib/neo4j/data/databases/graph.db
 #Give the right permissions to the new database so that neo4j can be started safely
-sudo chown -R neo4j:neo4j graph.db
+sudo chown -R neo4j:neo4j /var/lib/neo4j/data/databases/graph.db
 
 #start neo4j again by yourself when you feel like starting it ;)
 #otherwise uncomment the following line
 #sudo systemctl start neo4j.service
+
+#then just go on any browser with unimib VPN and simply write:
+# VM_IP:7474, it may ask id and pass (Defaults are neo4j - neo4j)
+#and voilà you should have a working graph
