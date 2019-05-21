@@ -230,7 +230,7 @@ STORE release_cooler INTO
 USING PigStorage('\t','-schema');
 
 STORE release_group_cooler INTO
- '/demo_results/pig_group_release'
+ '/demo_results/pig_release_group'
 USING PigStorage('\t','-schema');
 
 ------ relationship FILES  ----------
@@ -247,8 +247,8 @@ STORE artist_release_group_cooler INTO
  '/demo_results/pig_artist_release_group'
 USING PigStorage('\t','-schema');
 
-STORE release_label_cooler INTO
- '/demo_results/pig_label_release'
+STORE label_release_cooler INTO
+ '/demo_results/pig_release_label'
 USING PigStorage('\t','-schema');
 
 STORE release_release_group_cooler INTO

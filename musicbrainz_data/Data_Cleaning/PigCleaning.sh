@@ -2,6 +2,9 @@
 
 #The above line is needed to tell the system to use bash (not sh)
 
+#remove the mbdump_raw/* to free up a little bit of memory before the PIG execution
+rm -rf mbdump_raw/
+
 #[WARN] Anything created and saved either staring with `pig_' or
 #in the results folder will be removed when the script is executed
 cd ..
@@ -45,7 +48,7 @@ cd ./Data_Cleaning
 
 ./localToHDFS.sh
 
-rm -rf mbdump/*
+rm -rf mbdump/ #remove also the files from the filesystem to free up disk space
 
 pig -x tez ./PigCleaningHDFS_part1.pig
 
@@ -68,7 +71,7 @@ files=("artist"
        "label"
        "recording"
        "release"
-       "group_release")
+       "release_group")
 
 for f in ${files[@]}
 do
@@ -89,7 +92,6 @@ relation_files=("artist_label"
                 "release_label"
                 "recording_release"
                 "release_release_group")
-                #"label_release_group" I couldn't find it in PIG file will check later
                 #can't find recording_release_group (it should exist)
                 #release_group can be found in release table itself
 for f in ${relation_files[@]}

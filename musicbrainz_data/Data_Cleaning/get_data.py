@@ -13,7 +13,7 @@ mbtables = ["artist","label","label_type","language",
           "release_label","l_artist_label",
           "l_artist_recording","l_artist_release",
           "l_artist_release_group","l_label_recording",
-          "l_label_release_group","l_recording_release"]
+          "l_recording_release"]
 
 #Will check if there are other interesting *_tag to keep
 mbdtables = ["artist_tag","recording_tag","release_tag","tag"]
