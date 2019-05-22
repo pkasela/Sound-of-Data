@@ -10,7 +10,7 @@ Buuuut, to make it work, just follow the instructions. I am making the process w
  
 4) Start docker and from the same directory of "docker-compose.yml" execute in bash the command:
 docker-compose up -d
-It mount the containers with configurations you have just set up.
+It mounts the containers with configurations you have just set up.
 
 5) Go to the web interface http://localhost:7474/browser/ 
 
