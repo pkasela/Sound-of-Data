@@ -44,7 +44,7 @@ class Listener(StreamListener):
 # 503 when twitter servers are overloaded with requests
 # 504 when twitter servers are up but the request couldn’t be serviced due to some failure within the internal stack
  
-kafka = KafkaClient("localhost:9092")
+kafka = KafkaClient("localhost:9092") #19092
 producer = SimpleProducer(kafka)
 
 auth = OAuthHandler(consumer_key, consumer_secret)
