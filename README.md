@@ -14,7 +14,7 @@ ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com
 - [ ] Tweet
   - [x] Kafka Producer
   - [ ] Kafka consumer -> MongoDB per analisi di test
-  - [ ] Kafka consumer -> Neo4j
+  - [x] Kafka consumer -> Neo4j
 
 # Data Semantics
 - [ ] Analisi tweet
