@@ -1,0 +1,21 @@
+The streams.consume() procedure offered by plug-in "Neo4j Streams" allows user to ingest data from Kafka topics into Neo4j via templated Cypher Statements. You can find the tutorial at https://neo4j-contrib.github.io/neo4j-streams/. 
+Buuuut, to make it work, just follow the instructions. I am making the process work through Docker Desktop.
+
+1) Download jar file called "neo4j-streams-3.4.1.jar
+" from https://github.com/neo4j-contrib/neo4j-streams/releases/tag/3.4.1. This is the plug-in object.
+
+2) Download "neo4j-kafka-connect-neo4j-1.0.0.zip" from the same website and unzip it in the directory $NEO4J_HOME/plugins. You can find any directory you need following the instructions in https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#table-file-locations.
+
+3)If you are using the Docker, configure "docker-compose.yml" file as I do. If you are not using Docker, just copy "environment" configurations in "neo4j.conf" file, as explained in https://neo4j-contrib.github.io/neo4j-streams/#_streams_consume
+ 
+4) Start docker and from the same directory of "docker-compose.yml" execute in bash the command:
+docker-compose up -d
+It mount the containers with configurations you have just set up.
+
+5) Go to the web interface http://localhost:7474/browser/ 
+
+6) Execute the Kafka producer, sending message with the same exact structure you specify in "docker-compose.yml"  
+
+7)Execute the following cypher statement:
+CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
+CREATE (t:Tweet{UserName: event.data.user_name, Tweet: event.data.text}) 
