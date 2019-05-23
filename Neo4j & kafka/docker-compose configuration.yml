@@ -19,8 +19,12 @@ services:
       NEO4J_kafka_bootstrap_servers: kafka:19092
       NEO4J_kafka_auto_offset_reset: earliest 
       NEO4J_kafka_group_id: neo4j
-      NEO4J_streams_sink_topic_cypher_<TopicName>: "MERGE (t:Tweet{text: event.text}) MERGE (u:User{name: event.user_name}) MERGE (t)-[:BELONGS_TO]->(u)" 
-      #Query need to be adjusted, this is just a dummy example
+      #Just a dummy example: NEO4J_streams_sink_topic_cypher_<TopicName>: "MERGE (t:Tweet{text: event.text}) MERGE (u:User{name: event.user_name}) MERGE (t)-[:BELONGS_TO]->(u)" 
+      NEO4J_streams_sink_topic_cypher_<TopicName>:
+        #Merge with Artist
+        "MERGE(t:Tweet{'text': '<TESTO>','user': {'screen_name': '<NAME>'}}) MERGE (a:Artist{name: event.TAG}) MERGE (g:Genre{name: event.TAG_GENRE}) MERGE (t)-[:BELONGS_TO]->(a)-[:BELONGS_TO]->(g)"
+        #Merge with Track
+        "MERGE(t:Tweet{'text': '<TESTO>','user': {'screen_name': '<NAME>'}}) MERGE (k:Track{name: event.TAG}) MERGE (g:Genre{name: event.TAG_GENRE}) MERGE (t)-[:BELONGS_TO]->(k)-[:BELONGS_TO]->(g)"
       NEO4J_streams_sink_polling_interval: 1000  
       NEO4J_streams_sink_enable: "true" 
       NEO4J_streams_procedures_enable: "true"
@@ -46,3 +50,5 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:12181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:19092
+      
+#Tweet format in Kafka will be: {'text': '<TESTO>','user': {'screen_name': '<NAME>'}}
