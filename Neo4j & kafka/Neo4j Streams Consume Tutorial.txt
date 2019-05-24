@@ -20,6 +20,6 @@ Tweet format must be exactly:
 
 7)Execute the following cypher statement:
 CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
-CREATE (t:Tweet{Text: event.data.text, UserName: event.data.user.screen_name})
+CREATE (t:Tweet{UserName: event.data.user.screen_name, Tweet: event.data.text})
 
 In order to do this, just remember to enable multiple cypher query in Neo4j settings.
