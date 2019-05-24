@@ -14,7 +14,9 @@ It mounts the containers with configurations you have just set up.
 
 5) Go to the web interface http://localhost:7474/browser/ 
 
-6) Execute the Kafka producer, sending message with the same exact structure you specify in "docker-compose.yml"  
+6) Execute the Kafka producer, sending message with the same exact structure you specify in "docker-compose.yml" 
+Tweet format must be exactly: 
+{"text":"A","screen_name":"B"}
 
 7)Execute the following cypher statement:
 CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
