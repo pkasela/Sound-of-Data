@@ -9,7 +9,7 @@ ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com
   - [x] fix .tsv with [get_data.py](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/get_data.py)
   - [x] Decide the tables and their attributes to keep
   - [x] .tsv -> PIG -> clean .tsv (con JOIN e FILTER(GENERATE for PIG)) with [PigCleaning.sh](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/PigCleaning.sh)
-  - [ ] clean .tsv -> neo4j (bash)
+  - [x] clean .tsv -> neo4j (bash)
   - [ ] Scrape down musicBrainz artist using musicBrainz API 
 - [x] Tweet
   - [x] Kafka Producer
