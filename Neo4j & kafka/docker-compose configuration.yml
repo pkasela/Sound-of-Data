@@ -48,5 +48,3 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:12181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:19092
-      
-#Tweet format in Kafka will be: {'text': '<TESTO>','user': {'screen_name': '<NAME>'}}
