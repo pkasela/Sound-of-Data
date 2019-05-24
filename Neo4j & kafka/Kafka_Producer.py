@@ -7,6 +7,20 @@ import tweepy
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+from bs4 import BeautifulSoup
+import requests
+
+#Scrape the list of all genres from musicbrainz to generate the list of keywords for filtering tweets
+url = 'https://musicbrainz.org/genres'
+data = requests.get(url)
+soup = BeautifulSoup(data.text, 'html.parser')
+content = soup.find_all("div",id='content')[0] #serve per togliere l'array
+genres = content.find_all("li")
+genre_list = []
+for g in genres:
+	result = g.text.strip()
+	genre_list.append(result)
+print('totale numero di generi: ' + str(len(genre_list)))
 
 #Create a secret.json file with the twitter keys in it.
 with open("secret.json", "r") as f:
@@ -56,4 +70,4 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-	stream.filter(track="vaxination",languages=["en"]) #In track we'll insert the list of key words
+	stream.filter(track=genre_list,languages=["en"]) #In track we'll insert the list of key words
