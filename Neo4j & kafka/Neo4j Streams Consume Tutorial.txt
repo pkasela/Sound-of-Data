@@ -16,10 +16,10 @@ It mounts the containers with configurations you have just set up.
 
 6) Execute the Kafka producer, sending message with the same exact structure you specify in "docker-compose.yml" 
 Tweet format must be exactly: 
-{"text":"A","screen_name":"B"}
+{"text": "Ciao","user": {"screen_name": "Riccardo"}}
 
 7)Execute the following cypher statement:
 CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
-CREATE (t:Tweet{UserName: event.data.user.screen_name, Tweet: event.data.text})
+CREATE (t:Tweet{Text: event.data.text, Name: event.data.user})
 
 In order to do this, just remember to enable multiple cypher query in Neo4j settings.
