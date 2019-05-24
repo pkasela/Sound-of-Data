@@ -22,9 +22,9 @@ services:
       #Just a dummy example: NEO4J_streams_sink_topic_cypher_<TopicName>: "MERGE (t:Tweet{text: event.text}) MERGE (u:User{name: event.user_name}) MERGE (t)-[:BELONGS_TO]->(u)" 
       NEO4J_streams_sink_topic_cypher_<TopicName>:
         #Merge with Artist
-        "MERGE(t:Tweet{'text': '<TESTO>','user': {'screen_name': '<NAME>'}}) MERGE (a:Artist{name: event.TAG}) MERGE (t)-[:BELONGS_TO]->(a)"
+        "MERGE(t:Tweet{text: event.text, screen_name: event.user.screen_name) MERGE (a:Artist{name: event.TAG}) MERGE (t)-[:BELONGS_TO]->(a)
         #Merge with Track
-        "MERGE(t:Tweet{'text': '<TESTO>','user': {'screen_name': '<NAME>'}}) MERGE (k:Track{name: event.TAG})  MERGE (t)-[:BELONGS_TO]->(k)"
+        "MERGE(t:Tweet{text: event.text, screen_name: event.user.screen_name) MERGE (k:Track{name: event.TAG})  MERGE (t)-[:BELONGS_TO]->(k)"
       NEO4J_streams_sink_polling_interval: 1000  
       NEO4J_streams_sink_enable: "true" 
       NEO4J_streams_procedures_enable: "true"
