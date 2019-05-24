@@ -11,7 +11,7 @@ ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com
   - [x] .tsv -> PIG -> clean .tsv (con JOIN e FILTER(GENERATE for PIG)) with [PigCleaning.sh](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/PigCleaning.sh)
   - [ ] clean .tsv -> neo4j (bash)
   - [ ] Scrape down musicBrainz artist using musicBrainz API 
-- [ ] Tweet
+- [x] Tweet
   - [x] Kafka Producer
   - [x] Kafka Producer -> Neo4j Consumer (Neo4j Streams Procedure)
 
