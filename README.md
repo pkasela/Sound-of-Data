@@ -13,8 +13,7 @@ ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com
   - [ ] Scrape down musicBrainz artist using musicBrainz API 
 - [ ] Tweet
   - [x] Kafka Producer
-  - [ ] Kafka consumer -> MongoDB per analisi di test
-  - [x] Kafka consumer -> Neo4j
+  - [x] Kafka Producer -> Neo4j Consumer (Neo4j Streams Procedure)
 
 # Data Semantics
 - [ ] Analisi tweet
