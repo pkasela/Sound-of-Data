@@ -24,7 +24,7 @@ class Listener(StreamListener):
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
         return True
 	
-    #def on_data conta il numero di caratteri e prende il campo extended
+    #def on_data conta il numero di caratteri e prende il campo extended, lo sostituisce a "text", lo rinomina "text, lo passa al programmino di Marco e restituisce il risultato a on_status
 
     def on_error(self, status): 
         print (status)
