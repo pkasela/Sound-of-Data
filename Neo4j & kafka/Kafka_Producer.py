@@ -38,7 +38,11 @@ class Listener(StreamListener):
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
         return True
 	
-    #def on_data conta il numero di caratteri e prende il campo extended, lo sostituisce a "text", lo rinomina "text, lo passa al programmino di Marco e restituisce il risultato a on_status
+    #def on_data: 
+    #1) Elimina i tweet con "retweet_count" > 10 
+    #2) Conta il numero di caratteri e prende il campo extended, lo sostituisce a "text", lo rinomina "text"
+    #3) Passa al programmino di Marco
+    #4) Restituisce il risultato a on_status: return True
 
     def on_error(self, status): 
         print (status)
