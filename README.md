@@ -5,26 +5,24 @@ TODO LIST:
 ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com/open?id=1ld8vAAavnh2mLTNPHpFOWlDrLjbH-y5Q)
 
 # Data Management
-- [ ] Import data
+- [x] Import data
   - [x] fix .tsv with [get_data.py](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/get_data.py)
   - [x] Decide the tables and their attributes to keep
   - [x] .tsv -> PIG -> clean .tsv (con JOIN e FILTER(GENERATE for PIG)) with [PigCleaning.sh](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/PigCleaning.sh)
   - [x] clean .tsv -> neo4j (bash)
-  - [ ] Scrape down musicBrainz artist using musicBrainz API 
+  - [x] Scrape down musicBrainz artist using musicBrainz API 
 - [x] Tweet
   - [x] Kafka Producer
   - [x] Kafka Producer -> Neo4j Consumer (Neo4j Streams Procedure)
 
 # Data Semantics
 - [ ] Analisi tweet
-  - [ ] ricerca esplorativa
-  - [ ] trovare fonti di dati
-  - [ ] costruzione modello/i per filtro 
+  - [x] costruzione modello/i per filtro 
   - [ ] analisi prestazioni modello/i 
 
 # Analisi
-- [ ] (?) Rimozione bot
-  - [ ] individuare parametri
+- [x] Rimozione bot
+  - [x] individuare parametri
   - [ ] indivuduare utenti e "bannarli"
 - [ ] Query interessanti
   - [ ] generi
