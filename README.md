@@ -22,7 +22,7 @@ ready for neo4j, and [Here is the link to the neo4j db](https://drive.google.com
 
 # Analisi
 - [x] Rimozione bot
-  - [x] individuare parametri
+  - [x] individuare parametri ('retweet_count' > 10)
   - [ ] indivuduare utenti e "bannarli"
 - [ ] Query interessanti
   - [ ] generi
