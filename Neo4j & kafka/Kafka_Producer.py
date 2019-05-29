@@ -38,8 +38,7 @@ class Listener(StreamListener):
         producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
         return True
 	
-    ##Directly execute all phases in on-
-    _data or on_status 
+    ##Directly execute all phases in on_data or on_status 
     #0) Elimina tutti i campi inutili
     #1) Elimina i tweet con "retweet_count" > 10 (Ci sono vari "retweet_count")
     #2) Conta il numero di caratteri e prende il campo extended, lo sostituisce a "text", lo rinomina "text":
