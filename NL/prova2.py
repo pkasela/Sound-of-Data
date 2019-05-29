@@ -12,7 +12,7 @@ VOCAL = r"[(ai)(ei)(oi)(au)(eu)(ia)(ie)(io)(iu)(ua)(ue)(ui)(uo)" + \
          r"AEIOUÀÈÉÌÒÙ]"
 CONSONANT = r"[b-df-hj-np-tv-z" + \
              r"B-DF-HJ-NP-TV-Z]"
-ACCEPTED_BETWEEN = set(["a", "o'", "'n'"])
+ACCEPTED_BETWEEN = set(["a", "o'", "'n'", "in"])
 ARTIST_ALBUM = r"\s?\b(de?i|dell[ae]|by|[Aa]|[Cc]on|[Gg]li|[Ii]|[Ll][ea])\s"
 
 DICT = enchant.Dict("it_IT")
@@ -149,7 +149,8 @@ def get_istances(t):
     # aggiungi le parole palesemente straniere
     istances += check_syllabes(t)
     # aggiungi i presunti nomi propri
-    istances += re.findall(r"(?<!\")\b[A-ZÈ][a-zàèéìòù]\b", t)
+    # istances += re.findall(r"(?<!\")\b[A-Z][a-zàèéìòù]\b", t)
+    istances += re.findall(r"\b[A-Z][a-zàèéìòù]+\b", t)
     # elimina gli spazi superflui
     istances = list(map(lambda x: re.sub(r"\s+", "", x), istances))
     # aggiungi le parole tra virgolette
