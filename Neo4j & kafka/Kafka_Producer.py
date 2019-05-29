@@ -41,7 +41,7 @@ class Listener(StreamListener):
     #def on_data: 
     #1) Elimina i tweet con "retweet_count" > 10 (Ci sono vari "retweet_count")
     #2) Conta il numero di caratteri e prende il campo extended, lo sostituisce a "text", lo rinomina "text":
-	#"extended_tweet":{"full_text","display_text_range","entities"}"
+	#"extended_tweet":{"full_text","display_text_range","entities"}" con truncated = true
     #3) Passa al programmino di Marco
     #4) Restituisce il risultato a on_status: return True
 
