@@ -44,8 +44,8 @@ class Listener(StreamListener):
     #3) Passa al programmino di Marco
     #4) Restituisce il risultato a on_status: return True
 
-    def on_error(self, status_code): 
-        print("Occurred an error with code " + repr(status_code))
+    def on_error(self, status): 
+	print (status)
 	attempts = 0 
         if status_code in [420,500,502,503,504]:
 	    attempts = attempts + 1
