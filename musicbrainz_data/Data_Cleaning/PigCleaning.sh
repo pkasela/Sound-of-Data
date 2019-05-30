@@ -59,6 +59,9 @@ pig -x tez ./PigCleaningHDFS_part3.pig
 #now it has processed the data so we remove the original data
 hadoop fs -rm -r /mbdump
 
+#Assuming you will use maria_dev in HDP
+hadoop fs -rm -r /user/maria_dev/.Trash/Current/mbdump
+
 cd ../demo_results
 
 echo "Copying the result from HDFS to the local FS"
@@ -67,6 +70,7 @@ hadoop fs -copyToLocal -ignoreCrc /demo_results/pig_* ./
 
 #now everything is copied so let's delete everything in hdfs to save space
 hadoop fs -rm -r /demo_results/pig_*
+hadoop fs -rm -r /user/maria_dev/.Trash/Current/demo_results
 
  # assuming it is bash:
 files=("artist"

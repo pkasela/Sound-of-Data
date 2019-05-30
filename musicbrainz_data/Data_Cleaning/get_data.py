@@ -62,7 +62,7 @@ if yes_no():
     os.remove(FILE) #remove the tar file since it has been extracted
     os.remove("mbtables.txt")
     #shift the folder where it is needed
-    print("The folder containing raw data has been renamed mbdump_raw")
+    print("\nThe folder containing raw data has been renamed mbdump_raw")
     os.system("mv mbdump mbdump_raw")
 
 def clean_tsv(x):
