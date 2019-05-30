@@ -10,14 +10,18 @@ neo4j-import \
   --nodes release_group.tsv \
   --nodes recording.tsv \
   --nodes label.tsv \
+  --nodes tag.tsv \
   --relationships artist_label.tsv \
   --relationships artist_recording.tsv \
   --relationships artist_release.tsv \
   --relationships artist_release_group.tsv \
+  --relationships artist_tag.tsv \
   --relationships label_recording.tsv \
-  --relationships release_label.tsv \
   --relationships recording_release.tsv \
+  --relationships recording_tag.tsv \
+  --relationships release_label.tsv \
   --relationships release_release_group.tsv  \
+  --relationships release_tag.tsv \
   --delimiter="\t" \
   --quote="\""
 

@@ -54,6 +54,8 @@ pig -x tez ./PigCleaningHDFS_part1.pig
 
 pig -x tez ./PigCleaningHDFS_part2.pig
 
+pig -x tez ./PigCleaningHDFS_part3.pig
+
 #now it has processed the data so we remove the original data
 hadoop fs -rm -r /mbdump
 
@@ -71,7 +73,8 @@ files=("artist"
        "label"
        "recording"
        "release"
-       "release_group")
+       "release_group"
+       "tag")
 
 for f in ${files[@]}
 do
@@ -91,7 +94,10 @@ relation_files=("artist_label"
                 "label_recording"
                 "release_label"
                 "recording_release"
-                "release_release_group")
+                "release_release_group"
+                "artist_tag"
+                "recording_tag"
+                "release_tag")
                 #can't find recording_release_group (it should exist)
                 #release_group can be found in release table itself
 for f in ${relation_files[@]}
@@ -106,5 +112,7 @@ do
   cat .pig_header part* > "../results/$f.tsv"
   cd ./..
 done
+
+tag_files=()
 
 rm -rf ./pig_*

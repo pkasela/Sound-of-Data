@@ -4,6 +4,8 @@ import os
 import urllib3
 import threading
 from bs4 import BeautifulSoup as bs
+import requests
+from pandas import read_csv, DataFrame
 
 ## this script downloads the latest dump from musicbrainz.org (as .tar.bz2 file)
 ## and prepare it to the import (converting it as a set of .tsv files)
@@ -97,6 +99,30 @@ for t in threads:
     t.start()
 
 for t in threads:
-    t.join()   
+    t.join()
 
-print("Finished")
+######## Adjust the tag table
+
+tag = read_csv("./mbdump/tag.tsv",sep="\t",header=None)
+
+#Extract the real genres from musicbrainz site
+url = 'https://musicbrainz.org/genres'
+
+data = requests.get(url)
+soup = bs(data.text, 'html.parser')
+
+content = soup.find_all("div",id='content')[0] #serve per togliere l'array
+
+genres = content.find_all("li")
+
+genre_list = []
+
+for g in genres:
+	result = g.text.strip()
+	genre_list.append(result)
+
+#keep only the necessary tags
+tag[3]=tag[1].apply(lambda x: x in genre_list)
+tag[tag[3]==True][[0,1]].to_csv("./mbdump/tag_new.tsv", sep="\t",
+                                index=False, header=False)
+os.system("mv ./mbdump/tag_new.tsv ./mbdump/tag.tsv")

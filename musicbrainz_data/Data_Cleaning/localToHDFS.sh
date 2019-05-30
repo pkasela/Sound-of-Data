@@ -15,7 +15,11 @@ all_files=("artist"
            "l_artist_release_group"
            "l_label_recording"
            "l_recording_release"
-           "release_label")
+           "release_label"
+           "artist_tag"
+           "recording_tag"
+           "release_tag"
+           "tag")
 
 for f in ${all_files[@]}
 do
