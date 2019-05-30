@@ -35,7 +35,7 @@ USING PigStorage('\t') AS
 
 recording_cooler = FOREACH recording GENERATE id AS recording_id, gid AS gid;
 
-tag = LOAD '/mbdump/tag.tsv' USING PigStorage('\t') AS (tag_id,tag);
+tag = LOAD '/mbdump/tag.tsv' USING PigStorage('\t') AS (tag_id:int,tag:int);
 
 tag_cooler = FOREACH tag GENERATE tag_id AS ID, tag as GENRE, 'GENRE' AS LABEL;
 
@@ -55,7 +55,7 @@ artist_tag_colder = JOIN  artist_cooler BY artist_id,
                           artist_tag_cold BY artist_id;
 
 artist_tag_cool   = JOIN artist_tag_colder BY tag_id, tag BY tag_id;
-artist_tag_cool   = FOREACH artist_tag_cool GENERATE gid AS START_ID,
+artist_tag_cooler = FOREACH artist_tag_cool GENERATE gid AS START_ID,
     tag::tag_id AS END_ID, 'GENRE' AS TYPE;
 
 
