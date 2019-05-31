@@ -33,7 +33,7 @@ with open("secret.json", "r") as f:
 
 KafkaTopic="Music_Tweets"
 
-#Defining the the function filtering tweets:
+#Defining the function filtering tweets:
 def tweet_preparations(data):
         data = {'user': {'screen_name':data["user"]["screen_name"]},
                 'text':data['text'],
@@ -48,12 +48,13 @@ def tweet_preparations(data):
                     data["text"] = data["extended_tweet"]["full_text"]
             for i in ['truncated','retweet_count','extended_tweet']:
                 data.pop(i)
-                #if (FunzioneMarco==True):
-                    #data = data.apply(FunzioneMarco)
-                #else:
-                    #print("Tweet has been eliminated since it actually does not talk about music")
-            return data
-            return True
+            #if (FunzioneMarco==True):
+                #data = data.apply(FunzioneMarco)
+                return data
+                return True
+            #else:
+                #print("Tweet has been eliminated since it actually does not talk about music"
+            
 #IT GIVES ME A STRANGE ERROR: "extended_tweet", maybe because it don't recognize the null value of json
 
 class Listener(StreamListener):
@@ -62,6 +63,8 @@ class Listener(StreamListener):
         if(tweet_preparations(data)==True):
             data = tweet_preparation(data)
             producer.send_messages(KafkaTopic,data)
+        else:
+            tweet_preparation(data)
         return True
 	
     def on_error(self, status): 
