@@ -20,9 +20,9 @@ def find_artist(artisti):
   #trovo gli id degli artisti presenti 
   listartist = []
   for i in artisti:
-    result = musicbrainzngs.search_artists(i,limit=1)
-		if len(result["artist-list"]) > 0:
-      listartist.append(result["artist-list"][0]["id"])
+  	result = musicbrainzngs.search_artists(i,limit=1)
+	if len(result["artist-list"]) > 0:
+      		listartist.append(result["artist-list"][0]["id"])
 
 	return(listartist)
  
