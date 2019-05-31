@@ -33,19 +33,37 @@ with open("secret.json", "r") as f:
 
 KafkaTopic="Music_Tweets"
 
+#Defining the the function filtering tweets:
+def tweet_preparations(data):
+        data = {'user': {'screen_name':data["user"]["screen_name"]},
+                'text':data['text'],
+               'truncated':data["truncated"],
+               'retweet_count':data["retweet_count"],
+               'extended_tweet': {'full_text':data["extended_tweet"]["full_text"]}}
+        if data["retweet_count"] >= 10:
+                print("Tweet has been eliminated since could have been tweeted by a bot")
+                return False
+        else:
+            if data["truncated"] == True:
+                    data["text"] = data["extended_tweet"]["full_text"]
+            for i in ['truncated','retweet_count','extended_tweet']:
+                data.pop(i)
+                #if (FunzioneMarco==True):
+                    #data = data.apply(FunzioneMarco)
+                #else:
+                    #print("Tweet has been eliminated since it actually does not talk about music")
+            return data
+            return True
+#IT GIVES ME A STRANGE ERROR: "extended_tweets"
+
 class Listener(StreamListener):
-    def on_status(self, status):
-        producer.send_messages(KafkaTopic,status._json['text'].encode('utf-8'))  
+    def on_data(self, data):
+        data = json.loads(data)
+        if(tweet_preparations(data)!=False):
+            data = tweet_preparation(data)
+            producer.send_messages(KafkaTopic,data)
         return True
 	
-    ##Directly execute all phases in on_data or on_status 
-    #0) Elimina tutti i campi inutili
-    #1) Elimina i tweet con "retweet_count" > 10 (Ci sono vari "retweet_count")
-    #2) Conta il numero di caratteri e prende il campo extended, lo sostituisce a "text", lo rinomina "text":
-	#"extended_tweet":{"full_text","display_text_range","entities"}" con truncated = true
-    #3) Passa al programmino di Marco
-    #4) Restituisce il risultato al producer 
-
     def on_error(self, status): 
 	print (status)
 	attempts = 0 
