@@ -49,9 +49,8 @@ def tweet_preparations(data):
             for i in ['truncated','retweet_count','extended_tweet']:
                 data.pop(i)
             #if (FunzioneMarco==True):
-                #data = data.apply(FunzioneMarco)
-                return data
-                return True
+                # return True  # FunzioneMarco(data)
+                # return True   # wait, that's illegal!
             #else:
                 #print("Tweet has been eliminated since it actually does not talk about music"
             
@@ -60,7 +59,7 @@ def tweet_preparations(data):
 class Listener(StreamListener):
     def on_data(self, data):
         data = json.loads(data)
-        if(tweet_preparations(data)==True):
+        if bool(tweet_preparations(data)):
             data = tweet_preparation(data)
             producer.send_messages(KafkaTopic,data)
         else:
