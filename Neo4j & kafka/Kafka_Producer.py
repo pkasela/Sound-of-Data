@@ -31,32 +31,30 @@ with open("secret.json", "r") as f:
     access_token=secret["ACCESS_TOKEN"]
     access_token_secret=secret["ACCESS_TOKEN_SECRET"]
 
-KafkaTopic="Music_Tweets"
+KafkaTopic="Music_Tweets"            
 
-#Defining the function filtering tweets:
-def tweet_preparations(data):
+class Listener(StreamListener):
+    
+    #Defining the function filtering tweets:
+    def tweet_preparations(data):
         data = {'user': {'screen_name':data["user"]["screen_name"]},
                 'text':data['text'],
                'truncated':data["truncated"],
-               'retweet_count':data["retweet_count"],
                'extended_tweet': {'full_text':data["extended_tweet"]["full_text"]}}
-        if data["retweet_count"] >= 10:
+        #if https://github.com/IUNetSci/botometer-python:
                 print("Tweet has been eliminated since could have been tweeted by a bot")
                 return False
         else:
             if data["truncated"] == True:
                     data["text"] = data["extended_tweet"]["full_text"]
-            for i in ['truncated','retweet_count','extended_tweet']:
+            for i in ['truncated','extended_tweet']:
                 data.pop(i)
-            #if (FunzioneMarco==True):
-                # return True  # FunzioneMarco(data)
-                # return True   # wait, that's illegal!
-            #else:
-                #print("Tweet has been eliminated since it actually does not talk about music"
-            
+            if (FunzioneMarco):
+                return FunzioneMarco(data)
+            else:
+                print("Tweet has been eliminated since it actually does not talk about music")
 #IT GIVES ME A STRANGE ERROR: "extended_tweet", maybe because it don't recognize the null value of json
 
-class Listener(StreamListener):
     def on_data(self, data):
         data = json.loads(data)
         if bool(tweet_preparations(data)):
