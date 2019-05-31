@@ -54,7 +54,7 @@ def tweet_preparations(data):
                     #print("Tweet has been eliminated since it actually does not talk about music")
             return data
             return True
-#IT GIVES ME A STRANGE ERROR: "extended_tweet"
+#IT GIVES ME A STRANGE ERROR: "extended_tweet", maybe because it don't recognize the null value of json
 
 class Listener(StreamListener):
     def on_data(self, data):
