@@ -1,11 +1,11 @@
-import musicbrainzngs
+
 #perdonate il codice di scarso livello
 
 #devo aggiungere il riconoscimento generi e la gestione input dal prova2.py
 
 
 
-
+import musicbrainzngs
 musicbrainzngs.set_useragent("Sound of Data", "0.1")
 
 
