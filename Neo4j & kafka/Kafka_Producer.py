@@ -54,12 +54,12 @@ def tweet_preparations(data):
                     #print("Tweet has been eliminated since it actually does not talk about music")
             return data
             return True
-#IT GIVES ME A STRANGE ERROR: "extended_tweets"
+#IT GIVES ME A STRANGE ERROR: "extended_tweet"
 
 class Listener(StreamListener):
     def on_data(self, data):
         data = json.loads(data)
-        if(tweet_preparations(data)!=False):
+        if(tweet_preparations(data)==True):
             data = tweet_preparation(data)
             producer.send_messages(KafkaTopic,data)
         return True
