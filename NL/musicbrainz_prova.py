@@ -101,6 +101,7 @@ def find_record(recording):
 					if 'artist' in artistc:
 						if (artistc['artist'].get("id")) in common_elements:
 							if 'disambiguation' not in record:
+							#elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
 								listarecord.append(record.get("id"))
 							
 	return (listarecord[0])
