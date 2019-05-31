@@ -36,7 +36,6 @@ def find_artist_album(album):
 		result = musicbrainzngs.search_release_groups(j)
 		for release in result['release-group-list']:
 			ir=release
-			# [listartistalbum.append(a['artist'].get("id")) for a in ir["artist-credit"] if "artist" in a]
 			for artistc in ir['artist-credit']:
 				if 'artist' in artistc:
 					listartistalbum.append(artistc['artist'].get("id"))
@@ -77,7 +76,6 @@ def find_artist_record(recording):
 		result = musicbrainzngs.search_recordings(j)
 		for record in result['recording-list']:
 			ir=record
-			# [listartistalbum.append(a['artist'].get("id")) for a in ir["artist-credit"] if "artist" in a]
 			for artistc in ir['artist-credit']:
 				if 'artist' in artistc:
 					listartistrecord.append(artistc['artist'].get("id"))
