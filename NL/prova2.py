@@ -111,6 +111,15 @@ def resplit_istances(istances, txt):
     return istances_new
 
 
+def get_genere(txt, f="generi.py"):
+    with open(f) as t:
+        generes = eval(t.read())
+    generes = map(lambda t: re.sub(r"\s+", r"[ |-||]", t),
+                  generes)
+    generes = map(lambda t: r"\b" + t + r"\b", generes)
+    return re.findall(r"|".join(generes), txt.lower())
+
+
 def try_identify(istances, songs, txt):
     "Try to identify if it is a person or a song"
     names = set()
@@ -166,7 +175,7 @@ def get_istances(t):
     print("Not sure: ", end="")
     print(miscellanea)
     print("")
-    return names, songs, miscellanea
+    return names, songs, miscellanea, get_genere(t)
 
 
 if __name__ == "__main__":
