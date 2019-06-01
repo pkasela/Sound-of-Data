@@ -1,19 +1,25 @@
 
 #perdonate il codice di scarso livello
 
-#devo aggiungere il riconoscimento generi e la gestione input dal prova2.py
-
-
-
 import musicbrainzngs
+import prova2 as momo
+
+
 musicbrainzngs.set_useragent("Sound of Data", "0.1")
 
 
 #presupponendo che il tipo di ogni entità sia conosciuto 
 
-artisti = ["francesco gabbani","pooh","porcupine tree","vasco Rossi"]
-album = ["in absentia"]
-recording = ["the sound of muzak"]
+frase_input = momo.get_istances("testo del tweet")
+
+artisti = list(frase_input[0])
+recording = list(frase_input[1])
+album = [] # da vedere come gestire
+generi = frase_input[3]
+
+#artisti = ["francesco gabbani","pooh","porcupine tree","vasco Rossi"]
+#album = ["in absentia"]
+#recording = ["the sound of muzak"]
 
 
 
@@ -60,7 +66,7 @@ def find_album(album):
                     if 'artist' in artistc:
                         if (artistc['artist'].get("id")) in common_elements:
                             listalbum.append(release.get("id"))
-    return(listalbum[0])
+    return(listalbum)
 
 
 
@@ -100,11 +106,9 @@ def find_record(recording):
                             #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
                                 listarecord.append(record.get("id"))
 
-    return (listarecord[0])
+    return (listarecord)
  
 
 
-id_trovati = find_artist(artisti)
-id_trovati.append(find_album(album))
-id_trovati.append(find_record(recording))
+id_trovati = find_artist(artisti) + find_album(album) + find_record(recording) + generi
 print(id_trovati)
