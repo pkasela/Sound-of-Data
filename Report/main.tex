@@ -79,10 +79,43 @@ Costruita quindi la base di conoscenza su cui operare, si sono raccolti \textit{
 \newpage
 \part{Costruzione dello \textit{knowledge graph}}
 
-\section{Apache Hadoop}
+\section{Data Cleaning con python e Pig}
+I dati vengono scaricati dal sito di musicbrainz attraverso il file get\_data.py, che oltre a scaricare i dati effettua un'analisi preliminare di sostituire tutti i caratteri "\\N" con campi vuoti in tutti i file attraverso il comando sed e salva solo i file necessari per il database a grafo che si vuole creare. 
+La lista dei generi è presente sempre sul sito di musicbrainz, con uno scraper viene salvato nel codice e confrontato con il file tag e vengono eliminati tutti i tag che non sono dei generi.
+
+%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+%%%% Ma lo schema iniziale va messo?
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%
+
+I file vengono trasferiti su HDFS per essere processati, in particolare usiamo Apache Pig, che è una piattaforma per processare i dati, la decisione di utilizzare Pig piuttosto che SQL è dovuta al fatto che il caricamento dei dati in SQL è molto lenta e inoltre Pig riesce a sfruttare la potenza di HDFS.
+L'engine usato con Pig è Tez, che rende molto più veloce l'esecuzione del processamento dei dati saltando diverse fasi di scrittura dei risultati parziali su HDFS.
+%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+%%%% Dopo cercare e mettere il funzionamento di Tez
+%%%% Non vorrei scrivere cavolate quindi dopo cerco bene
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%
+
+Una volta finita la pulizia i dati vengono trasferiti fuori da HDFS sul filesystem, e vengono unite i risultati di pig con il comando cat. A questo punto i dati sono pronti per essere caricati su Neo4j.
+
+%%%%%%
+%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+%%%% Conviene mettere lo schema finale delle tabelle (dopo lo metto)
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
+%%%%%%
 
 \section{Neo4J}
 
+I dati puliti da Pig vengono caricati su neo4j usando neo4j-import.
+%cosa altro si deve scrivere hahaha
 
 \hfill
 \newpage
