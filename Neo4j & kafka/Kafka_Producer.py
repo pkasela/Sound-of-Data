@@ -78,8 +78,8 @@ class Listener(StreamListener):
             tweet_preparation(data)
         return True
 	
-    def on_error(self, status): 
-	print (status)
+    def on_error(self, status_code): 
+	print (status_code)
 	attempts = 0 
         if status_code in [420,500,502,503,504]:
 	    attempts = attempts + 1
