@@ -53,11 +53,10 @@ KafkaTopic="Music_Tweets"
 class Listener(StreamListener):
     
     #Defining the function filtering tweets:
-    def tweet_preparations(data):
-        data = {'user': {'screen_name':data["user"]["screen_name"]},
-                'text':data['text'],
-               'truncated':data["truncated"],
-               'extended_tweet': {'full_text':data["extended_tweet"]["full_text"]}}
+    def tweet_preparations(data_):
+        data = {'user': {'screen_name':data_["user"]["screen_name"]},
+                'text':data_['text'],
+               'truncated':data_["truncated"]}
 	if data["user"]["screen_name"] in blacklist:
 		print("User has an elevate probability of being a BOT")
 		return False
@@ -68,7 +67,7 @@ class Listener(StreamListener):
 		return False
         else:
             if data["truncated"] == True:
-                    data["text"] = data["extended_tweet"]["full_text"]
+                    data["text"] = data_["extended_tweet"]["full_text"]
             for i in ['truncated','extended_tweet']:
                 data.pop(i)
             if (FunzioneMarco):
