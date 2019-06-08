@@ -31,6 +31,19 @@ with open("secret.json", "r") as f:
     access_token=secret["ACCESS_TOKEN"]
     access_token_secret=secret["ACCESS_TOKEN_SECRET"]
 
+#Inizialize Botometer API:
+mashape_key = "<X-RapidAPI-Key from https://rapidapi.com/OSoMe/api/botometer>"
+twitter_app_auth = {
+    'consumer_key': consumer_key,
+    'consumer_secret': consumer_secret,
+    'access_token': access_token,
+    'access_token_secret': access_token_secret,
+  }
+bom = botometer.Botometer(wait_on_ratelimit=True,
+                          mashape_key=mashape_key,
+                          **twitter_app_auth)
+
+#Naming and initializing the Topic
 KafkaTopic="Music_Tweets"            
 
 class Listener(StreamListener):
@@ -41,8 +54,9 @@ class Listener(StreamListener):
                 'text':data['text'],
                'truncated':data["truncated"],
                'extended_tweet': {'full_text':data["extended_tweet"]["full_text"]}}
-        #if https://github.com/IUNetSci/botometer-python:
-                print("Tweet has been eliminated since could have been tweeted by a bot")
+        if bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
+		#If tweet has more than 90% of probability of being a bot, drop it
+                print("User has an elevate probability of being a BOT")
                 return False
         else:
             if data["truncated"] == True:
@@ -52,7 +66,7 @@ class Listener(StreamListener):
             if (FunzioneMarco):
                 return FunzioneMarco(data)
             else:
-                print("Tweet has been eliminated since it actually does not talk about music")
+                print("Tweet does not actually talk about music")
 #IT GIVES ME A STRANGE ERROR: "extended_tweet", maybe because it don't recognize the null value of json
 
     def on_data(self, data):
