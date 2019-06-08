@@ -37,7 +37,7 @@ def find_artist_album(album):
     #trovo gli id degli artisti per l'album
     listartistalbum = []
     for j in album:
-        result = musicbrainzngs.search_release_groups(j)
+        result = musicbrainzngs.search_release_groups(j + "~0.9")
         for release in result['release-group-list']:
             ir=release
             for artistc in ir['artist-credit']:
@@ -55,17 +55,18 @@ def find_album(album):
     #trovo gli id degli album presenti
     listalbum = []
     for h in album:
-        result = musicbrainzngs.search_release_groups(h)
-        if len(common_elements)==0:
-            listalbum.append(result['release-group-list'][0]["id"])
-            #se non ci sono corrispondenze ritorno il primo risultato
-        else:
-            for release in result['release-group-list']:
-                ir=release
-                for artistc in ir['artist-credit']:
-                    if 'artist' in artistc:
-                        if (artistc['artist'].get("id")) in common_elements:
-                            listalbum.append(release.get("id"))
+        result = musicbrainzngs.search_release_groups(h + "~0.9")
+        if len(result["release-group-list"]) > 0:
+            if len(common_elements)==0:
+                listalbum.append(result['release-group-list'][0]["id"])
+                #se non ci sono corrispondenze ritorno il primo risultato
+            else:
+                for release in result['release-group-list']:
+                    ir=release
+                    for artistc in ir['artist-credit']:
+                        if 'artist' in artistc:
+                            if (artistc['artist'].get("id")) in common_elements:
+                                listalbum.append(release.get("id"))
     return(listalbum)
 
 
@@ -74,7 +75,7 @@ def find_artist_record(recording):
     #trovo gli id degli artisti per la traccia cercata
     listartistrecord = []
     for j in recording:
-        result = musicbrainzngs.search_recordings(j)
+        result = musicbrainzngs.search_recordings(j + "~0.9")
         for record in result['recording-list']:
             ir=record
             for artistc in ir['artist-credit']:
@@ -92,19 +93,20 @@ def find_record(recording):
     #trovo gli id delle tracks
     listarecord = []
     for h in recording:
-        result = musicbrainzngs.search_recordings(h,limit = 75)
-        if len(common_elements)==0:
-            listarecord.append(result['recording-list'][0]["id"])
-            #se non ci sono corrispondenze ritorno il primo risultato
-        else:
-            for record in result['recording-list']:
-                ir=record
-                for artistc in ir['artist-credit']:
-                    if 'artist' in artistc:
-                        if (artistc['artist'].get("id")) in common_elements:
-                            if 'disambiguation' not in record:
-                            #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
-                                listarecord.append(record.get("id"))
+        result = musicbrainzngs.search_recordings(h + "~0.9",limit = 75)
+        if len(result["recording-list"]) > 0:
+            if len(common_elements)==0:
+                listarecord.append(result['recording-list'][0]["id"])
+                #se non ci sono corrispondenze ritorno il primo risultato
+            else:
+                for record in result['recording-list']:
+                    ir=record
+                    for artistc in ir['artist-credit']:
+                        if 'artist' in artistc:
+                            if (artistc['artist'].get("id")) in common_elements:
+                                if 'disambiguation' not in record:
+                                #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
+                                    listarecord.append(record.get("id"))
 
     return (listarecord)
  
