@@ -43,6 +43,10 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
                           mashape_key=mashape_key,
                           **twitter_app_auth)
 
+#Initialize blacklist:
+blacklist = []
+i = 0
+
 #Naming and initializing the Topic
 KafkaTopic="Music_Tweets"            
 
@@ -54,10 +58,14 @@ class Listener(StreamListener):
                 'text':data['text'],
                'truncated':data["truncated"],
                'extended_tweet': {'full_text':data["extended_tweet"]["full_text"]}}
-        if bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
-		#If tweet has more than 90% of probability of being a bot, drop it
-                print("User has an elevate probability of being a BOT")
-                return False
+	if data["user"]["screen_name"] in blacklist:
+		print("User has an elevate probability of being a BOT")
+		return False
+	elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
+		blacklist[i]=data["user"]["screen_name"]
+		i = i+1
+		print("User has an elevate probability of being a BOT")
+		return False
         else:
             if data["truncated"] == True:
                     data["text"] = data["extended_tweet"]["full_text"]
@@ -67,7 +75,6 @@ class Listener(StreamListener):
                 return FunzioneMarco(data)
             else:
                 print("Tweet does not actually talk about music")
-#IT GIVES ME A STRANGE ERROR: "extended_tweet", maybe because it don't recognize the null value of json
 
     def on_data(self, data):
         data = json.loads(data)
