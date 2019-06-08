@@ -73,7 +73,7 @@ class Listener(StreamListener):
         data = json.loads(data)
         if bool(tweet_preparations(data)):
             data = tweet_preparation(data)
-            producer.send_messages(KafkaTopic,data)
+            producer.send_messages("KafkaTopic",data)
         else:
             tweet_preparation(data)
         return True
