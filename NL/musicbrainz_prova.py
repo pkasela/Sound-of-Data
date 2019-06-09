@@ -45,7 +45,7 @@ def find_artist_NS(NS):
         result = musicbrainzngs.search_artists(i + "~0.9")
         if len(result["artist-list"]) > 0:
             for artists in result['artist-list']:
-                ir=artist
+                ir=artists
                 if ir.get("name").lower()==i.lower():
                     listartistNS.append(artists.get("id"))
 
