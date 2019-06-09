@@ -48,7 +48,7 @@ def find_artist_album(album):
 
   
 #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
-common_elements = (list(set(find_artist_album(album)).intersection(find_artist(artisti))))
+common_elements_1 = (list(set(find_artist_album(album)).intersection(find_artist(artisti))))
 
 
 def find_album(album):
@@ -57,7 +57,7 @@ def find_album(album):
     for h in album:
         result = musicbrainzngs.search_release_groups(h + "~0.9")
         if len(result["release-group-list"]) > 0:
-            if len(common_elements)==0:
+            if len(common_elements_1)==0:
                 listalbum.append(result['release-group-list'][0]["id"])
                 #se non ci sono corrispondenze ritorno il primo risultato
             else:
@@ -65,7 +65,7 @@ def find_album(album):
                     ir=release
                     for artistc in ir['artist-credit']:
                         if 'artist' in artistc:
-                            if (artistc['artist'].get("id")) in common_elements:
+                            if (artistc['artist'].get("id")) in common_elements_1:
                                 listalbum.append(release.get("id"))
     return(listalbum)
 
@@ -86,7 +86,7 @@ def find_artist_record(recording):
 
 
 #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati 
-common_elements = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
+common_elements_2 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
 
 
 def find_record(recording):
@@ -95,7 +95,7 @@ def find_record(recording):
     for h in recording:
         result = musicbrainzngs.search_recordings(h + "~0.9",limit = 75)
         if len(result["recording-list"]) > 0:
-            if len(common_elements)==0:
+            if len(common_elements_2)==0:
                 listarecord.append(result['recording-list'][0]["id"])
                 #se non ci sono corrispondenze ritorno il primo risultato
             else:
@@ -103,7 +103,7 @@ def find_record(recording):
                     ir=record
                     for artistc in ir['artist-credit']:
                         if 'artist' in artistc:
-                            if (artistc['artist'].get("id")) in common_elements:
+                            if (artistc['artist'].get("id")) in common_elements_2:
                                 if 'disambiguation' not in record:
                                 #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
                                     listarecord.append(record.get("id"))
