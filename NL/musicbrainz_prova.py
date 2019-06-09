@@ -15,6 +15,7 @@ frase_input = momo.get_istances("testo del tweet")
 artisti = list(frase_input[0])
 recording = list(frase_input[1])
 album = [] # da vedere come gestire
+NS = list(frase_input[2])
 generi = frase_input[3]
 
 #artisti = ["francesco gabbani","pooh","porcupine tree","vasco Rossi"]
@@ -32,7 +33,26 @@ def find_artist(artisti):
             listartist.append(result["artist-list"][0]["id"])
 
     return(listartist)
- 
+
+
+
+
+def find_artist_NS(NS):
+    #trovo gli id degli artisti presenti,essendo l'input il set con i not sure
+    #aggiunto un ulteriore controllo per diminuire le possibilità che ritorni id errati 
+    for i in NS:
+        result = musicbrainzngs.search_artists(i + "~0.9")
+        if len(result["artist-list"]) > 0:
+            for artists in result['artist-list']:
+            ir=artist
+            if ir.get("name").lower()==i.lower():
+                listartist.append(artists.get("id"))
+
+    return(listartist)
+
+
+
+
 def find_artist_album(album): 
     #trovo gli id degli artisti per l'album
     listartistalbum = []
@@ -112,5 +132,5 @@ def find_record(recording):
  
 
 
-id_trovati = find_artist(artisti) + find_album(album) + find_record(recording) + generi
+id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(album) + find_record(recording) + generi
 print(id_trovati)
