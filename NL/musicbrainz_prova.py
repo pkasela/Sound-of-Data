@@ -39,16 +39,17 @@ def find_artist(artisti):
 
 def find_artist_NS(NS):
     #trovo gli id degli artisti presenti,essendo l'input il set con i not sure
-    #aggiunto un ulteriore controllo per diminuire le possibilità che ritorni id errati 
+    #aggiunto un ulteriore controllo per diminuire le possibilità che ritorni id errati
+    listartistNS = []
     for i in NS:
         result = musicbrainzngs.search_artists(i + "~0.9")
         if len(result["artist-list"]) > 0:
             for artists in result['artist-list']:
-            ir=artist
-            if ir.get("name").lower()==i.lower():
-                listartist.append(artists.get("id"))
+                ir=artist
+                if ir.get("name").lower()==i.lower():
+                    listartistNS.append(artists.get("id"))
 
-    return(listartist)
+    return(listartistNS)
 
 
 
