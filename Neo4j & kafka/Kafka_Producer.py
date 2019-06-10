@@ -32,7 +32,7 @@ with open("secret.json", "r") as f:
     access_token_secret=secret["ACCESS_TOKEN_SECRET"]
 
 #Inizialize Botometer API:
-mashape_key = "<X-RapidAPI-Key from https://rapidapi.com/OSoMe/api/botometer>"
+mashape_key = "<Your X-RapidAPI-Key from https://rapidapi.com/OSoMe/api/botometer>"
 twitter_app_auth = {
     'consumer_key': consumer_key,
     'consumer_secret': consumer_secret,
@@ -45,43 +45,54 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
 
 #Initialize blacklist:
 blacklist = []
+whitelist = []
 
 #Naming and initializing the Topic
 KafkaTopic="Music_Tweets"            
 
 class Listener(StreamListener):
-    
     #Defining the function filtering tweets:
     def tweet_preparations(data_):
-        data = {'user': {'screen_name':data_["user"]["screen_name"]},
+    data_ = data_._json
+    data = {'user': {'screen_name':data_["user"]["screen_name"]},
+	    #Rimane da capire la codifica degli escape characters: 
                 'text':data_['text'],
+                'created_at':data_['created_at'],
                'truncated':data_["truncated"]}
-	if data["user"]["screen_name"] in blacklist:
-		print("User has an elevate probability of being a BOT")
-		return False
-	elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
-		blacklist.append(data["user"]["screen_name"])
-		print("User has an elevate probability of being a BOT")
-		return False
-        else:
-            if data["truncated"] == True:
-                    data["text"] = data_["extended_tweet"]["full_text"]
-            for i in ['truncated','extended_tweet']:
-                data.pop(i)
-            if (FunzioneMarco):
-                return FunzioneMarco(data)
+    if data["user"]["screen_name"] in whitelist:
+        if data["truncated"] == True:
+            data["text"] = data_["extended_tweet"]["full_text"]
+        data.pop('truncated')
+	data = FunzioneMarco(data)
+	if (FunzioneMarco):
+                return (json.dumps(data))
             else:
-                print("Tweet does not actually talk about music")
-
-    def on_data(self, data):
-        data = json.loads(data)
-        if (tweet_preparations(data)):
-            data = tweet_preparation(data)
+		return "Tweet does not actually talk about music"   
+    elif data["user"]["screen_name"] in blacklist:
+        return False
+    elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
+        blacklist.append(data["user"]["screen_name"])
+        p = "User "+data["user"]["screen_name"]+" has a probability of "+ str(round(bom.check_account(data["user"]["screen_name"])['scores']['universal'],4)) +" of being a BOT"
+        return p
+    else:
+        if data["truncated"] == True:
+            data["text"] = data_["extended_tweet"]["full_text"]
+        data.pop('truncated')
+        whitelist.append(data["user"]["screen_name"])
+	data = FunzioneMarco(data)
+	if (FunzioneMarco):
+                return (json.dumps(data))
+            else:
+		return "Tweet does not actually talk about music"
+    
+    def on_status(self, data):
+	data=tweet_preparations(data)
+        if(len(data)>0):
             producer.send_messages("KafkaTopic",data)
         else:
-            tweet_preparation(data)
+            tweet_preparations(data)
         return True
-	
+
     def on_error(self, status_code): 
 	print (status_code)
 	attempts = 0 
@@ -112,4 +123,5 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-	stream.filter(track=genre_list,languages="it") 
+	stream.filter(track=[genre_list[i] for i in range(400)],languages="it") 
+	#After 400 keywords, tweepy send the error 413: "Payload Too Large".
