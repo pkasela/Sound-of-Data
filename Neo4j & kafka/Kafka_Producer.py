@@ -104,7 +104,7 @@ class Listener(StreamListener):
 # 503 when twitter servers are overloaded with requests
 # 504 when twitter servers are up but the request couldn’t be serviced due to some failure within the internal stack
  
-kafka = KafkaClient("localhost:9092") #I am using the Docker, thus I'll use the port of the containe "19092"
+kafka = KafkaClient("localhost:9092") 
 producer = SimpleProducer(kafka)
 
 auth = OAuthHandler(consumer_key, consumer_secret)
@@ -114,4 +114,4 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-	stream.filter(track=genre_list,languages="en") 
+	stream.filter(track=genre_list,languages="it") 
