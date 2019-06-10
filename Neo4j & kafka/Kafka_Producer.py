@@ -45,7 +45,6 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
 
 #Initialize blacklist:
 blacklist = []
-i = 0
 
 #Naming and initializing the Topic
 KafkaTopic="Music_Tweets"            
@@ -61,8 +60,7 @@ class Listener(StreamListener):
 		print("User has an elevate probability of being a BOT")
 		return False
 	elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
-		blacklist[i]=data["user"]["screen_name"]
-		i = i+1
+		blacklist.append(data["user"]["screen_name"])
 		print("User has an elevate probability of being a BOT")
 		return False
         else:
