@@ -83,7 +83,7 @@ class Listener(StreamListener):
 	if (len(data)>0):
                 return (json.dumps(data))
             else:
-		return "Tweet"+data_["text"]+"does not actually talk about music."
+		return "Tweet '"+data_["text"]+"' does not actually talk about music."
     
     def on_status(self, data):
 	data=tweet_preparations(data)
