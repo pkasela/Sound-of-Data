@@ -44,8 +44,9 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
                           **twitter_app_auth)
 
 #Initialize blacklist:
-blacklist = []
-whitelist = []
+blacklist = ['starreldred14', 'chelseacusack8']
+#Already detected 67 "white" italian users from previous attempts
+whitelist = ['SENBreakfast','TequilaSh0tz','sivadredips','TaeTaeMyDrug_','_chiarawho','francy2270','carla_milf','scar15385','lamattinaste','samjdbozn','JuanitoSal8','evviva_il_re','ElisabettaMacha','paradisoa1','CASTALDIAc','Alexia_1223','ROSARIOSIDOTI','rpGianluca','barbiere_enzo','jsscamrno','DottOlivieri','WBOM_Radio','dearsnowbarry','angelo72518525','marco_marsella','Opiccio0320','martinahot88','SinC_Italia','leo_the_teacher','biagioamalfi','__Enrica__','truemetalonline','Percivalgull4','cerco_lavoro','InfoAmb','Nico_Cart','natysettantuno','FedericoBetton3','mikashands','AgCultNews','GiusPecoraro','marta_ron4','antoniodigi','radioitaliaint','cougaritaliane','tattooevhoney','wandamvu','Infinitejest19','Erica91638389','UnTemaAlGiorno','roberto01012023','CurvaStone','DavidCelisq','VickyDream_CAM','NamidaNoAki2','sportparma','soIskjaers','CryPaolo','ianshappjness','puresoultae','eniiolucherini','tropicalisimany','MarcoSforzato','xhyunjinie','LaJambeNoir7','Lalocanda6','noitsirene']
 
 #Naming and initializing the Topic
 KafkaTopic="Music_Tweets"            
@@ -55,16 +56,15 @@ class Listener(StreamListener):
     def tweet_preparations(data_):
     data_ = data_._json
     data = {'user': {'screen_name':data_["user"]["screen_name"]},
-	    #Rimane da capire la codifica degli escape characters: 
-                'text':data_['text'],
+                'text':re.escape(data_['text']).replace("\\ "," ").replace("\\","").replace("\u00e0","à").replace("\u00e9","é").replace("\u00f2","ò").replace("\u2026","…").replace("\u00ec","ì").replace("\u00f9","ù").replace("\u201c","“").replace("\u2019","’"), #
                 'created_at':data_['created_at'],
                'truncated':data_["truncated"]}
     if data["user"]["screen_name"] in whitelist:
         if data["truncated"] == True:
-            data["text"] = data_["extended_tweet"]["full_text"]
+            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("\u00e0","à").replace("\u00e9","é").replace("\u00f2","ò").replace("\u2026","…").replace("\u00ec","ì").replace("\u00f9","ù").replace("\u201c","“").replace("\u2019","’") #
         data.pop('truncated')
 	data = FunzioneMarco(data)
-	if (FunzioneMarco):
+	if (len(data)>0):
                 return (json.dumps(data))
             else:
 		return "Tweet does not actually talk about music"   
@@ -72,18 +72,18 @@ class Listener(StreamListener):
         return False
     elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
         blacklist.append(data["user"]["screen_name"])
-        p = "User "+data["user"]["screen_name"]+" has a probability of "+ str(round(bom.check_account(data["user"]["screen_name"])['scores']['universal'],4)) +" of being a BOT"
+        p = "User "+data["user"]["screen_name"]+" has a probability of "+ str(round(bom.check_account(data["user"]["screen_name"])['scores']['universal'],4)) +" of being a BOT."
         return p
     else:
         if data["truncated"] == True:
-            data["text"] = data_["extended_tweet"]["full_text"]
+            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("[\u00e0]","à").replace("[\u00e9]","é").replace("[\u00f2]","ò").replace("[\u2026]","…").replace("[\u00ec]","ì").replace("[\u00f9]","ù").replace("\u201c","“").replace("\u2019","’") #
         data.pop('truncated')
         whitelist.append(data["user"]["screen_name"])
 	data = FunzioneMarco(data)
-	if (FunzioneMarco):
+	if (len(data)>0):
                 return (json.dumps(data))
             else:
-		return "Tweet does not actually talk about music"
+		return "Tweet"+data_["text"]+"does not actually talk about music."
     
     def on_status(self, data):
 	data=tweet_preparations(data)
@@ -123,5 +123,5 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-	stream.filter(track=[genre_list[i] for i in range(400)],languages="it") 
+	stream.filter(track=[genre_list[i] for i in range(400)],languages=["it"]) 
 	#After 400 keywords, tweepy send the error 413: "Payload Too Large".
