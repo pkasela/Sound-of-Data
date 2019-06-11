@@ -14,8 +14,8 @@ frase_input = momo.get_istances("testo del tweet")
 
 artisti = list(frase_input[0])
 recording = list(frase_input[1])
-album = [] # da vedere come gestire
-NS = list(frase_input[2])
+#album = list(frase_input[2])
+NS = list(frase_input[2]) # poi da provare per album,artisti e recording
 generi = frase_input[3]
 
 #artisti = ["francesco gabbani","pooh","porcupine tree","vasco Rossi"]
@@ -69,8 +69,9 @@ def find_artist_album(album):
 
   
 #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
-common_elements_1 = (list(set(find_artist_album(album)).intersection(find_artist(artisti))))
-
+common_elements_11 = (list(set(find_artist_album(NS)).intersection(find_artist(artisti))))
+common_elements_12 = (list(set(find_artist_album(NS)).intersection(find_artist_NS(NS))))
+common_elements_1 = common_elements_11 + common_elements_12
 
 def find_album(album):
     #trovo gli id degli album presenti
@@ -87,7 +88,9 @@ def find_album(album):
                     for artistc in ir['artist-credit']:
                         if 'artist' in artistc:
                             if (artistc['artist'].get("id")) in common_elements_1:
-                                listalbum.append(release.get("id"))
+                                if ir.get("title").lower()==h.lower():
+                                    #anche qua aggiunto ulteriore controllo per diminuire possibili errori
+                                    listalbum.append(release.get("id"))
     return(listalbum)
 
 
@@ -133,5 +136,5 @@ def find_record(recording):
  
 
 
-id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(album) + find_record(recording) + generi
+id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + generi
 print(id_trovati)
