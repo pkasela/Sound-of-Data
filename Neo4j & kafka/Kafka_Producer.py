@@ -78,7 +78,7 @@ KafkaTopic = "Music_Tweets"
 
 
 def remove_spaces(txt):
-    return re.sub(r"[\n\t]", " ", txt)
+    return re.sub(r"[\n\t\\]", " ", txt)
 
 
 class Listener(StreamListener):
@@ -96,7 +96,7 @@ class Listener(StreamListener):
                 'truncated': data_["truncated"]}
         if data["user"]["screen_name"] in whitelist:
             if data["truncated"]:
-                data["text"] = re.escape(data_["extended_tweet"]["full_text"])
+                data["text"] = remove_spaces(data_["extended_tweet"]["full_text"])
             data.pop('truncated')
             data = FunzioneMarco(data)
             if len(data) > 0:
@@ -116,7 +116,7 @@ class Listener(StreamListener):
             return p
         else:
             if data["truncated"]:
-                data["text"] = data_["extended_tweet"]["full_text"]
+                data["text"] = remove_spaces(data_["extended_tweet"]["full_text"])
             data.pop('truncated')
             whitelist.append(data["user"]["screen_name"])
             data = FunzioneMarco(data)
