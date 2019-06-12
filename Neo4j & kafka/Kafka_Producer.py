@@ -82,7 +82,7 @@ class Listener(StreamListener):
         return p
     else:
         if data["truncated"] == True:
-            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("\n"," ").replace("\t"," ")
+            data["text"] = data_["extended_tweet"]["full_text"].replace("\\ "," ").replace("\\","").replace("\n"," ").replace("\t"," ")
         data.pop('truncated')
         whitelist.append(data["user"]["screen_name"])
 	data = FunzioneMarco(data)
