@@ -43,6 +43,11 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
                           mashape_key=mashape_key,
                           **twitter_app_auth)
 
+# il tempo di ricerca in una lista è lineare: le possibilità sono due
+# - si trasforma in un set `whitelist = set(whitelist)` che rende il tempo
+#   logaritmico
+# - si salva su neo4j in una voce la probabilità che sia un bot
+# così però poi M. rompe i coglioni che non è scalabile
 #Initialize blacklist:
 blacklist = ['starreldred14', 'chelseacusack8']
 #Already detected 67 "white" italian users from previous attempts
@@ -56,6 +61,10 @@ class Listener(StreamListener):
     def tweet_preparations(data_):
     data_ = data_._json
     data = {'user': {'screen_name':data_["user"]["screen_name"]},
+            # dovrebbe bastare questa riga:
+            # 'text': data_['text'].encode("utf-8"),
+            # per tornare indietro invece:
+            # data['text'].decode()
                 'text':re.escape(data_['text']).replace("\\ "," ").replace("\\","").replace("\u00e0","à").replace("\u00e9","é").replace("\u00f2","ò").replace("\u2026","…").replace("\u00ec","ì").replace("\u00f9","ù").replace("\u201c","“").replace("\u2019","’"), #
                 'created_at':data_['created_at'],
                'truncated':data_["truncated"]}
