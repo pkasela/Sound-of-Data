@@ -77,10 +77,17 @@ whitelist = ['SENBreakfast', 'TequilaSh0tz', 'sivadredips', 'TaeTaeMyDrug_',
 KafkaTopic = "Music_Tweets"
 
 
+def remove_spaces(txt):
+    return re.sub(r"[\n\t]", " ", txt)
+
+
 class Listener(StreamListener):
     # Defining the function filtering tweets:
     def tweet_preparations(data_):
         data_ = data_._json
+        data_["text"] = remove_spaces(data_["text"])
+        data_["extended_tweet"]["full_text"] = \
+            remove_spaces(data_["extended_tweet"]["full_text"])
         data = {'user': {
                     'screen_name': data_["user"]["screen_name"]
                 },
