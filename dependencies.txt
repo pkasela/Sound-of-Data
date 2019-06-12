@@ -1,0 +1,9 @@
+kafka
+pandas
+numpy
+bs4
+requests
+botometer
+musicbrainzngs
+pyenchant
+urllib3
