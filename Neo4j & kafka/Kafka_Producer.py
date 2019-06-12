@@ -61,22 +61,19 @@ class Listener(StreamListener):
     def tweet_preparations(data_):
     data_ = data_._json
     data = {'user': {'screen_name':data_["user"]["screen_name"]},
-            # dovrebbe bastare questa riga:
-            # 'text': data_['text'].encode("utf-8"),
-            # per tornare indietro invece:
-            # data['text'].decode()
-                'text':re.escape(data_['text']).replace("\\ "," ").replace("\\","").replace("\u00e0","à").replace("\u00e9","é").replace("\u00f2","ò").replace("\u2026","…").replace("\u00ec","ì").replace("\u00f9","ù").replace("\u201c","“").replace("\u2019","’"), #
+                'text':data_['text'].replace("\\ "," ").replace("\\","").replace("\n"," ").replace("\t"," ")
                 'created_at':data_['created_at'],
                'truncated':data_["truncated"]}
     if data["user"]["screen_name"] in whitelist:
         if data["truncated"] == True:
-            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("\u00e0","à").replace("\u00e9","é").replace("\u00f2","ò").replace("\u2026","…").replace("\u00ec","ì").replace("\u00f9","ù").replace("\u201c","“").replace("\u2019","’") #
+            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("\n"," ").replace("\t"," ")
         data.pop('truncated')
 	data = FunzioneMarco(data)
 	if (len(data)>0):
-                return (json.dumps(data))
+                return (str(data))
             else:
-		return "Tweet does not actually talk about music"   
+		print("Tweet '"+data_["text"]+"' does not actually talk about music.")
+		return ""   
     elif data["user"]["screen_name"] in blacklist:
         return False
     elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
@@ -85,14 +82,15 @@ class Listener(StreamListener):
         return p
     else:
         if data["truncated"] == True:
-            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("[\u00e0]","à").replace("[\u00e9]","é").replace("[\u00f2]","ò").replace("[\u2026]","…").replace("[\u00ec]","ì").replace("[\u00f9]","ù").replace("\u201c","“").replace("\u2019","’") #
+            data["text"] = re.escape(data_["extended_tweet"]["full_text"]).replace("\\ "," ").replace("\\","").replace("\n"," ").replace("\t"," ")
         data.pop('truncated')
         whitelist.append(data["user"]["screen_name"])
 	data = FunzioneMarco(data)
 	if (len(data)>0):
-                return (json.dumps(data))
+                return (str(data))
             else:
-		return "Tweet '"+data_["text"]+"' does not actually talk about music."
+		print("Tweet '"+data_["text"]+"' does not actually talk about music.")
+		return ""
     
     def on_status(self, data):
 	data=tweet_preparations(data)
