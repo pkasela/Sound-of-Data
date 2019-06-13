@@ -26,6 +26,7 @@ Links are broken for now, use maria_dev account in VM (HDP and not HDF) to recre
 # Analisi
 - [x] Rimozione bot
   - [x] indivuduare utenti e "bannarli" (Botometer)
+  - [x] storage di whitelist e blacklist con RiakDB
 - [ ] Query interessanti
   - [ ] generi
   - [ ] artisti
