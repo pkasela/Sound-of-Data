@@ -37,7 +37,9 @@ recording_cooler = FOREACH recording GENERATE id AS recording_id, gid AS gid;
 
 tag = LOAD '/mbdump/tag.tsv' USING PigStorage('\t') AS (tag_id:int,tag:int);
 
-tag_cooler = FOREACH tag GENERATE tag_id AS ID, tag as GENRE, 'GENRE' AS LABEL;
+-- we use tag_name as global id because we are sure that they are unique
+tag_cooler = FOREACH tag GENERATE tag_id AS ID, tag as GENRE, tag as gid,
+              'GENRE' AS LABEL;
 
 -------------- Main Loading is Done ---------
 
