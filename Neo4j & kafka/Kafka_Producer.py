@@ -13,6 +13,8 @@ import re
 import time
 import riak
 
+#import ipdb; #needed for debugging
+
 # Scrape the list of all genres from musicbrainz to generate the list of
 # keywords for filtering tweets
 url = 'https://musicbrainz.org/genres'
@@ -56,8 +58,12 @@ with open("secret.json", "r") as f:
     access_token = secret["ACCESS_TOKEN"]
     access_token_secret = secret["ACCESS_TOKEN_SECRET"]
 
+    # create also this field in the secret.json
+    X_RapidAPI_Key = secret["X_RapidAPI_Key"]
+    # Get Your X-RapidAPI-Key from https://rapidapi.com/OSoMe/api/botometer
+
 # Inizialize Botometer API:
-mashape_key = "<Your X-RapidAPI-Key from https://rapidapi.com/OSoMe/api/botometer>"
+mashape_key = X_RapidAPI_Key
 twitter_app_auth = {
     'consumer_key': consumer_key,
     'consumer_secret': consumer_secret,
@@ -100,29 +106,30 @@ KafkaTopic = "Music_Tweets"
 
 
 def remove_spaces(txt):
-    return re.sub(r"[\n\t]", " ", txt)
+    return re.sub(r"[\n\t\\]", " ", txt)
+
+
+def FunzioneMarco(data):
+    return data
 
 
 class Listener(StreamListener):
     # Defining the function filtering tweets:
-    def tweet_preparations(data_):
+    def tweet_preparations(self, data_):
         data_ = data_._json
-        data_["text"] = remove_spaces(data_["text"])
-        data_["extended_tweet"]["full_text"] = \
-            remove_spaces(data_["extended_tweet"]["full_text"])
         data = {'user': {
                     'screen_name': data_["user"]["screen_name"]
                 },
-                'text': data_['text'],
+                'text': remove_spaces(data_["text"]),
                 'created_at': data_['created_at'],
                 'truncated': data_["truncated"]}
         if is_in_whitelist(data["user"]["screen_name"]):
             if data["truncated"]:
-                data["text"] = re.escape(data_["extended_tweet"]["full_text"])
+                data["text"] = remove_spaces(data_["extended_tweet"]["full_text"])
             data.pop('truncated')
             data = FunzioneMarco(data)
             if len(data) > 0:
-                return str(data)
+                return str(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
                       "' does not actually talk about music.")
@@ -131,21 +138,21 @@ class Listener(StreamListener):
             return False
         elif store_user(data["user"]["screen_name"]) > BOT_PROB:
             # blacklist.append(data["user"]["screen_name"])
-            p = "User " + data["user"]["screen_name"] + \
-                " has a probability of " + \
-                str(round(bom.check_account(
-                    data["user"]["screen_name"])['scores']['universal'],
-                          4)) + \
-                " of being a BOT."
-            return p
+            print("User " + data["user"]["screen_name"] +
+                  " has a probability of " +
+                  str(round(bom.check_account(
+                      data["user"]["screen_name"])['scores']['universal'],
+                            4)) +
+                  " of being a BOT.")
+            return False
         else:
             if data["truncated"]:
-                data["text"] = data_["extended_tweet"]["full_text"]
+                data["text"] = remove_spaces(data_["extended_tweet"]["full_text"])
             data.pop('truncated')
             # whitelist.append(data["user"]["screen_name"])
             data = FunzioneMarco(data)
             if len(data) > 0:
-                return str(data)
+                return str(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
                       "' does not actually talk about music.")
@@ -154,6 +161,8 @@ class Listener(StreamListener):
     def on_status(self, data):
         data = self.tweet_preparations(data)
         if len(data) > 0:
+            print(data)
+            #ipdb.set_trace()
             producer.send_messages("KafkaTopic", data)
         else:
             self.tweet_preparations(data)
@@ -195,4 +204,6 @@ stream = Stream(auth, myListener)
 while True:
     stream.filter(track=[genre_list[i] for i in range(400)],
                   languages=["it"])
-    # After 400 keywords, tweepy send the error 413: "Payload Too Large".
+# After 400 keywords, tweepy send the error 413: "Payload Too Large".
+###############################
+####Need to tell him not to remove the last 19 genres, but the one we want to remove
