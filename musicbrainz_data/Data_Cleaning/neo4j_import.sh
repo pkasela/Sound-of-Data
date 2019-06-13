@@ -27,8 +27,8 @@ neo4j-import \
 
 # Close neo4j in case it was running
 sudo systemctl stop neo4j.service
-# Create a backup file of the old db just in case
-# sudo mv /var/lib/neo4j/data/databases/graph.db /var/lib/neo4j/data/databases/graph.db.bkp
+# Remove the old database
+sudo rm -r /var/lib/neo4j/data/databases/graph.db
 # Shift the database to the right folder
 sudo mv -f graph.db /var/lib/neo4j/data/databases/
 #Give the right permissions to the new database so that neo4j can be started safely
