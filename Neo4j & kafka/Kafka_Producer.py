@@ -11,6 +11,7 @@ import requests
 import botometer
 import re
 import time
+import riak
 
 # Scrape the list of all genres from musicbrainz to generate the list of
 # keywords for filtering tweets
@@ -24,6 +25,27 @@ for g in genres:
     result = g.text.strip()
     genre_list.append(result)
 print('Total number of genres: ' + str(len(genre_list)))
+
+BOT_PROB = 0.9
+riak_client = riak.RiakClient()
+users = riak_client.bucket("users")
+
+
+def store_user(user):
+    value = bom.check_account(user)['scores']['universal']
+    users.new(user, data=value).store()
+    return value
+
+
+def is_in_whitelist(user):
+    value = users.get(user).data
+    return value < BOT_PROB if value else False
+
+
+def is_in_blacklist(user):
+    value = users.get(user).data
+    return value > BOT_PROB if value else False
+
 
 # Create a secret.json file with the twitter keys in it.
 with open("secret.json", "r") as f:
@@ -52,26 +74,26 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
 # - si salva su neo4j in una voce la probabilità che sia un bot
 # così però poi M. rompe i coglioni che non è scalabile
 # Initialize blacklist:
-blacklist = ['starreldred14', 'chelseacusack8']
+# blacklist = ['starreldred14', 'chelseacusack8']
 # Already detected 67 "white" italian users from previous attempts
-whitelist = ['SENBreakfast', 'TequilaSh0tz', 'sivadredips', 'TaeTaeMyDrug_',
-             '_chiarawho', 'francy2270', 'carla_milf', 'scar15385',
-             'lamattinaste', 'samjdbozn', 'JuanitoSal8', 'evviva_il_re',
-             'ElisabettaMacha', 'paradisoa1', 'CASTALDIAc', 'Alexia_1223',
-             'ROSARIOSIDOTI', 'rpGianluca', 'barbiere_enzo', 'jsscamrno',
-             'DottOlivieri', 'WBOM_Radio', 'dearsnowbarry', 'angelo72518525',
-             'marco_marsella', 'Opiccio0320', 'martinahot88', 'SinC_Italia',
-             'leo_the_teacher', 'biagioamalfi', '__Enrica__',
-             'truemetalonline', 'Percivalgull4', 'cerco_lavoro', 'InfoAmb',
-             'Nico_Cart', 'natysettantuno', 'FedericoBetton3', 'mikashands',
-             'AgCultNews', 'GiusPecoraro', 'marta_ron4', 'antoniodigi',
-             'radioitaliaint', 'cougaritaliane', 'tattooevhoney', 'wandamvu',
-             'Infinitejest19', 'Erica91638389', 'UnTemaAlGiorno',
-             'roberto01012023', 'CurvaStone', 'DavidCelisq', 'VickyDream_CAM',
-             'NamidaNoAki2', 'sportparma', 'soIskjaers', 'CryPaolo',
-             'ianshappjness', 'puresoultae', 'eniiolucherini',
-             'tropicalisimany', 'MarcoSforzato', 'xhyunjinie',
-             'LaJambeNoir7', 'Lalocanda6', 'noitsirene']
+# whitelist = ['SENBreakfast', 'TequilaSh0tz', 'sivadredips', 'TaeTaeMyDrug_',
+#            '_chiarawho', 'francy2270', 'carla_milf', 'scar15385',
+#              'lamattinaste', 'samjdbozn', 'JuanitoSal8', 'evviva_il_re',
+#              'ElisabettaMacha', 'paradisoa1', 'CASTALDIAc', 'Alexia_1223',
+#              'ROSARIOSIDOTI', 'rpGianluca', 'barbiere_enzo', 'jsscamrno',
+#              'DottOlivieri', 'WBOM_Radio', 'dearsnowbarry', 'angelo72518525',
+#              'marco_marsella', 'Opiccio0320', 'martinahot88', 'SinC_Italia',
+#              'leo_the_teacher', 'biagioamalfi', '__Enrica__',
+#              'truemetalonline', 'Percivalgull4', 'cerco_lavoro', 'InfoAmb',
+#              'Nico_Cart', 'natysettantuno', 'FedericoBetton3', 'mikashands',
+#              'AgCultNews', 'GiusPecoraro', 'marta_ron4', 'antoniodigi',
+#              'radioitaliaint', 'cougaritaliane', 'tattooevhoney', 'wandamvu',
+#              'Infinitejest19', 'Erica91638389', 'UnTemaAlGiorno',
+#              'roberto01012023', 'CurvaStone', 'DavidCelisq', 'VickyDream_CAM',
+#              'NamidaNoAki2', 'sportparma', 'soIskjaers', 'CryPaolo',
+#              'ianshappjness', 'puresoultae', 'eniiolucherini',
+#              'tropicalisimany', 'MarcoSforzato', 'xhyunjinie',
+#              'LaJambeNoir7', 'Lalocanda6', 'noitsirene']
 
 # Naming and initializing the Topic
 KafkaTopic = "Music_Tweets"
@@ -94,7 +116,7 @@ class Listener(StreamListener):
                 'text': data_['text'],
                 'created_at': data_['created_at'],
                 'truncated': data_["truncated"]}
-        if data["user"]["screen_name"] in whitelist:
+        if is_in_whitelist(data["user"]["screen_name"]):
             if data["truncated"]:
                 data["text"] = re.escape(data_["extended_tweet"]["full_text"])
             data.pop('truncated')
@@ -105,20 +127,22 @@ class Listener(StreamListener):
                 print("Tweet '" + data_["text"] +
                       "' does not actually talk about music.")
                 return False
-        elif data["user"]["screen_name"] in blacklist:
+        elif is_in_blacklist(data["user"]["screen_name"]):
             return False
-        elif bom.check_account(data["user"]["screen_name"])['scores']['universal'] > 0.9:
-            blacklist.append(data["user"]["screen_name"])
+        elif store_user(data["user"]["screen_name"]) > BOT_PROB:
+            # blacklist.append(data["user"]["screen_name"])
             p = "User " + data["user"]["screen_name"] + \
                 " has a probability of " + \
-                str(round(bom.check_account(data["user"]["screen_name"])['scores']['universal'], 4)) + \
+                str(round(bom.check_account(
+                    data["user"]["screen_name"])['scores']['universal'],
+                          4)) + \
                 " of being a BOT."
             return p
         else:
             if data["truncated"]:
                 data["text"] = data_["extended_tweet"]["full_text"]
             data.pop('truncated')
-            whitelist.append(data["user"]["screen_name"])
+            # whitelist.append(data["user"]["screen_name"])
             data = FunzioneMarco(data)
             if len(data) > 0:
                 return str(data)
