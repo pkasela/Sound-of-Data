@@ -38,8 +38,10 @@ rm -r ./demo_results/results/*.tsv
 #export SOUND_FOLDER=$(pwd)
 #cd musicbrainz_data/
 
-hadoop fs -rm -r -f /mbdump/*
-hadoop fs -rm -r -f /demo_results/*
+hadoop fs -rm -r /mbdump
+hadoop fs -rm -r /demo_results
+hadoop fs -rm -r /user/maria_dev/.Trash/Current/mbdump
+hadoop fs -rm -r /user/maria_dev/.Trash/Current/demo_results
 
 hadoop fs -mkdir -p /mbdump
 hadoop fs -mkdir -p /demo_results
