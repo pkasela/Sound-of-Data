@@ -110,7 +110,10 @@ def find_artist_record(recording):
 
 
 #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati 
-common_elements_2 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
+
+common_elements_21 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
+common_elements_22 = (list(set(find_artist_record(recording)).intersection(find_artist_NS(NS))))
+common_elements_2 = common_elements_21 + common_elements_22
 
 
 def find_record(recording):
@@ -135,6 +138,33 @@ def find_record(recording):
     return (listarecord)
  
 
+    
+def find_record_NS(recording):
+    #trovo gli id delle tracks
+    listarecordNS = []
+    for h in recording:
+        if len(artisti) > 0:
+            for a in artisti:
+                result = musicbrainzngs.search_recordings(h + "~0.9" + " AND " + "artist:" + a + "~0.9")
+                if len(result["recording-list"]) > 0:
+                    for record in result['recording-list']:
+                        if record.get("title").lower()==h.lower():
+                            if 'disambiguation' not in record:
+                                #tutti controlli ulteriori per evitare di restituire troppi id
+                                listarecordNS.append(record.get("id"))
+        else:
+            result = musicbrainzngs.search_recordings(h + "~0.9")
+            if len(result["recording-list"]) > 0:
+                for record in result['recording-list']:
+                    if record.get("title").lower()==h.lower():
+                        if 'disambiguation' not in record:
+                            if int(record.get("ext:score")) > 90:
+                                #tutti controlli ulteriori per evitare di restituire troppi id
+                                listarecordNS.append(record.get("id"))
+                
 
-id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + generi
+    return(listarecordNS)
+ 
+
+id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + find_record_NS(NS) generi
 print(id_trovati)
