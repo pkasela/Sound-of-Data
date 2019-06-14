@@ -10,7 +10,12 @@ musicbrainzngs.set_useragent("Sound of Data", "0.1")
 
 #presupponendo che il tipo di ogni entità sia conosciuto 
 
-frase_input = momo.get_istances("testo del tweet")
+
+dizionario = {"user": {"screen_name": ""}, "text":"il testo del tweet è questo", "created_at":""}
+
+input = dizionario.get("text")
+
+frase_input = momo.get_istances(input)
 
 artisti = list(frase_input[0])
 recording = list(frase_input[1])
@@ -169,3 +174,10 @@ def find_record_NS(recording):
 
 id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + find_record_NS(NS) + generi
 print(id_trovati)
+
+
+#dizionario['artist'] = find_artist(artisti) + find_artist_NS(NS)
+#dizionario['album'] = find_album(NS)
+#dizionario['recording'] = find_record(recording) + find_record_NS(NS)
+
+#return(dizionario)
