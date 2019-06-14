@@ -132,8 +132,9 @@ def find_record(recording):
                         if 'artist' in artistc:
                             if (artistc['artist'].get("id")) in common_elements_2:
                                 if 'disambiguation' not in record:
-                                #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
-                                    listarecord.append(record.get("id"))
+                                    #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
+                                    if int(record.get("ext:score")) > 90:
+                                        listarecord.append(record.get("id"))
 
     return (listarecord)
  
@@ -166,5 +167,5 @@ def find_record_NS(recording):
     return(listarecordNS)
  
 
-id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + find_record_NS(NS) generi
+id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + find_record_NS(NS) + generi
 print(id_trovati)
