@@ -8,24 +8,29 @@ import prova2 as momo
 musicbrainzngs.set_useragent("Sound of Data", "0.1")
 
 
-#presupponendo che il tipo di ogni entità sia conosciuto 
+def get_musicbrainz_id(dizionario):
+    input = dizionario.get("text")
+    frase_input = momo.get_istances(input)
+    artisti = list(frase_input[0])
+    recording = list(frase_input[1])
+    NS = list(frase_input[2]) # lo si prova per album,artisti e recording
+    generi = frase_input[3]
+    
+    #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
+    common_elements_11 = (list(set(find_artist_album(NS)).intersection(find_artist(artisti))))
+    common_elements_12 = (list(set(find_artist_album(NS)).intersection(find_artist_NS(NS))))
+    common_elements_1 = common_elements_11 + common_elements_12
+    
+    #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati 
+    common_elements_21 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
+    common_elements_22 = (list(set(find_artist_record(recording)).intersection(find_artist_NS(NS))))
+    common_elements_2 = common_elements_21 + common_elements_22
+    
+    dizionario['artist'] = find_artist(artisti) + find_artist_NS(NS)
+    dizionario['album'] = find_album(NS,common_elements_1)
+    dizionario['recording'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
 
-
-dizionario = {"user": {"screen_name": ""}, "text":"il testo del tweet è questo", "created_at":""}
-
-input = dizionario.get("text")
-
-frase_input = momo.get_istances(input)
-
-artisti = list(frase_input[0])
-recording = list(frase_input[1])
-#album = list(frase_input[2])
-NS = list(frase_input[2]) # poi da provare per album,artisti e recording
-generi = frase_input[3]
-
-#artisti = ["francesco gabbani","pooh","porcupine tree","vasco Rossi"]
-#album = ["in absentia"]
-#recording = ["the sound of muzak"]
+    return(dizionario)
 
 
 
@@ -72,13 +77,8 @@ def find_artist_album(album):
    
     return(listartistalbum)
 
-  
-#controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
-common_elements_11 = (list(set(find_artist_album(NS)).intersection(find_artist(artisti))))
-common_elements_12 = (list(set(find_artist_album(NS)).intersection(find_artist_NS(NS))))
-common_elements_1 = common_elements_11 + common_elements_12
 
-def find_album(album):
+def find_album(album,common_elements_1):
     #trovo gli id degli album presenti
     listalbum = []
     for h in album:
@@ -114,14 +114,8 @@ def find_artist_record(recording):
     return(listartistrecord)
 
 
-#controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati 
 
-common_elements_21 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
-common_elements_22 = (list(set(find_artist_record(recording)).intersection(find_artist_NS(NS))))
-common_elements_2 = common_elements_21 + common_elements_22
-
-
-def find_record(recording):
+def find_record(recording,common_elements_2):
     #trovo gli id delle tracks
     listarecord = []
     for h in recording:
@@ -145,7 +139,7 @@ def find_record(recording):
  
 
     
-def find_record_NS(recording):
+def find_record_NS(recording,artisti):
     #trovo gli id delle tracks
     listarecordNS = []
     for h in recording:
@@ -172,12 +166,4 @@ def find_record_NS(recording):
     return(listarecordNS)
  
 
-id_trovati = find_artist(artisti) + find_artist_NS(NS) + find_album(NS) + find_record(recording) + find_record_NS(NS) + generi
-print(id_trovati)
 
-
-#dizionario['artist'] = find_artist(artisti) + find_artist_NS(NS)
-#dizionario['album'] = find_album(NS)
-#dizionario['recording'] = find_record(recording) + find_record_NS(NS)
-
-#return(dizionario)
