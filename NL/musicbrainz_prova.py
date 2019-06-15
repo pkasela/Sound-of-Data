@@ -127,7 +127,7 @@ def find_record(recording,common_elements_2):
                         if 'disambiguation' not in record:
                             if int(record.get("ext:score")) > 90:
                                 if 'length' in record:
-                                    listarecord.append(record.get("id")
+                                    listarecord.append(record.get("id"))
                 #aggiunti controlli per evitare di restituire troppi id
             else:
                 for record in result['recording-list']:
