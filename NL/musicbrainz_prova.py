@@ -85,7 +85,8 @@ def find_album(album,common_elements_1):
         result = musicbrainzngs.search_release_groups(h + "~0.9")
         if len(result["release-group-list"]) > 0:
             if len(common_elements_1)==0:
-                listalbum.append(result['release-group-list'][0]["id"])
+                if result.get('primary-type') != "Single":
+                    listalbum.append(result['release-group-list'][0]["id"])
                 #se non ci sono corrispondenze ritorno il primo risultato
             else:
                 for release in result['release-group-list']:
@@ -94,8 +95,9 @@ def find_album(album,common_elements_1):
                         if 'artist' in artistc:
                             if (artistc['artist'].get("id")) in common_elements_1:
                                 if ir.get("title").lower()==h.lower():
-                                    #anche qua aggiunto ulteriore controllo per diminuire possibili errori
-                                    listalbum.append(release.get("id"))
+                                    if result.get('primary-type') != "Single":
+                                        #anche qua aggiunto ulteriore controllo per diminuire possibili errori
+                                        listalbum.append(release.get("id"))
     return(listalbum)
 
 
@@ -128,6 +130,7 @@ def find_record(recording,common_elements_2):
                             if int(record.get("ext:score")) > 90:
                                 if 'length' in record:
                                     listarecord.append(record.get("id"))
+                                    break
                 #aggiunti controlli per evitare di restituire troppi id
             else:
                 for record in result['recording-list']:
@@ -158,6 +161,7 @@ def find_record_NS(recording,artisti):
                             if 'disambiguation' not in record:
                                 #tutti controlli ulteriori per evitare di restituire troppi id
                                 listarecordNS.append(record.get("id"))
+                                break
         else:
             result = musicbrainzngs.search_recordings(h + "~0.9")
             if len(result["recording-list"]) > 0:
@@ -168,6 +172,7 @@ def find_record_NS(recording,artisti):
                                 if 'length' in record:
                                     #tutti controlli ulteriori per evitare di restituire troppi id
                                     listarecordNS.append(record.get("id"))
+                                    break
                 
 
     return(listarecordNS)
