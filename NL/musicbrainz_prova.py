@@ -122,8 +122,13 @@ def find_record(recording,common_elements_2):
         result = musicbrainzngs.search_recordings(h + "~0.9",limit = 75)
         if len(result["recording-list"]) > 0:
             if len(common_elements_2)==0:
-                listarecord.append(result['recording-list'][0]["id"])
-                #se non ci sono corrispondenze ritorno il primo risultato
+                for record in result['recording-list']:
+                    if record.get("title").lower()==h.lower():
+                        if 'disambiguation' not in record:
+                            if int(record.get("ext:score")) > 90:
+                                if 'length' in record:
+                                    listarecord.append(record.get("id")
+                #aggiunti controlli per evitare di restituire troppi id
             else:
                 for record in result['recording-list']:
                     ir=record
@@ -133,7 +138,8 @@ def find_record(recording,common_elements_2):
                                 if 'disambiguation' not in record:
                                     #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
                                     if int(record.get("ext:score")) > 90:
-                                        listarecord.append(record.get("id"))
+                                        if 'length' in record:
+                                            listarecord.append(record.get("id"))
 
     return (listarecord)
  
@@ -159,8 +165,9 @@ def find_record_NS(recording,artisti):
                     if record.get("title").lower()==h.lower():
                         if 'disambiguation' not in record:
                             if int(record.get("ext:score")) > 90:
-                                #tutti controlli ulteriori per evitare di restituire troppi id
-                                listarecordNS.append(record.get("id"))
+                                if 'length' in record:
+                                    #tutti controlli ulteriori per evitare di restituire troppi id
+                                    listarecordNS.append(record.get("id"))
                 
 
     return(listarecordNS)
