@@ -1,6 +1,5 @@
 from kafka import SimpleProducer, KafkaClient
 import json
-import tweepy  # unused
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
