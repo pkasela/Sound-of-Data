@@ -157,7 +157,7 @@ def find_record_NS(recording,artisti):
                 result = musicbrainzngs.search_recordings(h + "~0.9" + " AND " + "artist:" + a + "~0.9")
                 if len(result["recording-list"]) > 0:
                     for record in result['recording-list']:
-                        if record.get("title").lower()==h.lower():
+                        #if record.get("title").lower()==h.lower(): forse qua è meglio non mettere questo controllo
                             if 'disambiguation' not in record:
                                 #tutti controlli ulteriori per evitare di restituire troppi id
                                 listarecordNS.append(record.get("id"))
