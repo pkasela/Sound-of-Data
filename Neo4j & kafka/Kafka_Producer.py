@@ -1,6 +1,4 @@
-from kafka import KafkaProducer  # unused
 from kafka import SimpleProducer, KafkaClient
-from kafka import KafkaConsumer, TopicPartition  # unused
 import json
 import tweepy  # unused
 from tweepy.streaming import StreamListener
@@ -73,11 +71,6 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
                           mashape_key=mashape_key,
                           **twitter_app_auth)
 
-# il tempo di ricerca in una lista è lineare: le possibilità sono due
-# - si trasforma in un set `whitelist = set(whitelist)` che rende il tempo
-#   logaritmico
-# - si salva su neo4j in una voce la probabilità che sia un bot
-# così però poi M. rompe i coglioni che non è scalabile
 # Initialize blacklist:
 # blacklist = ['starreldred14', 'chelseacusack8']
 # Already detected 67 "white" italian users from previous attempts
@@ -115,25 +108,18 @@ def FunzioneMarco(data):
 class Listener(StreamListener):
     # Defining the function filtering tweets:
     def tweet_preparations(self, data_):
-        data_ = data_._json  # awesome syntax *.* @momo
+        data_ = data_._json  
         data = {'user': {
                     'screen_name': data_["user"]["screen_name"]
                 },
-                # it avoids a check!
                 'text': remove_spaces(
                     data_["extended_tweet"]["full_text"] if data_["truncated"]
                     else data_["text"])
-                # 'text': remove_spaces(data_["text"]),
                 'created_at': data_['created_at'],
-                # 'truncated': data_["truncated"]
         }
         if user_is_a_bot(data["user"]["screen_name"]):
             return False
         else:
-            # if data["truncated"]:
-            #     data["text"] = remove_spaces(
-            #         data_["extended_tweet"]["full_text"])
-            # data.pop('truncated')
             data = FunzioneMarco(data)
             if len(data) > 0:
                 return str(data).encode("utf-8")
@@ -188,6 +174,4 @@ stream = Stream(auth, myListener)
 while True:
     stream.filter(track=[genre_list[i] for i in range(400)],
                   languages=["it"])
-# After 400 keywords, tweepy send the error 413: "Payload Too Large".
-###############################
 ####Need to tell him not to remove the last 19 genres, but the one we want to remove
