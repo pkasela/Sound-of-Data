@@ -85,7 +85,7 @@ def find_album(album,common_elements_1):
         result = musicbrainzngs.search_release_groups(h + "~0.9")
         if len(result["release-group-list"]) > 0:
             if len(common_elements_1)==0:
-                if result.get('primary-type') != "Single":
+                if result['release-group-list'][0]["primary-type"] != "Single":
                     listalbum.append(result['release-group-list'][0]["id"])
                 #se non ci sono corrispondenze ritorno il primo risultato
             else:
