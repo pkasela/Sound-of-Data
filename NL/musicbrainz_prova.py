@@ -95,7 +95,7 @@ def find_album(album,common_elements_1):
                         if 'artist' in artistc:
                             if (artistc['artist'].get("id")) in common_elements_1:
                                 if ir.get("title").lower()==h.lower():
-                                    if result.get('primary-type') != "Single":
+                                    if ir.get('primary-type') != "Single":
                                         #anche qua aggiunto ulteriore controllo per diminuire possibili errori
                                         listalbum.append(release.get("id"))
     return(listalbum)
