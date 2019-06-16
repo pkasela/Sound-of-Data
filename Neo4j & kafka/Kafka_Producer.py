@@ -39,14 +39,13 @@ def store_user(user):
     return value
 
 
-def is_in_whitelist(user):
+def user_is_a_bot(user):
     value = users.get(user).data
-    return value < BOT_PROB if value else False
-
-
-def is_in_blacklist(user):
-    value = users.get(user).data
-    return value > BOT_PROB if value else False
+    if not value:
+        value = store_user(user)
+        print("User {} has a probability of {} to be a bot".format(user,
+                                                                   value))
+    return value > BOT_PROB
 
 
 # Create a secret.json file with the twitter keys in it.
@@ -116,40 +115,25 @@ def FunzioneMarco(data):
 class Listener(StreamListener):
     # Defining the function filtering tweets:
     def tweet_preparations(self, data_):
-        data_ = data_._json
+        data_ = data_._json  # awesome syntax *.* @momo
         data = {'user': {
                     'screen_name': data_["user"]["screen_name"]
                 },
-                'text': remove_spaces(data_["text"]),
+                # it avoids a check!
+                'text': remove_spaces(
+                    data_["extended_tweet"]["full_text"] if data_["truncated"]
+                    else data_["text"])
+                # 'text': remove_spaces(data_["text"]),
                 'created_at': data_['created_at'],
-                'truncated': data_["truncated"]}
-        if is_in_whitelist(data["user"]["screen_name"]):
-            if data["truncated"]:
-                data["text"] = remove_spaces(data_["extended_tweet"]["full_text"])
-            data.pop('truncated')
-            data = FunzioneMarco(data)
-            if len(data) > 0:
-                return str(data).encode("utf-8")
-            else:
-                print("Tweet '" + data_["text"] +
-                      "' does not actually talk about music.")
-                return False
-        elif is_in_blacklist(data["user"]["screen_name"]):
-            return False
-        elif store_user(data["user"]["screen_name"]) > BOT_PROB:
-            # blacklist.append(data["user"]["screen_name"])
-            print("User " + data["user"]["screen_name"] +
-                  " has a probability of " +
-                  str(round(bom.check_account(
-                      data["user"]["screen_name"])['scores']['universal'],
-                            4)) +
-                  " of being a BOT.")
+                # 'truncated': data_["truncated"]
+        }
+        if user_is_a_bot(data["user"]["screen_name"]):
             return False
         else:
-            if data["truncated"]:
-                data["text"] = remove_spaces(data_["extended_tweet"]["full_text"])
-            data.pop('truncated')
-            # whitelist.append(data["user"]["screen_name"])
+            # if data["truncated"]:
+            #     data["text"] = remove_spaces(
+            #         data_["extended_tweet"]["full_text"])
+            # data.pop('truncated')
             data = FunzioneMarco(data)
             if len(data) > 0:
                 return str(data).encode("utf-8")
