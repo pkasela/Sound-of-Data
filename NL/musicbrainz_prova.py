@@ -58,6 +58,7 @@ def find_artist_NS(NS):
                 ir=artists
                 if ir.get("name").lower()==i.lower():
                     listartistNS.append(artists.get("id"))
+                    break
 
     return(listartistNS)
 
