@@ -9,6 +9,7 @@ import botometer
 import re
 import time
 import riak
+from musicbrainz_prova.py import get_musicbrainz_id as FunzioneMarco
 
 #import ipdb; #needed for debugging
 
@@ -107,13 +108,13 @@ def FunzioneMarco(data):
 class Listener(StreamListener):
     # Defining the function filtering tweets:
     def tweet_preparations(self, data_):
-        data_ = data_._json  
+        data_ = data_._json
         data = {'user': {
                     'screen_name': data_["user"]["screen_name"]
                 },
                 'text': remove_spaces(
                     data_["extended_tweet"]["full_text"] if data_["truncated"]
-                    else data_["text"])
+                    else data_["text"]),
                 'created_at': data_['created_at'],
         }
         if user_is_a_bot(data["user"]["screen_name"]):
@@ -132,7 +133,7 @@ class Listener(StreamListener):
         if len(data) > 0:
             print(data)
             #ipdb.set_trace()
-            producer.send_messages("KafkaTopic", data)
+            producer.send_messages("Prova", FunzioneMarco(data))
         else:
             self.tweet_preparations(data)
         return True
