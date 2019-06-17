@@ -99,7 +99,7 @@ KafkaTopic = "Music_Tweets"
 
 
 def remove_spaces(txt):
-    return re.sub(r"[\n\t\\]", " ", txt)
+    return re.sub('@[A-z0-9]+','',re.sub(r"[\n\t\\]", " ", txt).replace("RT",""))
 
 
 #def FunzioneMarco(data):
@@ -122,7 +122,7 @@ class Listener(StreamListener):
             return False
         else:
             data = FunzioneMarco(data)
-            if len(data) > 0:
+            if (len(data['artist'])+len(data['release'])+len(data['recording'])) > 0:
                 return str(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
@@ -134,9 +134,9 @@ class Listener(StreamListener):
         if len(data) > 0:
             print(data)
             #ipdb.set_trace()
-            producer.send("Prova", FunzioneMarco(data.json_loads()))
-        else:
-            self.tweet_preparations(data)
+            producer.send("Prova", data))
+        #else:
+        #    self.tweet_preparations(data)
         return True
 
     def on_error(self, status_code):
