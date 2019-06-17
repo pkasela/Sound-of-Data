@@ -119,7 +119,7 @@ class Listener(StreamListener):
                 'created_at': data_['created_at'],
         }
         if user_is_a_bot(data["user"]["screen_name"]):
-            return False
+            return ""
         else:
             data = FunzioneMarco(data)
             if (len(data['artist'])+len(data['release'])+len(data['recording'])) > 0:
@@ -127,14 +127,14 @@ class Listener(StreamListener):
             else:
                 print("Tweet '" + data_["text"] +
                       "' does not actually talk about music.")
-                return False
+                return ""
 
     def on_status(self, data):
         data = self.tweet_preparations(data)
-        if len(data) > 0:
+        if len(data.decode()) > 0:
             print(data)
             #ipdb.set_trace()
-            producer.send("Prova", data))
+            producer.send("Prova", data)
         #else:
         #    self.tweet_preparations(data)
         return True
