@@ -1,4 +1,5 @@
-from kafka import SimpleProducer, KafkaClient
+#from kafka import SimpleProducer, KafkaClient
+from kafka import KafkaProducer
 import json
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
@@ -9,7 +10,7 @@ import botometer
 import re
 import time
 import riak
-from musicbrainz_prova.py import get_musicbrainz_id as FunzioneMarco
+from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
 
 #import ipdb; #needed for debugging
 
@@ -101,8 +102,8 @@ def remove_spaces(txt):
     return re.sub(r"[\n\t\\]", " ", txt)
 
 
-def FunzioneMarco(data):
-    return data
+#def FunzioneMarco(data):
+#    return data
 
 
 class Listener(StreamListener):
@@ -133,7 +134,7 @@ class Listener(StreamListener):
         if len(data) > 0:
             print(data)
             #ipdb.set_trace()
-            producer.send_messages("Prova", FunzioneMarco(data))
+            producer.send("Prova", FunzioneMarco(data.json_loads()))
         else:
             self.tweet_preparations(data)
         return True
@@ -162,8 +163,9 @@ class Listener(StreamListener):
 #     be serviced due to some failure within the internal stack
 
 
-kafka = KafkaClient("localhost:9092")
-producer = SimpleProducer(kafka)
+#kafka = KafkaClient("localhost:6667")
+#producer = SimpleProducer(kafka)
+producer = KafkaProducer(bootstrap_servers='sandbox-hdp.hortonworks.com:6667')
 
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
