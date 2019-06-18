@@ -1,5 +1,6 @@
 import re
 import enchant  # pip install pyenchant
+from treetagger import TreeTagger
 from itertools import permutations
 from itertools import chain as flatten
 
@@ -16,6 +17,9 @@ ACCEPTED_BETWEEN = set(["a", "o'", "'n'", "in"])
 ARTIST_ALBUM = r"\s?\b(de?i|dell[ae]|by|[Aa]|[Cc]on|[Gg]li|[Ii]|[Ll][ea])\s"
 
 DICT = enchant.Dict("it_IT")
+
+TAGGER = TreeTagger(path_to_treetagger="./TreeTagger/",
+                    language="italian")
 
 
 def check_enchant(txt):
@@ -158,15 +162,20 @@ def get_istances(t):
     # aggiungi le parole palesemente straniere
     istances += check_syllabes(t)
     # aggiungi i presunti nomi propri
-    # istances += re.findall(r"(?<!\")\b[A-Z][a-zàèéìòù]\b", t)
-    istances += re.findall(r"\b[A-Z][a-zàèéìòù]+\b", t)
+    istances += re.findall(r"(?<=\w\s)\b[A-Z][a-zàèéìòù]+\b", t)
+    # aggiungi tutti i sostantivi maiuscoli
+    istances += [re.sub(r"\W", "", x[0])
+                 for x in filter(
+                         lambda x: re.match(r"[A-Z]", x[0][0]) and
+                         x[1][0] == "N",
+                         TAGGER.tag(t))]
     # elimina gli spazi superflui
     istances = list(map(lambda x: re.sub(r"\s+", "", x), istances))
     # aggiungi le parole tra virgolette
     songs = set(map(lambda e: re.sub("\"", "", e), re.findall(r"\".+?\"", t)))
     # concatena le istanze
     istances = concat_words(set(istances), t)
-    istances = resplit_istances(istances, t)
+    # istances = resplit_istances(istances, t)
     names, songs, miscellanea = try_identify(istances, songs, t)
     print("People: ", end="")
     print(names)

@@ -7,3 +7,9 @@ botometer
 musicbrainzngs
 pyenchant
 urllib3
+
+treetagger-python (https://github.com/miotto/treetagger-python),
+  installabile con installer ./NL/install-treetagger.sh
+  (che installa anche TreeTagger)
+riak-python (https://github.com/basho/riak-python-client),
+  installabile con installer ./Neo4j & kafka/install_python_riak.sh
