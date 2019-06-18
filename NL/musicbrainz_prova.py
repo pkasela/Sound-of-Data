@@ -29,6 +29,7 @@ def get_musicbrainz_id(dizionario):
     dizionario['artist'] = find_artist(artisti) + find_artist_NS(NS)
     dizionario['release'] = find_album(NS,common_elements_1)
     dizionario['recording'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
+    dizionario['generi'] = generi
 
     return(dizionario)
 
