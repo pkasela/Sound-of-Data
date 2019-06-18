@@ -7,6 +7,7 @@ botometer
 musicbrainzngs
 pyenchant
 urllib3
+nltk
 
 treetagger-python (https://github.com/miotto/treetagger-python),
   installabile con installer ./NL/install-treetagger.sh
