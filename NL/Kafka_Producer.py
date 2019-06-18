@@ -100,19 +100,15 @@ KafkaTopic = "Music_Tweets"
 
 def remove_spaces(txt):
     return re.sub('@[A-z0-9]+','',re.sub(r"[\n\t\\]", " ", txt).replace("RT",""))
-
-
-#def FunzioneMarco(data):
-#    return data
+    #It also removes the initial part with RT(retweet) @user_retweeted,
+    # since it is recognized as an enitity but is not a musical one
 
 
 class Listener(StreamListener):
     # Defining the function filtering tweets:
     def tweet_preparations(self, data_):
         data_ = data_._json
-        data = {'user': {
-                    'screen_name': data_["user"]["screen_name"]
-                },
+        data = {'user': data_["user"]["screen_name"],
                 'text': remove_spaces(
                     data_["extended_tweet"]["full_text"] if data_["truncated"]
                     else data_["text"]),

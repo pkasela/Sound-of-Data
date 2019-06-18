@@ -1,12 +1,28 @@
-The streams.consume() procedure offered by plug-in "Neo4j Streams" allows user to ingest data from Kafka topics into Neo4j via templated Cypher Statements. You can find the tutorial at https://neo4j-contrib.github.io/neo4j-streams/. 
+The streams.consume() procedure offered by plug-in "Neo4j Streams" allows user to ingest data from Kafka topics into Neo4j via templated Cypher Statements. 
+You can find the tutorial at https://neo4j-contrib.github.io/neo4j-streams/. 
 Buuuut, to make it work, just follow the instructions. I am making the process work through Docker Desktop.
 
-1) Download jar file called "neo4j-streams-3.4.1.jar
-" from https://github.com/neo4j-contrib/neo4j-streams/releases/tag/3.4.1. This is the plug-in object.
+1) Download jar file called "neo4j-streams-3.5.1.jar
+"from https://github.com/neo4j-contrib/neo4j-streams/releases/tag/3.5.1. This is the plug-in object.
 
-2) Download "neo4j-kafka-connect-neo4j-1.0.0.zip" from the same website and unzip it in the directory $NEO4J_HOME/plugins. You can find any directory you need following the instructions in https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#table-file-locations.
+2) Download "neo4j-kafka-connect-neo4j-1.0.0.zip" from the same website and unzip it in the directory $NEO4J_HOME/plugins. 
+You can find any directory you need following the instructions in https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#table-file-locations.
 
-3)If you are using the Docker, configure "docker-compose.yml" file as I do. If you are not using Docker, just copy "environment" configurations in "neo4j.conf" file, as explained in https://neo4j-contrib.github.io/neo4j-streams/#_streams_consume
+3)If you are using the Docker, configure "docker-compose.yml" file as I do. If you are not using Docker, just copy "environment" configurations in "neo4j.conf" file, 
+as explained in https://neo4j-contrib.github.io/neo4j-streams/#_streams_consume
+
+3.1) Here is the local config I used in VM (didn't use the docker stuff)
+kafka.zookeeper.connect=localhost:2181
+kafka.bootstrap.servers=localhost:6667
+
+streams.procedures.enabled=true
+streams.sink.enabled=true
+streams.sink.topic.cypher.Prova = MERGE (p:User{name:event.user}) \
+   CREATE (t:tweet{text:event.text,created_at:event.created_at}) \
+   MERGE (p)-[:TWITTED]->(t) \
+   WITH t,event \
+   MATCH (e) WHERE e.gid in event.gids \
+   CREATE (t)-[:TALKS_ABOUT]->(e)
  
 4) Start docker and from the same directory of "docker-compose.yml" execute in bash the command:
 docker-compose up -d
@@ -16,9 +32,18 @@ It mounts the containers with configurations you have just set up.
 
 6) Execute the Kafka producer, sending message with the same exact structure you specify in "docker-compose.yml" 
 Tweet format must be exactly: 
-{"text": "Ciao","user": {"screen_name": "Riccardo"}}
+{"text": "Ciao","user": "Riccardo","created_at":"a time","gids_of_entities":["list","of","gids"]} 
+we will see if we need to separate the gids of different entities or not
 
-7)Execute the following cypher statement:
+6.1) Cypher query must be:
+MERGE (p:User{name:event.user}) \
+CREATE (t:tweet{text:event.text,created_at:event.created_at}) \
+MERGE (p)-[:TWITTED]->(t) \
+WITH t,event \
+MATCH (e) WHERE e.gid in event.gids \
+CREATE (t)-[:TALKS_ABOUT]->(e)
+
+7)Execute the following cypher statement: we should not do this manually, it is configured to happen automatically (streams.sink.enabled=true & streams.procedures.enabled=true) 
 CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
 CREATE (t:Tweet{Text: event.data.text, Name: event.data.user})
 
