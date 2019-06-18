@@ -27,7 +27,7 @@ def get_musicbrainz_id(dizionario):
     common_elements_2 = common_elements_21 + common_elements_22
     
     dizionario['artist'] = find_artist(artisti) + find_artist_NS(NS)
-    dizionario['album'] = find_album(NS,common_elements_1)
+    dizionario['release'] = find_album(NS,common_elements_1)
     dizionario['recording'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
 
     return(dizionario)
@@ -58,6 +58,7 @@ def find_artist_NS(NS):
                 ir=artists
                 if ir.get("name").lower()==i.lower():
                     listartistNS.append(artists.get("id"))
+                    break
 
     return(listartistNS)
 
@@ -85,9 +86,10 @@ def find_album(album,common_elements_1):
         result = musicbrainzngs.search_release_groups(h + "~0.9")
         if len(result["release-group-list"]) > 0:
             if len(common_elements_1)==0:
-                if result['release-group-list'][0]["primary-type"] != "Single":
-                    listalbum.append(result['release-group-list'][0]["id"])
-                #se non ci sono corrispondenze ritorno il primo risultato
+                if 'primary-type' in result['release-group-list'][0]:
+                    if result['release-group-list'][0]["primary-type"] != "Single":
+                        listalbum.append(result['release-group-list'][0]["id"])
+                        #se non ci sono corrispondenze ritorno il primo risultato
             else:
                 for release in result['release-group-list']:
                     ir=release
@@ -95,9 +97,10 @@ def find_album(album,common_elements_1):
                         if 'artist' in artistc:
                             if (artistc['artist'].get("id")) in common_elements_1:
                                 if ir.get("title").lower()==h.lower():
-                                    if result.get('primary-type') != "Single":
-                                        #anche qua aggiunto ulteriore controllo per diminuire possibili errori
-                                        listalbum.append(release.get("id"))
+                                    if 'primary-type' in ir:
+                                        if ir.get('primary-type') != "Single":
+                                            #anche qua aggiunto ulteriore controllo per diminuire possibili errori
+                                            listalbum.append(release.get("id"))
     return(listalbum)
 
 
@@ -157,7 +160,7 @@ def find_record_NS(recording,artisti):
                 result = musicbrainzngs.search_recordings(h + "~0.9" + " AND " + "artist:" + a + "~0.9")
                 if len(result["recording-list"]) > 0:
                     for record in result['recording-list']:
-                        if record.get("title").lower()==h.lower():
+                        #if record.get("title").lower()==h.lower(): forse qua è meglio non mettere questo controllo
                             if 'disambiguation' not in record:
                                 #tutti controlli ulteriori per evitare di restituire troppi id
                                 listarecordNS.append(record.get("id"))

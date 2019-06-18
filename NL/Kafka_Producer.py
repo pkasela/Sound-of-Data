@@ -1,8 +1,6 @@
-from kafka import KafkaProducer  # unused
-from kafka import SimpleProducer, KafkaClient
-from kafka import KafkaConsumer, TopicPartition  # unused
+#from kafka import SimpleProducer, KafkaClient
+from kafka import KafkaProducer
 import json
-import tweepy  # unused
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -12,6 +10,7 @@ import botometer
 import re
 import time
 import riak
+from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
 
 #import ipdb; #needed for debugging
 
@@ -73,11 +72,6 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
                           mashape_key=mashape_key,
                           **twitter_app_auth)
 
-# il tempo di ricerca in una lista è lineare: le possibilità sono due
-# - si trasforma in un set `whitelist = set(whitelist)` che rende il tempo
-#   logaritmico
-# - si salva su neo4j in una voce la probabilità che sia un bot
-# così però poi M. rompe i coglioni che non è scalabile
 # Initialize blacklist:
 # blacklist = ['starreldred14', 'chelseacusack8']
 # Already detected 67 "white" italian users from previous attempts
@@ -105,51 +99,44 @@ KafkaTopic = "Music_Tweets"
 
 
 def remove_spaces(txt):
-    return re.sub(r"[\n\t\\]", " ", txt)
+    return re.sub('@[A-z0-9]+','',re.sub(r"[\n\t\\]", " ", txt).replace("RT",""))
 
 
-def FunzioneMarco(data):
-    return data
+#def FunzioneMarco(data):
+#    return data
 
 
 class Listener(StreamListener):
     # Defining the function filtering tweets:
     def tweet_preparations(self, data_):
-        data_ = data_._json  # awesome syntax *.* @momo
+        data_ = data_._json
         data = {'user': {
                     'screen_name': data_["user"]["screen_name"]
                 },
-                # it avoids a check!
                 'text': remove_spaces(
                     data_["extended_tweet"]["full_text"] if data_["truncated"]
-                    else data_["text"])
-                # 'text': remove_spaces(data_["text"]),
+                    else data_["text"]),
                 'created_at': data_['created_at'],
-                # 'truncated': data_["truncated"]
         }
         if user_is_a_bot(data["user"]["screen_name"]):
-            return False
+            return ""
         else:
-            # if data["truncated"]:
-            #     data["text"] = remove_spaces(
-            #         data_["extended_tweet"]["full_text"])
-            # data.pop('truncated')
             data = FunzioneMarco(data)
-            if len(data) > 0:
+            if (len(data['artist'])+len(data['release'])+len(data['recording'])) > 0:
                 return str(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
                       "' does not actually talk about music.")
-                return False
+                return ""
 
     def on_status(self, data):
         data = self.tweet_preparations(data)
-        if len(data) > 0:
+        if len(data.decode()) > 0:
             print(data)
             #ipdb.set_trace()
-            producer.send_messages("KafkaTopic", data)
-        else:
-            self.tweet_preparations(data)
+            producer.send("Prova", data)
+        #else:
+        #    self.tweet_preparations(data)
         return True
 
     def on_error(self, status_code):
@@ -176,8 +163,9 @@ class Listener(StreamListener):
 #     be serviced due to some failure within the internal stack
 
 
-kafka = KafkaClient("localhost:9092")
-producer = SimpleProducer(kafka)
+#kafka = KafkaClient("localhost:6667")
+#producer = SimpleProducer(kafka)
+producer = KafkaProducer(bootstrap_servers='sandbox-hdp.hortonworks.com:6667')
 
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -188,6 +176,4 @@ stream = Stream(auth, myListener)
 while True:
     stream.filter(track=[genre_list[i] for i in range(400)],
                   languages=["it"])
-# After 400 keywords, tweepy send the error 413: "Payload Too Large".
-###############################
 ####Need to tell him not to remove the last 19 genres, but the one we want to remove
