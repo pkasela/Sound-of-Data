@@ -19,17 +19,18 @@ def get_musicbrainz_id(dizionario):
     #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
     common_elements_11 = (list(set(find_artist_album(NS)).intersection(find_artist(artisti))))
     common_elements_12 = (list(set(find_artist_album(NS)).intersection(find_artist_NS(NS))))
-    common_elements_1 = common_elements_11 + common_elements_12
+    common_elements_1  = common_elements_11 + common_elements_12
     
     #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati 
     common_elements_21 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
     common_elements_22 = (list(set(find_artist_record(recording)).intersection(find_artist_NS(NS))))
-    common_elements_2 = common_elements_21 + common_elements_22
+    common_elements_2  = common_elements_21 + common_elements_22
     
-    dizionario['artist'] = find_artist(artisti) + find_artist_NS(NS)
-    dizionario['release'] = find_album(NS,common_elements_1)
-    dizionario['recording'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
-    dizionario['generi'] = generi
+    artists    = find_artist(artisti) + find_artist_NS(NS)
+    albums     = find_album(NS,common_elements_1)
+    recordings = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
+    
+    dizionario['releazioni'] = artists + albums + recordings + generi
 
     return(dizionario)
 
