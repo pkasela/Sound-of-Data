@@ -16,21 +16,25 @@ def get_musicbrainz_id(dizionario):
     NS = list(frase_input[2]) # lo si prova per album,artisti e recording
     generi = frase_input[3]
 
+    
+    artist_found = find_artist(artisti)
+    artist_found_NS = find_artist_NS(NS)
     #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
-    common_elements_11 = (list(set(find_artist_album(NS)).intersection(find_artist(artisti))))
-    common_elements_12 = (list(set(find_artist_album(NS)).intersection(find_artist_NS(NS))))
+    common_elements_11 = (list(set(find_artist_album(NS)).intersection(artist_found)))
+    common_elements_12 = (list(set(find_artist_album(NS)).intersection(artist_found_NS)))
     common_elements_1  = common_elements_11 + common_elements_12
 
     #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati
-    common_elements_21 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
-    common_elements_22 = (list(set(find_artist_record(recording)).intersection(find_artist_NS(NS))))
+    common_elements_21 = (list(set(find_artist_record(recording)).intersection(artist_found)))
+    common_elements_22 = (list(set(find_artist_record(recording)).intersection(artist_found_NS)))
     common_elements_2  = common_elements_21 + common_elements_22
 
-    artists    = find_artist(artisti) + find_artist_NS(NS)
-    albums     = find_album(NS,common_elements_1)
-    recordings = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
-
-    dizionario['gids'] = artists + albums + recordings + generi
+    dizionario['artists']    = artist_found + artist_found_NS
+    dizionario['release']    = find_album(NS,common_elements_1)
+    dizionario['recordings'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
+    dizionario['genres']     = generi
+   
+    #dizionario['gids'] = artists + albums + recordings + generi
 
     return(dizionario)
 
@@ -57,8 +61,7 @@ def find_artist_NS(NS):
         result = musicbrainzngs.search_artists(i + "~0.95")
         if len(result["artist-list"]) > 0:
             for artists in result['artist-list']:
-                ir=artists
-                if ir.get("name").lower()==i.lower():
+                if artists.get("name").lower()==i.lower():
                     listartistNS.append(artists.get("id"))
                     break
 

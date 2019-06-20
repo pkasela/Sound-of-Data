@@ -89,7 +89,7 @@ class Listener(StreamListener):
             return "".encode("utf-8")
         else:
             data = FunzioneMarco(data)
-            if len(data['gids']) > 0:
+            if len(data['genres']) > 0:
                 return json.dumps(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +

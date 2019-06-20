@@ -187,9 +187,9 @@ def get_istances(t):
     print("Not sure: ", end="")
     print(miscellanea)
     print("")
-    return names - gen, \
-           songs - gen, \
-           miscellanea - gen, \
+    return names - set(gen), \
+           songs - set(gen), \
+           miscellanea - set(gen), \
            gen
 
 
