@@ -1,4 +1,3 @@
-#from kafka import SimpleProducer, KafkaClient
 from kafka import KafkaProducer
 import json
 from tweepy.streaming import StreamListener
@@ -65,24 +64,7 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
 # Initialize blacklist:
 # blacklist = ['starreldred14', 'chelseacusack8']
 # Already detected 67 "white" italian users from previous attempts
-# whitelist = ['SENBreakfast', 'TequilaSh0tz', 'sivadredips', 'TaeTaeMyDrug_',
-#            '_chiarawho', 'francy2270', 'carla_milf', 'scar15385',
-#              'lamattinaste', 'samjdbozn', 'JuanitoSal8', 'evviva_il_re',
-#              'ElisabettaMacha', 'paradisoa1', 'CASTALDIAc', 'Alexia_1223',
-#              'ROSARIOSIDOTI', 'rpGianluca', 'barbiere_enzo', 'jsscamrno',
-#              'DottOlivieri', 'WBOM_Radio', 'dearsnowbarry', 'angelo72518525',
-#              'marco_marsella', 'Opiccio0320', 'martinahot88', 'SinC_Italia',
-#              'leo_the_teacher', 'biagioamalfi', '__Enrica__',
-#              'truemetalonline', 'Percivalgull4', 'cerco_lavoro', 'InfoAmb',
-#              'Nico_Cart', 'natysettantuno', 'FedericoBetton3', 'mikashands',
-#              'AgCultNews', 'GiusPecoraro', 'marta_ron4', 'antoniodigi',
-#              'radioitaliaint', 'cougaritaliane', 'tattooevhoney', 'wandamvu',
-#              'Infinitejest19', 'Erica91638389', 'UnTemaAlGiorno',
-#              'roberto01012023', 'CurvaStone', 'DavidCelisq', 'VickyDream_CAM',
-#              'NamidaNoAki2', 'sportparma', 'soIskjaers', 'CryPaolo',
-#              'ianshappjness', 'puresoultae', 'eniiolucherini',
-#              'tropicalisimany', 'MarcoSforzato', 'xhyunjinie',
-#              'LaJambeNoir7', 'Lalocanda6', 'noitsirene']
+# whitelist = ['SENBreakfast']
 
 # Naming and initializing the Topic
 KafkaTopic = "KafkaTopic"
@@ -92,7 +74,6 @@ def remove_spaces(txt):
     return re.sub('@[A-z0-9]+','',re.sub(r"[\n\t\\]", " ", txt).replace("RT",""))
     #It also removes the initial part with RT(retweet) @user_retweeted,
     # since it is recognized as an enitity but is not a musical one
-
 
 class Listener(StreamListener):
     # Defining the function filtering tweets:
@@ -105,21 +86,20 @@ class Listener(StreamListener):
                 'created_at': data_['created_at'],
         }
         if user_is_a_bot(data['user']):
-            return ""
+            return "".encode("utf-8")
         else:
             data = FunzioneMarco(data)
             if len(data['gids']) > 0:
-                return str(data).encode("utf-8")
+                return json.dumps(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
                       "' does not actually talk about music.")
-                return ""
+                return "".encode("utf-8")
 
     def on_status(self, data):
         data = self.tweet_preparations(data)
         if len(data.decode()) > 0:
             print(data)
-            #ipdb.set_trace()
             producer.send(KafkaTopic, data)
         #else:
         #    self.tweet_preparations(data)
