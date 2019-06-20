@@ -45,6 +45,6 @@ CREATE (t)-[:TALKS_ABOUT]->(e)
 
 7)Execute the following cypher statement: we should not do this manually, it is configured to happen automatically (streams.sink.enabled=true & streams.procedures.enabled=true) 
 CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
-CREATE (t:Tweet{Text: event.data.text, Name: event.data.user})
+CREATE (t:Tweet{Text: event.data.text, Name: event.data.user.screen_name, Date: event.data.created_at}) #we also want time informations
 
 In order to do this, just remember to enable multiple cypher query in Neo4j settings.
