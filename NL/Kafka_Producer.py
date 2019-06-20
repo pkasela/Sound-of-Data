@@ -11,7 +11,7 @@ import re
 import time
 import riak
 from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
-from generi import get_genres()
+from generi import get_genres
 #import ipdb; #needed for debugging
 
 # Scrape the list of all genres from musicbrainz to generate the list of

@@ -102,7 +102,7 @@ for t in threads:
     t.join()
 
 ######## Adjust the tag table
-from generi import get_genres()
+from generi import get_genres
 
 tag = read_csv("./mbdump/tag.tsv",sep="\t",header=None)
 
