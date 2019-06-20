@@ -11,20 +11,12 @@ import re
 import time
 import riak
 from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
-
+from generi import get_genres()
 #import ipdb; #needed for debugging
 
 # Scrape the list of all genres from musicbrainz to generate the list of
 # keywords for filtering tweets
-url = 'https://musicbrainz.org/genres'
-data = requests.get(url)
-soup = BeautifulSoup(data.text, 'html.parser')
-content = soup.find_all("div", id='content')[0]
-genres = content.find_all("li")
-genre_list = []
-for g in genres:
-    result = g.text.strip()
-    genre_list.append(result)
+genre_list = get_genres()
 print('Total number of genres: ' + str(len(genre_list)))
 
 BOT_PROB = 0.9
