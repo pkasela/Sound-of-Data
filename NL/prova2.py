@@ -148,9 +148,10 @@ def get_istances(t):
     t = re.sub(r"\.(\S)", r". \1", t)
     # vediamo di che si tratta...
     print(t)
+    # ritorna nullo in caso di stringa vuota
+    if re.match(r"^\s*$", t):
+        return set(), set(), set(), set()
     gen = get_genere(t)
-    for i in range(0,len(gen)):
-        t=t.replace(gen[i],'')
     # individua gli hashtag
     hashtag = list(map(expand_hashtag, re.findall(r"(?<=[#|@])\w+", t)))
     t = re.sub(r"\#[a-zàèéìòù]+\b", "", t)
@@ -168,8 +169,8 @@ def get_istances(t):
     # aggiungi tutti i sostantivi maiuscoli
     istances += [re.sub(r"\W", "", x[0])
                  for x in filter(
-                         lambda x: re.match(r"[A-Z]", x[0][0]) and
-                         x[1][0] == "N",
+                         lambda x: re.match(r"^[A-Z]", x[0]) and
+                         re.match("^N", x[1]),
                          TAGGER.tag(t))]
     # elimina gli spazi superflui
     istances = list(map(lambda x: re.sub(r"\s+", "", x), istances))
@@ -186,7 +187,10 @@ def get_istances(t):
     print("Not sure: ", end="")
     print(miscellanea)
     print("")
-    return names, songs, miscellanea, gen
+    return names - gen, \
+           songs - gen, \
+           miscellanea - gen, \
+           gen
 
 
 if __name__ == "__main__":
