@@ -37,6 +37,10 @@ sudo chown -R neo4j:neo4j /var/lib/neo4j/data/databases/graph.db
 #start neo4j again
 sudo systemctl start neo4j.service
 
+sleep 30
+
+cat CreateIndex.cql | cypher-shell --format verbose
+
 #then just go on any browser with unimib VPN and simply write:
 # VM_IP:7474, it may ask id and pass (Defaults are neo4j - neo4j)
 #and voilà you should have a working graph
