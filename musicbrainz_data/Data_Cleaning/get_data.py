@@ -102,24 +102,11 @@ for t in threads:
     t.join()
 
 ######## Adjust the tag table
+from generi import get_genres()
 
 tag = read_csv("./mbdump/tag.tsv",sep="\t",header=None)
 
-#Extract the real genres from musicbrainz site
-url = 'https://musicbrainz.org/genres'
-
-data = requests.get(url)
-soup = bs(data.text, 'html.parser')
-
-content = soup.find_all("div",id='content')[0] #serve per togliere l'array
-
-genres = content.find_all("li")
-
-genre_list = []
-
-for g in genres:
-	result = g.text.strip()
-	genre_list.append(result)
+genre_list = get_genres()
 
 #keep only the necessary tags
 tag[3]=tag[1].apply(lambda x: x in genre_list)
