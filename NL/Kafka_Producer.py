@@ -85,7 +85,7 @@ bom = botometer.Botometer(wait_on_ratelimit=True,
 #              'LaJambeNoir7', 'Lalocanda6', 'noitsirene']
 
 # Naming and initializing the Topic
-KafkaTopic = "Music_Tweets"
+KafkaTopic = "KafkaTopic"
 
 
 def remove_spaces(txt):
@@ -104,11 +104,11 @@ class Listener(StreamListener):
                     else data_["text"]),
                 'created_at': data_['created_at'],
         }
-        if user_is_a_bot(data["user"]["screen_name"]):
+        if user_is_a_bot(data['user']):
             return ""
         else:
             data = FunzioneMarco(data)
-            if (len(data['relation']) > 0:
+            if len(data['gids']) > 0:
                 return str(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
@@ -120,7 +120,7 @@ class Listener(StreamListener):
         if len(data.decode()) > 0:
             print(data)
             #ipdb.set_trace()
-            producer.send("Prova", data)
+            producer.send(KafkaTopic, data)
         #else:
         #    self.tweet_preparations(data)
         return True
@@ -160,6 +160,6 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-    stream.filter(track=[genre_list[i] for i in range(400)],
+    stream.filter(track=genre_list,
                   languages=["it"])
 ####Need to tell him not to remove the last 19 genres, but the one we want to remove
