@@ -12,11 +12,16 @@ You can find any directory you need following the instructions in https://neo4j.
 as explained in https://neo4j-contrib.github.io/neo4j-streams/#_streams_consume
 
 3.1) Here is the local config I used in VM (didn't use the docker stuff)
+modify the /etc/neo4j/neo4j.conf file
+
 kafka.zookeeper.connect=localhost:2181
 kafka.bootstrap.servers=localhost:6667
+kafka.auto.offset.reset=earliest
 
+streams.sink.polling.interval=1000
 streams.procedures.enabled=true
 streams.sink.enabled=true
+
 streams.sink.topic.cypher.Prova = MERGE (p:User{name:event.user}) \
    CREATE (t:tweet{text:event.text,created_at:event.created_at}) \
    MERGE (p)-[:TWITTED]->(t) \
