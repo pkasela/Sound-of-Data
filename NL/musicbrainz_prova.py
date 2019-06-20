@@ -15,22 +15,22 @@ def get_musicbrainz_id(dizionario):
     recording = list(frase_input[1])
     NS = list(frase_input[2]) # lo si prova per album,artisti e recording
     generi = frase_input[3]
-    
+
     #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
     common_elements_11 = (list(set(find_artist_album(NS)).intersection(find_artist(artisti))))
     common_elements_12 = (list(set(find_artist_album(NS)).intersection(find_artist_NS(NS))))
     common_elements_1  = common_elements_11 + common_elements_12
-    
-    #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati 
+
+    #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati
     common_elements_21 = (list(set(find_artist_record(recording)).intersection(find_artist(artisti))))
     common_elements_22 = (list(set(find_artist_record(recording)).intersection(find_artist_NS(NS))))
     common_elements_2  = common_elements_21 + common_elements_22
-    
+
     artists    = find_artist(artisti) + find_artist_NS(NS)
     albums     = find_album(NS,common_elements_1)
     recordings = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
-    
-    dizionario['releazioni'] = artists + albums + recordings + generi
+
+    dizionario['relation'] = artists + albums + recordings + generi
 
     return(dizionario)
 
@@ -67,7 +67,7 @@ def find_artist_NS(NS):
 
 
 
-def find_artist_album(album): 
+def find_artist_album(album):
     #trovo gli id degli artisti per l'album
     listartistalbum = []
     for j in album:
@@ -77,7 +77,7 @@ def find_artist_album(album):
             for artistc in ir['artist-credit']:
                 if 'artist' in artistc:
                     listartistalbum.append(artistc['artist'].get("id"))
-   
+
     return(listartistalbum)
 
 
@@ -117,7 +117,7 @@ def find_artist_record(recording):
             for artistc in ir['artist-credit']:
                 if 'artist' in artistc:
                     listartistrecord.append(artistc['artist'].get("id"))
-   
+
     return(listartistrecord)
 
 
@@ -150,9 +150,9 @@ def find_record(recording,common_elements_2):
                                             listarecord.append(record.get("id"))
 
     return (listarecord)
- 
 
-    
+
+
 def find_record_NS(recording,artisti):
     #trovo gli id delle tracks
     listarecordNS = []
@@ -178,9 +178,6 @@ def find_record_NS(recording,artisti):
                                     #tutti controlli ulteriori per evitare di restituire troppi id
                                     listarecordNS.append(record.get("id"))
                                     break
-                
+
 
     return(listarecordNS)
- 
-
-

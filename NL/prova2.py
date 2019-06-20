@@ -3,6 +3,7 @@ import enchant  # pip install pyenchant
 from treetagger import TreeTagger
 from itertools import permutations
 from itertools import chain as flatten
+from generi import get_genres
 
 
 CONTRACTIONS = set(["", "cmq", "qls", "qlc", "asap", "fb", "wh",
@@ -114,10 +115,8 @@ def resplit_istances(istances, txt):
             istances_new |= set([i_splitted[0]] + [" ".join(i_splitted[1:])])
     return istances_new
 
-
-def get_genere(txt, f="generi.py"):
-    with open(f) as t:
-        generes = eval(t.read())
+def get_genere(txt):
+    generes = get_genres()
     generes = map(lambda t: re.sub(r"\s+", r"[ |-||]", t),
                   generes)
     generes = map(lambda t: r"\b" + t + r"\b", generes)
@@ -149,6 +148,9 @@ def get_istances(t):
     t = re.sub(r"\.(\S)", r". \1", t)
     # vediamo di che si tratta...
     print(t)
+    gen = get_genere(t)
+    for i in range(0,len(gen)):
+        t=t.replace(gen[i],'')
     # individua gli hashtag
     hashtag = list(map(expand_hashtag, re.findall(r"(?<=[#|@])\w+", t)))
     t = re.sub(r"\#[a-zàèéìòù]+\b", "", t)
@@ -184,7 +186,7 @@ def get_istances(t):
     print("Not sure: ", end="")
     print(miscellanea)
     print("")
-    return names, songs, miscellanea, get_genere(t)
+    return names, songs, miscellanea, gen
 
 
 if __name__ == "__main__":

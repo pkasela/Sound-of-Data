@@ -1,14 +1,17 @@
-def scraper():
-    url = 'https://musicbrainz.org/genres'
-    data = requests.get(url)
-    soup = BeautifulSoup(data.text, 'html.parser')
-    content = soup.find_all("div", id='content')[0]
-    genres = content.find_all("li")
-    genre_list = []
-    for g in genres:
-        result = g.text.strip()
-        genre_list.append(result)
-    return genre_list
+#from bs4 import BeautifulSoup
+#import requests
+
+#def scraper():
+#    url = 'https://musicbrainz.org/genres'
+#    data = requests.get(url)
+#    soup = BeautifulSoup(data.text, 'html.parser')
+#    content = soup.find_all("div", id='content')[0]
+#    genres = content.find_all("li")
+#    genre_list = []
+#    for g in genres:
+#        result = g.text.strip()
+#        genre_list.append(result)
+#    return genre_list
 
 
 def get_genres():

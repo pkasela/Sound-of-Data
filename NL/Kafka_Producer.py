@@ -4,8 +4,6 @@ import json
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-from bs4 import BeautifulSoup
-import requests
 import botometer
 import re
 import time
@@ -110,7 +108,7 @@ class Listener(StreamListener):
             return ""
         else:
             data = FunzioneMarco(data)
-            if (len(data['artist'])+len(data['release'])+len(data['recording'])) > 0:
+            if (len(data['relation']) > 0:
                 return str(data).encode("utf-8")
             else:
                 print("Tweet '" + data_["text"] +
