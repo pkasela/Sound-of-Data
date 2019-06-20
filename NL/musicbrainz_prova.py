@@ -40,7 +40,7 @@ def find_artist(artisti):
     #trovo gli id degli artisti presenti
     listartist = []
     for i in artisti:
-        result = musicbrainzngs.search_artists(i + "~0.9",limit=1)
+        result = musicbrainzngs.search_artists(i + "~0.95",limit=1)
         if len(result["artist-list"]) > 0:
             listartist.append(result["artist-list"][0]["id"])
 
@@ -54,7 +54,7 @@ def find_artist_NS(NS):
     #aggiunto un ulteriore controllo per diminuire le possibilità che ritorni id errati
     listartistNS = []
     for i in NS:
-        result = musicbrainzngs.search_artists(i + "~0.9")
+        result = musicbrainzngs.search_artists(i + "~0.95")
         if len(result["artist-list"]) > 0:
             for artists in result['artist-list']:
                 ir=artists
@@ -71,7 +71,7 @@ def find_artist_album(album):
     #trovo gli id degli artisti per l'album
     listartistalbum = []
     for j in album:
-        result = musicbrainzngs.search_release_groups(j + "~0.9")
+        result = musicbrainzngs.search_release_groups(j + "~0.95")
         for release in result['release-group-list']:
             ir=release
             for artistc in ir['artist-credit']:
@@ -85,7 +85,7 @@ def find_album(album,common_elements_1):
     #trovo gli id degli album presenti
     listalbum = []
     for h in album:
-        result = musicbrainzngs.search_release_groups(h + "~0.9")
+        result = musicbrainzngs.search_release_groups(h + "~0.95")
         if len(result["release-group-list"]) > 0:
             if len(common_elements_1)==0:
                 if 'primary-type' in result['release-group-list'][0]:
@@ -111,7 +111,7 @@ def find_artist_record(recording):
     #trovo gli id degli artisti per la traccia cercata
     listartistrecord = []
     for j in recording:
-        result = musicbrainzngs.search_recordings(j + "~0.9")
+        result = musicbrainzngs.search_recordings(j + "~0.95")
         for record in result['recording-list']:
             ir=record
             for artistc in ir['artist-credit']:
@@ -126,7 +126,7 @@ def find_record(recording,common_elements_2):
     #trovo gli id delle tracks
     listarecord = []
     for h in recording:
-        result = musicbrainzngs.search_recordings(h + "~0.9",limit = 75)
+        result = musicbrainzngs.search_recordings(h + "~0.95",limit = 75)
         if len(result["recording-list"]) > 0:
             if len(common_elements_2)==0:
                 for record in result['recording-list']:
@@ -159,7 +159,7 @@ def find_record_NS(recording,artisti):
     for h in recording:
         if len(artisti) > 0:
             for a in artisti:
-                result = musicbrainzngs.search_recordings(h + "~0.9" + " AND " + "artist:" + a + "~0.9")
+                result = musicbrainzngs.search_recordings(h + "~0.95" + " AND " + "artist:" + a + "~0.95")
                 if len(result["recording-list"]) > 0:
                     for record in result['recording-list']:
                         #if record.get("title").lower()==h.lower(): forse qua è meglio non mettere questo controllo
@@ -168,7 +168,7 @@ def find_record_NS(recording,artisti):
                                 listarecordNS.append(record.get("id"))
                                 break
         else:
-            result = musicbrainzngs.search_recordings(h + "~0.9")
+            result = musicbrainzngs.search_recordings(h + "~0.95")
             if len(result["recording-list"]) > 0:
                 for record in result['recording-list']:
                     if record.get("title").lower()==h.lower():
