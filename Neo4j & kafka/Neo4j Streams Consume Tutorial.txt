@@ -22,24 +22,25 @@ streams.sink.polling.interval=1000
 streams.procedures.enabled=true
 streams.sink.enabled=true
 
-streams.sink.topic.cypher.Prova = MERGE (p:User{name:event.user}) \                                                                                      
-   CREATE (t:Tweet{text:event.text, created_at:event.created_at}) \                                                                                           
-   MERGE (p)-[:TWITTED]->(t) \                                                                                                                                
-   WITH t, event \                                                                                                                                            
-   MATCH (g:GENRE) WHERE g.gid in event.genres \                                                                                                              
-   OPTIONAL MATCH (rc:RECORDING) WHERE rc.gid in event.recordings \                                                                                           
-   OPTIONAL MATCH (a:ARTIST) WHERE a.gid in event.artists \                                                                                                   
-   OPTIONAL MATCH (rl:RELEASE) WHERE rl.gid in event.release \                                                                                                
-   OPTIONAL MATCH (rlg:RELEASE_GROUP) WHERE rlg.gid in event.release \                                                                                        
-   CREATE (t)-[:TALKS_ABOUT_GENRE]->(g) \                                                                                                                     
-   FOREACH (o IN CASE WHEN a IS NOT NULL THEN [a] ELSE [] END | \                                                                                             
-             CREATE (t)-[:TALKS_ABOUT]->(a)) \                                                                                                                
-   FOREACH (o IN CASE WHEN rl is not null THEN [rl] ELSE [] END | \                                                                                           
-             CREATE (t)-[:TALKS_ABOUT]->(rl)) \                                                                                                               
-   FOREACH (o IN CASE WHEN rlg is not null THEN [rlg] ELSE [] END | \                                                                                         
-             CREATE (t)-[:TALKS_ABOUT]->(rlg)) \                                                                                                              
-   FOREACH (o IN CASE WHEN rc is not null THEN [rc] ELSE [] END | \                                                                                           
-             CREATE (t)-[:TALKS_ABOUT]->(rc))
+streams.sink.topic.cypher.Prova = MERGE (p:User{name:event.user}) \
+   CREATE (t:Tweet{text:event.text, created_at:event.created_at}) \  
+   MERGE (p)-[:TWITTED]->(t) \               
+   WITH t, event \
+     OPTIONAL MATCH (g:GENRE) WHERE g.gid in event.genres \
+   WITH t, event, collect(g) AS g \
+   OPTIONAL MATCH (rc:RECORDING) WHERE rc.gid in event.recordings \
+   WITH t, event, g, collect(rc) AS rc \
+   OPTIONAL MATCH (a:ARTIST) WHERE a.gid in event.artists \
+   WITH t, event, g, rc, collect(a) AS a \
+   OPTIONAL MATCH (rl:RELEASE) WHERE rl.gid in event.release \
+   WITH t, event, g, rc, a, collect(rl) AS rl \
+   OPTIONAL MATCH (rlg:RELEASE_GROUP) WHERE rlg.gid in event.release \
+   WITH t, event, g, rc, a, rl, collect(rlg) AS rlg \
+   FOREACH(n in g  | MERGE (t)-[:TALKS_ABOUT_GENRE]->(n)) \
+   FOREACH(n in rc | MERGE (t)-[:TALKS_ABOUT]->(n)) \
+   FOREACH(n in a  | MERGE (t)-[:TALKS_ABOUT]->(n)) \
+   FOREACH(n in rl | MERGE (t)-[:TALKS_ABOUT]->(n)) \                                                                        
+   FOREACH(n in rlg| MERGE (t)-[:TALKS_ABOUT]->(n))   
  
 4) Start docker and from the same directory of "docker-compose.yml" execute in bash the command:
 docker-compose up -d
@@ -51,28 +52,6 @@ It mounts the containers with configurations you have just set up.
 Tweet format must be exactly: 
 {"text": "Ciao","user": "Riccardo","created_at":"a time","gids_of_entities":["list","of","gids"]} 
 we will see if we need to separate the gids of different entities or not
-
-6.1) Cypher query must be: (It might seem complex but improves the speed a lot
-using the power of the indices, executing it in a few milliseconds)
-
-   MERGE (p:User{name:event.user}) \                                                                                      
-   CREATE (t:Tweet{text:event.text, created_at:event.created_at}) \                                                                                           
-   MERGE (p)-[:TWITTED]->(t) \                                                                                                                                
-   WITH t, event \                                                                                                                                            
-   MATCH (g:GENRE) WHERE g.gid in event.genres \                                                                                                              
-   OPTIONAL MATCH (rc:RECORDING) WHERE rc.gid in event.recordings \                                                                                           
-   OPTIONAL MATCH (a:ARTIST) WHERE a.gid in event.artists \                                                                                                   
-   OPTIONAL MATCH (rl:RELEASE) WHERE rl.gid in event.release \                                                                                                
-   OPTIONAL MATCH (rlg:RELEASE_GROUP) WHERE rlg.gid in event.release \                                                                                        
-   CREATE (t)-[:TALKS_ABOUT_GENRE]->(g) \                                                                                                                     
-   FOREACH (o IN CASE WHEN a IS NOT NULL THEN [a] ELSE [] END | \                                                                                             
-             CREATE (t)-[:TALKS_ABOUT]->(a)) \                                                                                                                
-   FOREACH (o IN CASE WHEN rl is not null THEN [rl] ELSE [] END | \                                                                                           
-             CREATE (t)-[:TALKS_ABOUT]->(rl)) \                                                                                                               
-   FOREACH (o IN CASE WHEN rlg is not null THEN [rlg] ELSE [] END | \                                                                                         
-             CREATE (t)-[:TALKS_ABOUT]->(rlg)) \                                                                                                              
-   FOREACH (o IN CASE WHEN rc is not null THEN [rc] ELSE [] END | \                                                                                           
-             CREATE (t)-[:TALKS_ABOUT]->(rc))
 
 7)Execute the following cypher statement: we should not do this manually, it is configured to happen automatically (streams.sink.enabled=true & streams.procedures.enabled=true) 
 CALL streams.consume('<TopicName>',{timeout:<Time in microsecond within you want Neo4j consumes the data>}) YIELD event
