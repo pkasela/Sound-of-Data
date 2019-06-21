@@ -20,17 +20,17 @@ def get_musicbrainz_id(dizionario):
     artist_found = find_artist(artisti)
     artist_found_NS = find_artist_NS(NS)
     #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
-    common_elements_11 = (list(set(find_artist_album(NS)).intersection(artist_found)))
-    common_elements_12 = (list(set(find_artist_album(NS)).intersection(artist_found_NS)))
-    common_elements_1  = common_elements_11 + common_elements_12
+    #common_elements_11 = (list(set(find_artist_album(NS)).intersection(artist_found)))
+    #common_elements_12 = (list(set(find_artist_album(NS)).intersection(artist_found_NS)))
+    #common_elements_1  = common_elements_11 + common_elements_12
 
     #controllo se ci sono corrispondenze tra gli artisti della traccia e quelli già trovati
-    common_elements_21 = (list(set(find_artist_record(recording)).intersection(artist_found)))
-    common_elements_22 = (list(set(find_artist_record(recording)).intersection(artist_found_NS)))
-    common_elements_2  = common_elements_21 + common_elements_22
+    #common_elements_21 = (list(set(find_artist_record(recording)).intersection(artist_found)))
+    #common_elements_22 = (list(set(find_artist_record(recording)).intersection(artist_found_NS)))
+    #common_elements_2  = common_elements_21 + common_elements_22
 
     dizionario['artists']    = artist_found + artist_found_NS
-    dizionario['release']    = find_album(NS,common_elements_1)
+    dizionario['release']    = find_album(NS)
     dizionario['recordings'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
     dizionario['genres']     = generi
    
@@ -84,29 +84,29 @@ def find_artist_album(album):
     return(listartistalbum)
 
 
-def find_album(album,common_elements_1):
+def find_album(album):
     #trovo gli id degli album presenti
     listalbum = []
     for h in album:
         result = musicbrainzngs.search_release_groups(h + "~0.95")
-        if len(result["release-group-list"]) > 0:
-            if len(common_elements_1)==0:
-                if 'primary-type' in result['release-group-list'][0]:
-                    if result['release-group-list'][0]["primary-type"] != "Single":
-                        listalbum.append(result['release-group-list'][0]["id"])
+        #if len(result["release-group-list"]) > 0:
+          #  if len(common_elements_1)==0:
+               # if 'primary-type' in result['release-group-list'][0]:
+               #     if result['release-group-list'][0]["primary-type"] != "Single":
+               #         listalbum.append(result['release-group-list'][0]["id"])
                         #se non ci sono corrispondenze ritorno il primo risultato
-            else:
-                for release in result['release-group-list']:
-                    ir=release
-                    for artistc in ir['artist-credit']:
-                        if 'artist' in artistc:
-                            if (artistc['artist'].get("id")) in common_elements_1:
-                                if ir.get("title").lower()==h.lower():
-                                    if 'primary-type' in ir:
-                                        if ir.get('primary-type') != "Single":
-                                            #anche qua aggiunto ulteriore controllo per diminuire possibili errori
-                                            listalbum.append(release.get("id"))
-    return(listalbum)
+           # else:
+            #    for release in result['release-group-list']:
+            #        ir=release
+            #        for artistc in ir['artist-credit']:
+            #            if 'artist' in artistc:
+            #                if (artistc['artist'].get("id")) in common_elements_1:
+            #                    if ir.get("title").lower()==h.lower():
+            #                        if 'primary-type' in ir:
+            #                            if ir.get('primary-type') != "Single":
+            #                                #anche qua aggiunto ulteriore controllo per diminuire possibili errori
+            #                                listalbum.append(release.get("id"))
+    return()
 
 
 
