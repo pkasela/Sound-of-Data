@@ -1,10 +1,10 @@
 TODO LIST:
 
 # DataSet Link
-[Here is the link](??) to the cleaned dataset
-ready for neo4j, and [Here is the link to the neo4j db](??)
+[Here is the link](https://gitlab.com/pkasela/the-data) to the cleaned dataset
+ready for neo4j, You need to have a GitLab account!!
 
-Links are broken for now, use maria_dev account in VM (HDP and not HDF) to recreate the database if needed.
+Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed.
 
 # Data Management
 - [x] Import data
@@ -15,11 +15,12 @@ Links are broken for now, use maria_dev account in VM (HDP and not HDF) to recre
   - [x] index on the graph
   - [ ] constraint on the graph for unique gid of the entities
   - [x] Scrape down musicBrainz genres using musicBrainz API
-  - [ ] Remove the useless genres such as: audiobook to reduce the dimesione of the list
+  - [x] Remove the useless genres such as: audiobook to reduce the dimesione of the list
 - [x] Tweet
   - [x] Kafka Producer with [Kafka_Produce.py](https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j%20%26%20kafka/Kafka_Producer.py)
   - [x] Kafka Producer -> Neo4j Consumer [Neo4j Streams Procedure](https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j%20%26%20kafka/Neo4j%20Streams%20Consume%20Tutorial.txt)
-  - [ ] Initialize the script using tmux and sleep happily
+  - [x] Initialize the script using tmux and sleep happily
+  - [ ] Check if everything is alright in the morning!
 
 # Data Semantics
 - [ ] Analisi tweet
@@ -34,10 +35,10 @@ Links are broken for now, use maria_dev account in VM (HDP and not HDF) to recre
   - [ ] generi
   - [ ] artisti
 - [ ] Analisi
-  - [ ] trovare "comunità" musicali
+  - [ ] trovare i cluster sulle parole musicali più twittati.    #    "comunità" musicali
   - [ ] trovare cicli giornalieri
   - [ ] trovare cicli settimanali
-- [ ] Creare dump periodici
+- [ ] Creare dump periodici ?? Lo vogliamo ancora fare o ce ne sbattiamo tanto i generi sono quelli
 
 # Data Visualization
 - [ ] Plot plot plot plot
