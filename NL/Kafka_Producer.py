@@ -9,10 +9,10 @@ import time
 import riak
 from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
 from generi import get_genres
+from urllib3.exceptions import ProtocolError
 #import ipdb; #needed for debugging
 
-# Scrape the list of all genres from musicbrainz to generate the list of
-# keywords for filtering tweets
+# genres to follow on twiiter
 genre_list = get_genres()
 print('Total number of genres: ' + str(len(genre_list)))
 
@@ -35,6 +35,7 @@ def user_is_a_bot(user):
            print("User {} has a probability of {} to be a bot".format(user,
                                                                       value))
         except:
+           print("Ops! Something went wrong with Botometer")
            return False
     return value > BOT_PROB
 
@@ -150,6 +151,9 @@ myListener = Listener()
 stream = Stream(auth, myListener)
 
 while True:
-    stream.filter(track=genre_list,
-                  languages=["it"])
-####Need to tell him not to remove the last 19 genres, but the one we want to remove
+    try:
+       stream.filter(track=['#' + genre for genre in genre_list],
+                     languages=["it"], is_async=True)
+    except (ProtocolError, AttributeError):
+       print("Ops! Something went wrong")
+       continue
