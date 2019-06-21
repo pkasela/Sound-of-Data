@@ -30,9 +30,12 @@ def store_user(user):
 def user_is_a_bot(user):
     value = users.get(user).data
     if not value:
-        value = store_user(user)
-        print("User {} has a probability of {} to be a bot".format(user,
-                                                                   value))
+        try:
+           value = store_user(user)
+           print("User {} has a probability of {} to be a bot".format(user,
+                                                                      value))
+        except:
+           return False
     return value > BOT_PROB
 
 
