@@ -16,9 +16,11 @@ def get_musicbrainz_id(dizionario):
     NS = list(frase_input[2]) # lo si prova per album,artisti e recording
     generi = frase_input[3]
 
-    
+
     artist_found = find_artist(artisti)
     artist_found_NS = find_artist_NS(NS)
+    if len(artist_found_NS['found'])>0:
+        NS = set(NS) - set(artist_found_NS['found'])
     #controllo se ci sono corrispondenze tra gli artisti dell'album e quelli già trovati
     #common_elements_11 = (list(set(find_artist_album(NS)).intersection(artist_found)))
     #common_elements_12 = (list(set(find_artist_album(NS)).intersection(artist_found_NS)))
@@ -29,11 +31,14 @@ def get_musicbrainz_id(dizionario):
     #common_elements_22 = (list(set(find_artist_record(recording)).intersection(artist_found_NS)))
     #common_elements_2  = common_elements_21 + common_elements_22
 
-    dizionario['artists']    = artist_found + artist_found_NS
-    dizionario['release']    = find_album(NS)
-    dizionario['recordings'] = find_record(recording,common_elements_2) + find_record_NS(NS,artisti)
+    dizionario['artists']    = artist_found + artist_found_NS['gids']
+    album_found    = find_album(NS)
+    if len(album_found['found'])>0:
+        NS = set(NS) - set(album_found['found'])
+    dizionario['release'] = album_found['gids']
+    dizionario['recordings'] = find_record(recording) + find_record_NS(NS,artisti)
     dizionario['genres']     = generi
-   
+
     #dizionario['gids'] = artists + albums + recordings + generi
 
     return(dizionario)
@@ -57,15 +62,17 @@ def find_artist_NS(NS):
     #trovo gli id degli artisti presenti,essendo l'input il set con i not sure
     #aggiunto un ulteriore controllo per diminuire le possibilità che ritorni id errati
     listartistNS = []
+    found = []
     for i in NS:
         result = musicbrainzngs.search_artists(i + "~0.95")
         if len(result["artist-list"]) > 0:
             for artists in result['artist-list']:
                 if artists.get("name").lower()==i.lower():
                     listartistNS.append(artists.get("id"))
+                    found.append(i)
                     break
 
-    return(listartistNS)
+    return({'gids':listartistNS,'found':found})
 
 
 
@@ -87,8 +94,12 @@ def find_artist_album(album):
 def find_album(album):
     #trovo gli id degli album presenti
     listalbum = []
+    found = []
     for h in album:
         result = musicbrainzngs.search_release_groups(h + "~0.95")
+        if len(result["release-group-list"]) > 0:
+            listalbum.append(result['release-group-list'][0]['id'])
+            found.append(h)
         #if len(result["release-group-list"]) > 0:
           #  if len(common_elements_1)==0:
                # if 'primary-type' in result['release-group-list'][0]:
@@ -106,7 +117,7 @@ def find_album(album):
             #                            if ir.get('primary-type') != "Single":
             #                                #anche qua aggiunto ulteriore controllo per diminuire possibili errori
             #                                listalbum.append(release.get("id"))
-    return()
+    return({'gids':listalbum,'found':found})
 
 
 
@@ -125,32 +136,34 @@ def find_artist_record(recording):
 
 
 
-def find_record(recording,common_elements_2):
+def find_record(recording):
     #trovo gli id delle tracks
     listarecord = []
     for h in recording:
         result = musicbrainzngs.search_recordings(h + "~0.95",limit = 75)
         if len(result["recording-list"]) > 0:
-            if len(common_elements_2)==0:
-                for record in result['recording-list']:
-                    if record.get("title").lower()==h.lower():
-                        if 'disambiguation' not in record:
-                            if int(record.get("ext:score")) > 90:
-                                if 'length' in record:
-                                    listarecord.append(record.get("id"))
-                                    break
+            listarecord.append(result['recording-list'][0]['id'])
+        #if len(result["recording-list"]) > 0:
+        #    if len(common_elements_2)==0:
+        #        for record in result['recording-list']:
+        #            if record.get("title").lower()==h.lower():
+        #                if 'disambiguation' not in record:
+        #                    if int(record.get("ext:score")) > 90:
+        #                        if 'length' in record:
+        #                            listarecord.append(record.get("id"))
+        #                            break
                 #aggiunti controlli per evitare di restituire troppi id
-            else:
-                for record in result['recording-list']:
-                    ir=record
-                    for artistc in ir['artist-credit']:
-                        if 'artist' in artistc:
-                            if (artistc['artist'].get("id")) in common_elements_2:
-                                if 'disambiguation' not in record:
+        #    else:
+        #        for record in result['recording-list']:
+        #            ir=record
+        #            for artistc in ir['artist-credit']:
+        #                if 'artist' in artistc:
+        #                    if (artistc['artist'].get("id")) in common_elements_2:
+        #                        if 'disambiguation' not in record:
                                     #elimina una parte delle eventuali versioni alternative delle tracks,come ad esempio le live
-                                    if int(record.get("ext:score")) > 90:
-                                        if 'length' in record:
-                                            listarecord.append(record.get("id"))
+        #                            if int(record.get("ext:score")) > 90:
+        #                                if 'length' in record:
+        #                                    listarecord.append(record.get("id"))
 
     return (listarecord)
 
