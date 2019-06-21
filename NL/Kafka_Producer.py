@@ -60,9 +60,16 @@ twitter_app_auth = {
     'access_token': access_token,
     'access_token_secret': access_token_secret,
   }
-bom = botometer.Botometer(wait_on_ratelimit=True,
-                          mashape_key=mashape_key,
-                          **twitter_app_auth)
+
+botometer_api_url = 'https://botometer-pro.p.mashape.com'
+bom = botometer.Botometer(botometer_api_url=botometer_api_url,
+                           wait_on_ratelimit=True,
+                           mashape_key=mashape_key,
+                           **twitter_app_auth)
+# Old free botometer
+#bom = botometer.Botometer(wait_on_ratelimit=True,
+#                          mashape_key=mashape_key,
+#                          **twitter_app_auth)
 
 # Initialize blacklist:
 # blacklist = ['starreldred14', 'chelseacusack8']
