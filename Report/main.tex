@@ -129,14 +129,20 @@ Un principale vantaggio di \textit{Apache Kafka} è la capacità di connettersi 
 
 \section{Riconoscimento delle istanze nel testo}
 Data la mole di tweet scaricabili, si è deciso di costruire un strumento di \textit{instance matching} creato \textit{ad hoc} per i tweet.
-Vista la scarsa abilità di algoritmi basati su reti neurali e \textit{deep learning} ad analizzare il breve (e quindi decontestualizzato) testo di un tweet, si è costruito un modello per l'identificazione di ipotetiche entità su cui basarsi per confronti col database (grazie alla API\footnote{\url{https://python-musicbrainzngs.readthedocs.io/en/v0.6/}} offerta da \url{musicbrainz.org} stesso).
+Vista la scarsa abilità di algoritmi basati su reti neurali e \textit{deep learning} ad analizzare il breve (e quindi decontestualizzato) testo di un tweet, si è costruito un modello per l'identificazione di ipotetiche entità su cui basarsi per confronti col database (attraverso i gid, i codici identificativi di musicbrainz, grazie alla API\footnote{\url{https://python-musicbrainzngs.readthedocs.io/en/v0.6/}} offerta da \url{musicbrainz.org} stesso).
 
 \subsection{Identificazione delle entità}
 Le entità sono riconosciute non mediante \textit{machine learning} ma grazie a semplici stratagemmi linguistici.
 Prima di tutto il testo del tweet è ripulito da eventuali abbreviazioni gergali; subito dopo sono ricercate le parole nel testo che non risultano essere italiane: analizzando tweet in lingua italiana, si presume che una stringa in lingua diversa abbia una certa importanza.
 Per fare questo è usato un mero correttore ortografico che evidenzia quali parole non sono riconosciute; di aiuto nel compito è anche una semplice espressione regolare che tenta di stabilire quali parole non seguono la costruzione sillabica italiana (rientrando quindi o nella categoria dei sostantivi della quinta classe o, nei casi fortunati, nelle entità cercate): secondo le regole linguistiche, una sillaba correttamente formata è composta da un numero massimo di tre consonanti seguita da una vocale e da al più una sola consonante (o vocale con suono consonantico, formando quindi un dittongo).
 Alle entità così individuate si aggiungono tutte le parole scritte in maiuscolo (che in un testo di così bassa formalità non sempre coincidono coi nomi propri), anche se a inizio frase.
-Grazie all'uso della punteggiatura (le virgolette) e delle preposizioni, si tenta inoltre di stabilire se l'entità rilevata è un presunto autore o una presunta opera e quindi cercata all'interno del database.
+Grazie all'uso della punteggiatura (le virgolette) e delle preposizioni, si tenta inoltre di stabilire se l'entità rilevata è un presunto autore o una presunta opera.
+Per individuare gli id delle entità riconosciute con il metodo descritto precedentemente, è stato utilizzato Python con la libreria Musicbrainzngs.
+Attraverso le funzioni search è possibile consultare il database sfruttando un server di ricerca costruito utilizzando la tecnologia Lucene.
+Musicbrainz è interrogato con la funzione search_artists per le entità riconosciute come autori, search_recordings per quelle individuate come canzoni, ed entrambe, con in aggiunta search_release_groups (funzione relativa alla ricerca degli album), per quelle la cui tipologia è incerta.
+La problematica principale emersa in questa parte è stata la difficoltà ad attribuire all’entità analizzata l’id che la caratterizza effettivamente.
+Sono infatti molto frequenti i casi di omonimia tra canzoni ed album relativi ad artisti differenti ed è quindi possibile che il risultato ottenuto non sia quello desiderato.
+Per cercare di aumentare le probabilità di restituire i gid corretti è stato impostato un valore di similarità pari a 0.95 nell’interrogazione al database, inoltre per le canzoni e per gli album si è andato a verificare se ci fossero corrispondenze con le entità artisti precedentemente individuate nel testo.
 
 \subsubsection{Prestazioni del modello}
 
