@@ -20,17 +20,20 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
   - [x] Kafka Producer with [Kafka_Produce.py](https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j%20%26%20kafka/Kafka_Producer.py)
   - [x] Kafka Producer -> Neo4j Consumer [Neo4j Streams Procedure](https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j%20%26%20kafka/Neo4j%20Streams%20Consume%20Tutorial.txt)
   - [x] Initialize the script using tmux and sleep happily
-  - [ ] Check if everything is alright in the morning!
+  - [x] Check if everything is alright in the morning!
 
 # Data Semantics
 - [ ] Analisi tweet
   - [x] costruzione modello/i per filtro 
-  - [ ] analisi prestazioni modello/i 
+  - [ ] analisi prestazioni modello/i (dai abbastanza bene la prestazione)
 
 # Analisi
 - [x] Rimozione bot
   - [x] indivuduare utenti e "bannarli" (Botometer)
   - [x] storage di whitelist e blacklist con RiakDB
+- [ ] Eliminazioni della parola 'DRONE' prima di partire con le analisi giustificando per via dei due eventi
+   - Tensione con tra IRAN e USA per via del drone Americano abbattuto
+   - Festival a Torino con luci e droni
 - [ ] Query interessanti
   - [ ] generi
   - [ ] artisti
@@ -42,6 +45,8 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
 
 # Data Visualization
 - [ ] Plot plot plot plot
+  - [ ] Un possibile plot è work cloud (a forma di qualcosa di musica magari)
+  - [ ] Barplot per la densità di distribuzione nei vari giorni (e ora)
 - [ ] Convalida plot
   - [ ] noi stessi
   - [ ] tante altre persone
