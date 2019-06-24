@@ -13,7 +13,7 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
   - [x] .tsv -> PIG -> clean .tsv (con JOIN e FILTER(GENERATE for PIG)) with [PigCleaning.sh](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz%20data/Data_Cleaning/PigCleaning.sh)
   - [x] clean .tsv -> neo4j [neo4j_import.sh](https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz_data/Data_Cleaning/neo4j_import.sh)
   - [x] index on the graph
-  - [ ] constraint on the graph for unique gid of the entities
+  - [x] constraint on the graph for unique gid of the entities
   - [x] Scrape down musicBrainz genres using musicBrainz API
   - [x] Remove the useless genres such as: audiobook to reduce the dimesione of the list
 - [x] Tweet
@@ -23,17 +23,18 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
   - [x] Check if everything is alright in the morning!
 
 # Data Semantics
-- [ ] Analisi tweet
+- [x] Analisi tweet
   - [x] costruzione modello/i per filtro 
-  - [ ] analisi prestazioni modello/i (dai abbastanza bene la prestazione)
+  - [x] analisi prestazioni modello/i (dai abbastanza bene la prestazione)
 
 # Analisi
 - [x] Rimozione bot
   - [x] indivuduare utenti e "bannarli" (Botometer)
   - [x] storage di whitelist e blacklist con RiakDB
-- [ ] Eliminazioni della parola 'DRONE' prima di partire con le analisi giustificando per via dei due eventi
+- [ ] Eliminazione della parola 'DRONE' prima di partire con le analisi giustificando per via dei due eventi
    - Tensione con tra IRAN e USA per via del drone Americano abbattuto
    - Festival a Torino con luci e droni
+- [ ] Citazione degli altri casi di polisemia: club, dance (?) (per far vedere che siamo pignoli)
 - [ ] Query interessanti
   - [ ] generi
   - [ ] artisti
@@ -47,6 +48,7 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
 - [ ] Plot plot plot plot
   - [ ] Un possibile plot è work cloud (a forma di qualcosa di musica magari)
   - [ ] Barplot per la densità di distribuzione nei vari giorni (e ora)
+  - [ ] Interazione fra le comunità
 - [ ] Convalida plot
   - [ ] noi stessi
   - [ ] tante altre persone
