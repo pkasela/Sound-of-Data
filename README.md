@@ -21,6 +21,7 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
   - [x] Kafka Producer -> Neo4j Consumer [Neo4j Streams Procedure](https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j%20%26%20kafka/Neo4j%20Streams%20Consume%20Tutorial.txt)
   - [x] Initialize the script using tmux and sleep happily
   - [x] Check if everything is alright in the morning!
+  - [ ] E' successo un casino con musicbrainz ed è crashato dalle 17:24, o lì vicino e mi sono accorto alle 12:45 e l'ho riaccesso con un nuovo try, except sulla funzione di marco non so se tenerne conto in realtà va ad influenza il ciclo settimanale ma ormai, non ci possiamo fare tanto
 
 # Data Semantics
 - [x] Analisi tweet
@@ -35,6 +36,7 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
    - Tensione con tra IRAN e USA per via del drone Americano abbattuto
    - Festival a Torino con luci e droni
 - [ ] Citazione degli altri casi di polisemia: club, dance (?) (per far vedere che siamo pignoli)
+- [ ] Togliere tutti i tweet con #trap in cui compare anche #gay o #sissy (indicano i transessuali così)
 - [ ] Query interessanti
   - [ ] generi
   - [ ] artisti
