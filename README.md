@@ -35,7 +35,7 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
 - [ ] Eliminazione della parola 'DRONE' prima di partire con le analisi giustificando per via dei due eventi
    - Tensione con tra IRAN e USA per via del drone Americano abbattuto
    - Festival a Torino con luci e droni
-- [ ] Citazione degli altri casi di polisemia: club, dance (?) (per far vedere che siamo pignoli)
+- [ ] Citazione degli altri casi di polisemia: club, dance, house e country (?) (per far vedere che siamo pignoli)
 - [ ] Togliere tutti i tweet con #trap in cui compare anche ['#gay','#sissy','#femboy','#daddy','#femboi']  (indicano i transessuali così)
 - [ ] Query interessanti
   - [ ] generi
