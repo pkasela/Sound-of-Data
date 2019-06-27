@@ -18,6 +18,12 @@ with open("secret.json", "r") as f:
 
 botometer_api_url = 'https://botometer-pro.p.mashape.com'
 mashape_key = X_RapidAPI_Key
+twitter_app_auth = {
+    'consumer_key': consumer_key,
+    'consumer_secret': consumer_secret,
+    'access_token': access_token,
+    'access_token_secret': access_token_secret,
+  }
 bom = botometer.Botometer(botometer_api_url=botometer_api_url,
                            wait_on_ratelimit=True,
                            mashape_key=mashape_key,
