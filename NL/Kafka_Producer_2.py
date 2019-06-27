@@ -30,6 +30,11 @@ bom = botometer.Botometer(botometer_api_url=botometer_api_url,
                            mashape_key=mashape_key,
                            **twitter_app_auth)
 
+# Old free botometer
+#bom = botometer.Botometer(wait_on_ratelimit=True,
+#                          mashape_key=mashape_key,
+#                          **twitter_app_auth)
+
 BOT_PROB = 0.9
 riak_client = riak.RiakClient()
 users = riak_client.bucket("users")
@@ -54,9 +59,11 @@ def user_is_a_bot(user):
 
 def remove_spaces(txt):
     return re.sub('@[A-z0-9]+','',re.sub(r"[\n\t\\]", " ", txt).replace("RT",""))
+    #It also removes the initial part with RT(retweet) @user_retweeted,
+    # since it is recognized as an enitity but is not a musical one
+
 
 def tweet_preparations(data_):
-    #data_ = json.loads(data_)
     data = {'user': data_["user"]["screen_name"],
             'text': remove_spaces(
                 data_["extended_tweet"]["full_text"] if data_["truncated"]
@@ -85,12 +92,9 @@ consumer.subscribe(['InitialTopic'])
 KafkaTopic = "KafkaTopic" #for the producer
 producer = KafkaProducer(bootstrap_servers='sandbox-hdp.hortonworks.com:6667')
 
-#import ipdb
-
 while True:
     try:
         for message in consumer:
-            #ipdb.set_trace()
             data=tweet_preparations(json.loads(message.value.decode()))
             print(data)
             producer.send(KafkaTopic, data)
