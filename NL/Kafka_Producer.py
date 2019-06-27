@@ -99,7 +99,10 @@ class Listener(StreamListener):
         if user_is_a_bot(data['user']):
             return "".encode("utf-8")
         else:
-            data = FunzioneMarco(data)
+            try:
+            	data = FunzioneMarco(data)
+            except:
+                data['genres']=[]
             if len(data['genres']) > 0:
                 return json.dumps(data).encode("utf-8")
             else:
