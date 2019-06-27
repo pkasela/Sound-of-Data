@@ -4,6 +4,7 @@ import riak
 from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
 import botometer
 import json
+import re
 
 with open("secret.json", "r") as f:
     secret = json.load(f)
@@ -55,7 +56,7 @@ def remove_spaces(txt):
     return re.sub('@[A-z0-9]+','',re.sub(r"[\n\t\\]", " ", txt).replace("RT",""))
 
 def tweet_preparations(data_):
-    data_ = data_._json
+    #data_ = json.loads(data_)
     data = {'user': data_["user"]["screen_name"],
             'text': remove_spaces(
                 data_["extended_tweet"]["full_text"] if data_["truncated"]
@@ -81,13 +82,17 @@ consumer =  KafkaConsumer(bootstrap_servers='sandbox-hdp.hortonworks.com:6667',
                           consumer_timeout_ms=1000)
 
 consumer.subscribe(['InitialTopic'])
-KafkaTopic = "KafkaTopicTrial" #for the producer
+KafkaTopic = "KafkaTopic" #for the producer
 producer = KafkaProducer(bootstrap_servers='sandbox-hdp.hortonworks.com:6667')
+
+#import ipdb
 
 while True:
     try:
         for message in consumer:
-            data=tweet_preparations(message)
+            #ipdb.set_trace()
+            data=tweet_preparations(json.loads(message.value.decode()))
+            print(data)
             producer.send(KafkaTopic, data)
         time.sleep(5)
     except:

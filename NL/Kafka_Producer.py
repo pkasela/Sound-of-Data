@@ -10,7 +10,7 @@ import time
 #from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
 from generi import get_genres
 from urllib3.exceptions import ProtocolError
-#import ipdb; #needed for debugging
+import ipdb; #needed for debugging
 
 # genres to follow on twiiter
 genre_list = get_genres()
@@ -62,11 +62,11 @@ twitter_app_auth = {
     'access_token_secret': access_token_secret,
   }
 
-botometer_api_url = 'https://botometer-pro.p.mashape.com'
-bom = botometer.Botometer(botometer_api_url=botometer_api_url,
-                           wait_on_ratelimit=True,
-                           mashape_key=mashape_key,
-                           **twitter_app_auth)
+#botometer_api_url = 'https://botometer-pro.p.mashape.com'
+#bom = botometer.Botometer(botometer_api_url=botometer_api_url,
+#                           wait_on_ratelimit=True,
+#                           mashape_key=mashape_key,
+#                           **twitter_app_auth)
 # Old free botometer
 #bom = botometer.Botometer(wait_on_ratelimit=True,
 #                          mashape_key=mashape_key,
@@ -111,7 +111,8 @@ class Listener(StreamListener):
 #                return "".encode("utf-8")
 
     def on_status(self, data):
-        producer.send(KafkaTopic, data)
+        print(data._json)
+        producer.send(KafkaTopic, json.dumps(data._json).encode("utf-8"))
         #else:
         #    self.tweet_preparations(data)
         return True
