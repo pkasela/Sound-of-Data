@@ -37,7 +37,7 @@
   \authorstyle{
     % DO NOT TOUCH HSPACEs!! @Momo
     Riccardo Cervero \hspace{25pt} 794126 \\  % x + 4
-    Marco Ferrario \hspace{44pt}  000000 \\   % x + 23
+    Marco Ferrario \hspace{44pt}  795203 \\   % x + 23
     Pranav Kasela \hspace{46.5pt} 846965 \\   % x + 25.5
     Federico Moiraghi \hspace{21pt} 799735    % x
   } % Authors
@@ -201,7 +201,7 @@ Attraverso le funzioni \textit{search} è possibile consultare il database sfrut
 \textit{Musicbrainz} è interrogato con la funzione search\_artists per le entità riconosciute come autori, search\_recordings per quelle individuate come canzoni, ed entrambe, con in aggiunta search\_release\_groups (funzione relativa alla ricerca degli album), per quelle la cui tipologia è incerta.
 La problematica principale emersa in questa parte è stata la difficoltà ad attribuire all’entità analizzata l’id che la caratterizza effettivamente.
 Sono infatti molto frequenti i casi di omonimia tra canzoni ed album relativi ad artisti differenti ed è quindi possibile che il risultato ottenuto non sia quello desiderato.
-Per cercare di aumentare le probabilità di restituire i \textit{gid} corretti è stato impostato un valore di similarità pari a 0.95 nell’interrogazione al database. Inoltre per le canzoni e per gli album si è provveduta a verificare la presenza di corrispondenze con le entità artisti precedentemente individuate nel testo.
+Per cercare di aumentare le probabilità di restituire i \textit{gid} corretti è stato impostato un valore di similarità pari a 0.95 nell’interrogazione al database. Inoltre per le canzoni e per gli album si è provveduto a verificare la presenza di corrispondenze con le entità artisti precedentemente individuate nel testo.
 
 \subsection{Prestazioni del modello e margini di miglioramento}
 Nonostante il modello semantico offra una buona \textit{performance} nella selezione dei testi riferiti al mondo musicale e nel riconoscimento delle istanze nel testo, continua a presentare alcune imperfezioni. Un primo difetto deriva dalla difficoltà nella gestione dei casi polisemici: i generi nominati \textit{"drone"}, \textit{"dance"}, \textit{"club"} e "opera" risultano, ovviamente, estremamente complessi da interpretare per uno strumento rudimentale, incapace di distinguere perfettamente il contesto all'interno del quale queste parole vengono utilizzate. Più nel dettaglio: il termine "club" viene più spesso citato all'interno di testi riguardanti qualsiasi tipo di associazione; la parola "drone", come già spiegato nell'introduzione, indica, nella maggior parte dei casi, l'aeromobile; "opera" possiede numerosi significati, oltre al genere musicale; l'espressione "dance" è frequentemente slegata alla musica. \\
