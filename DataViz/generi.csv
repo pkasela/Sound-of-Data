@@ -1,0 +1,401 @@
+MainGenere,Genere
+electronic,acid house
+jazz,acid jazz
+electronic,acid techno
+blues,acoustic blues
+rock,acoustic rock
+pop,afrobeat
+country,alternative country
+hip hop,alternative hip hop
+metal,alternative metal
+pop,alternative pop
+punk,alternative punk
+rock,alternative rock
+ambient,ambient
+ambient,ambient house
+ambient,ambient techno
+folk,americana
+punk,anarcho-punk
+rock,arena rock
+rock,art rock
+metal,atmospheric black metal
+,avant-garde
+jazz,avant-garde jazz
+metal,avant-garde metal
+pop,avant-garde pop
+latin,bachata
+,ballad
+classical,baroque
+jazz,bebop
+bhangra
+,big band
+electronic,big beat
+metal,black metal
+metal,blackened death metal
+metal,blackgaze
+blues,blue-eyed soul
+blues,bluegrass
+blues,blues
+blues,blues rock
+dance,boom bap
+dance,bossa nova
+dance,breakbeat
+dance,breakcore
+dance,breaks
+pop,britpop
+dance,broken beat
+metal,brutal death metal
+pop,bubblegum pop
+folk,cajun
+folk,calypso
+rock,canterbury scene
+pop,cantopop
+folk,celtic
+punk,celtic punk
+pop,chamber pop
+folk,champeta
+,chanson
+blues,chicago blues
+ambient,chillout
+ambient,chiptune
+rock,christian rock
+folk,christmas music
+pop,city pop
+blues,classic blues
+country,classic country
+jazz,classic jazz
+rock,classic rock
+classical,classical
+dance,club
+dance,comedy
+hip hop,conscious hip hop
+folk,contemporary christian
+classical,contemporary classical
+folk,contemporary folk
+blues,contemporary gospel
+jazz,contemporary jazz
+blues,contemporary r&b
+country,country
+country,country blues
+country,country folk
+country,country pop
+country,country rock
+,crossover prog
+punk,crust punk
+folk,cumbia
+punk,d-beat
+dance,dance
+dance,dance-pop
+dance,dance-punk
+dance,dancehall
+ambient,dark ambient
+electronic,dark electro
+folk,dark folk
+ambient,dark wave
+metal,death metal
+metal,death-doom metal
+metal,deathcore
+metal,deathgrind
+metal,deathrock
+electronic,deep house
+blues,delta blues
+rock,desert rock
+electronic,digital hardcore
+dance,disco
+blues,doo-wop
+metal,doom metal
+electronic,downtempo
+dance,drill
+electronic,drone
+blues,drum and bass
+electronic,dub
+electronic,dub techno
+electronic,dubstep
+electronic,dungeon synth
+hip hop,east coast hip hop
+dance,ebm
+electronic,electric blues
+electronic,electro
+electronic,electro house
+electronic,electro swing
+electronic,electro-funk
+electronic,electro-industrial
+electronic,electroclash
+electronic,electronic
+electronic,electronic rock
+electronic,electronica
+electronic,electronicore
+electronic,electropop
+electronic,electropunk
+punk,emo
+punk,emocore
+folk,enka
+ambient,ethereal
+electronic,euro house
+dance,eurodance
+pop,europop
+,experimental
+rock,experimental rock
+folk,fado
+,filk
+folk,flamenco
+folk,folk
+folk,folk metal
+folk,folk pop
+folk,folk punk
+folk,folk rock
+folk,freak folk
+jazz,free improvisation
+dance,funk
+dance,funk carioca
+dance,funk metal
+dance,funk rock
+dance,funk soul
+dance,funky house
+jazz,fusion
+jazz,future jazz
+pop,futurepop
+dance,g-funk
+electronic,gabber
+hip hop,gangsta rap
+,garage
+electronic,garage house
+punk,garage punk
+rock,garage rock
+rock,glam
+metal,glam metal
+rock,glam rock
+electronic,glitch
+ambient,goa trance
+metal,goregrind
+blues,gospel
+ambient,gothic
+metal,gothic metal
+rock,gothic rock
+rock,grebo
+hip hop,grime
+metal,grindcore
+metal,groove metal
+rock,grunge
+folk,guaracha
+metal,happy hardcore
+jazz,hard bop
+electronic,hard house
+rock,hard rock
+ambient,hard trance
+punk,hardcore punk
+electronic,hardcore techno
+hip hop,hardstyle
+metal,heavy metal
+hip hop,hip hop
+blues,honky tonk
+punk,horror punk
+metal,horrorcore
+electronic,house
+dance,idm
+electronic,illbient
+,indie
+folk,indie folk
+pop,indie pop
+rock,indie rock
+electronic,indietronica
+rock,indorock
+dance,industrial
+metal,industrial metal
+rock,industrial rock
+ambient,instrumental
+ambient,instrumental jazz
+ambient,instrumental rock
+folk,irish folk
+dance,italo-disco
+pop,j-pop
+rock,j-rock
+jazz,jazz
+jazz,jazz blues
+jazz,jazz fusion
+jazz,jazz rap
+jazz,jazz rock
+jazz,jazz-funk
+electronic,jungle
+pop,k-pop
+folk,kayōkyoku
+dance,kizomba
+folk,klezmer
+rock,krautrock
+latin,latin
+latin,latin jazz
+latin,latin pop
+latin,latin rock
+,leftfield
+dance,line dance
+electronic,lo-fi
+ambient,lounge
+rock,lovers rock
+pop,madchester
+rock,mainstream rock
+folk,mambo
+pop,mandopop
+classical,martial industrial
+rock,math rock
+hip hop,mathcore
+folk,medieval
+metal,melodic black metal
+metal,melodic death metal
+metal,melodic metalcore
+rock,melodic rock
+ambient,melodic trance
+folk,mento
+folk,merengue
+metal,metal
+metal,metalcore
+electronic,microhouse
+folk,milonga
+folk,min\'yō
+folk,mincecore
+electronic,minimal
+blues,modern blues
+classical,modern classical
+country,modern country
+dance,motown
+folk,mpb
+dance,musical
+rock,neo-progressive rock
+rock,neo-rockabilly
+folk,neofolk
+hip hop,nerdcore
+ambient,new age
+jazz,new jack swing
+classical,new romantic
+rock,new wave
+,no wave
+electronic,noise
+folk,norteño
+blues,northern soul
+rock,occult rock
+metal,old school death metal
+classical,old-time
+classical,opera
+ambient,orchestral
+country,outlaw country
+dance,p-funk
+pop,pop
+pop,pop metal
+pop,pop punk
+pop,pop rap
+pop,pop rock
+pop,pop soul
+metal,pornogrind
+jazz,post-bop
+classical,post-classical
+rock,post-grunge
+metal,post-hardcore
+metal,post-metal
+punk,post-punk
+rock,post-rock
+electronic,power electronics
+metal,power metal
+pop,power pop
+metal,powerviolence
+,production music
+,progressive
+folk,progressive folk
+electronic,progressive house
+metal,progressive metal
+rock,progressive rock
+ambient,progressive trance
+ambient,psy-trance
+,psychedelic
+folk,psychedelic folk
+pop,psychedelic pop
+rock,psychedelic rock
+punk,psychobilly
+ambient,psytrance
+punk,punk
+punk,punk rock
+punk,queercore
+blues,r&b
+folk,ragga
+folk,ragga hip-hop
+folk,ragga jungle
+dance,ragtime
+folk,raï
+folk,ranchera
+hip hop,rap rock
+hip hop,rapcore
+dance,rave
+folk,reggae
+folk,reggaeton
+electronic,rhythmic noise
+rock,rock
+rock,rock and roll
+rock,rockabilly
+rock,rocksteady
+folk,roots reggae
+latin,rumba
+latin,salsa
+latin,samba
+folk,schlager
+punk,screamo
+electronic,shibuya-kei
+rock,shoegaze
+rock,singer-songwriter
+folk,ska
+folk,ska punk
+folk,skacore
+classical,slow waltz
+metal,sludge metal
+jazz,smooth jazz
+blues,smooth soul
+dance,soca
+rock,soft rock
+blues,soul
+jazz,soul jazz
+rock,southern rock
+blues,southern soul
+rock,space rock
+rock,speed garage
+metal,speed metal
+rock,spoken word
+metal,stoner metal
+rock,stoner rock
+punk,street punk
+rock,surf rock
+jazz,swing
+metal,symphonic black metal
+metal,symphonic metal
+metal,symphonic prog
+rock,symphonic rock
+classical,symphony
+pop,synth-pop
+electronic,synthwave
+latin,tango
+electronic,tech house
+metal,technical death metal
+electronic,techno
+pop,teen pop
+metal,thrash metal
+metal,thrashcore
+latin,timba
+country,traditional country
+ambient,trance
+dance,trap
+dance,trap edm
+electronic,tribal house
+dance,trip hop
+hip hop,turntablism
+dance,uk drill
+,uk garage
+hip hop,underground hip hop
+folk,vallenato
+electronic,vaporwave
+metal,viking metal
+rock,visual kei
+electronic,vocal house
+jazz,vocal jazz
+ambient,vocal trance
+hip hop,west coast hip hop
+jazz,west coast swing
+folk,yé-yé
+rock,zamrock
+folk,zydeco
+
