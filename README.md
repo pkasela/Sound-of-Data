@@ -31,24 +31,17 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
 - [x] Rimozione bot
   - [x] indivuduare utenti e "bannarli" (Botometer)
   - [x] storage di whitelist e blacklist con RiakDB
-- [x] Eliminazione della parola 'DRONE' prima di partire con le analisi giustificando per via dei due eventi
-   - Tensione con tra IRAN e USA per via del drone Americano abbattuto
-   - Festival a Torino con luci e droni
-- [x] Citazione degli altri casi di polisemia: club, dance, house e country (?) (per far vedere che siamo pignoli)
-- [x] Togliere tutti i tweet con #trap in cui compare anche ['#gay','#sissy','#femboy','#daddy','#femboi']  (indicano i transessuali così)
 - [ ] Query interessanti
   - [ ] generi
   - [ ] artisti
 - [ ] Analisi
   - [ ] trovare i cluster sulle parole musicali più twittati.    #    "comunità" musicali
   - [ ] trovare cicli giornalieri
-  - [ ] trovare cicli settimanali
-- [ ] Creare dump periodici ?? Lo vogliamo ancora fare o ce ne sbattiamo tanto i generi sono quelli
 
 # Data Visualization
 - [ ] Plot plot plot plot
   - [x] Un possibile plot è work cloud (a forma di qualcosa di musica magari)
-  - [ ] Barplot per la densità di distribuzione nei vari giorni (e ora)
+  - [x] Barplot per la densità di distribuzione nei vari giorni (e ora)
   - [ ] Interazione fra le comunità
 - [ ] Convalida plot
   - [ ] noi stessi
