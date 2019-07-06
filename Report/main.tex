@@ -23,6 +23,9 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
+\usepackage{float}
+\usepackage{wrapfig}
+\setcounter{tocdepth}{0}
 
 \input{structure.tex} % Specifies the document structure and loads requires packages
 
@@ -59,8 +62,9 @@
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
 
-\lettrineabstract{Obiettivo del progetto è analizzare la discussione mediatica riguardante i soggetti del mondo musicale contemporaneo e passato, ottenendo, grazie alla gestione in tempo reale di un flusso di tweets, gli artisti, le produzioni e i generi citati all'interno del testo, in modo da produrre uno schema a grafo in grado di rappresentare efficacemente la composizione dei topic musicali nell'arco del tempo, e osservare quali legami possano esistere fra le comunità formate da utenti che scrivono degli stessi argomenti.}
-\hfill
+\lettrineabstract{Obiettivo del progetto è analizzare la discussione mediatica sul social network Twitter studiando in tempo reale l'andamento della discussione nell'ambito musicale, presente e passato, per verificare la presenza di variazioni all'interno del ciclo giornaliero e la presenza di comunità digitali e le loro interconnessioni.
+Il presente lavoro può essere di aiuto nella costruzione di sistemi di raccomandazione interni a Twitter (quali pagine consigliate) e nella programmazione di BOT, a scopo pubblicitario, che intendano infilarsi in una discussione mediatica già presente (ovvero argomenti di tendenza) per inserire i propri messaggi.}
+\newpage
 
 \tableofcontents
 \hfill
@@ -70,12 +74,23 @@
 %	ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 \part{Introduzione}
-I traguardi posti dal progetto \textit{Sound of Data}\footnote{\url{https://github.com/pkasela/Sound-of-Data}}, hanno innanzitutto richiesto la raccolta di un volume di dati sufficienti per costruire un \textit{knowledge graph} adeguato alla materia. Scaricato un \textit{dump} di \url{musicbrainz.org} come database relazionale - già esportato in formato \textit{Tabular Separated Values} dai manutentori-, si è provveduto ad importarlo all'interno di Apache Hadoop\footnote{\url{https://hadoop.apache.org}} per effettuare una rapida pulizia preliminare, e infine esportarlo, in modo tale da costruire un grafo Neo4J\footnote{\url{https://neo4j.com}}.
-Costituita quindi la base di conoscenza su cui operare, i \textit{tweet} sono stati raccolti in tempo reale grazie ad Apache Kafka\footnote{\url{https://kafka.apache.org}}. Durante questa fase di \textit{streaming}, essi subiscono varie operazioni di \textit{preparation} e vengono filtrati da un rudimentale strumento di \textit{instance matching}. Grazie ad un efficiente plug-in che permette all'utente di sfruttare il \textit{DBMS Neo4j} identicamente a qualsiasi \textit{Consumer} di \textit{Apache Kafka}, il risultato si costituisce automaticamente in uno schema a grafo. Dopo la complessa fase di gestione e raccolta dei dati, è stato possibile condurre un'analisi finale sulle dinamiche della discussione musicale instauratesi fra i singoli utenti all'interno di comunità astratte ed estremamente mutevoli, e sulle relazioni, più o meno intense, esistenti fra di esse. Le progressiva composizione che i nodi associati ai tweet assumono all'interno del grafo viene studiata ad intervalli regolari, corrispondenti alle quattro fasce orarie relative al mattino, pomeriggio, sera, notte. Si è preferito adoperare tale ciclo giornaliero, anzichè un più ampio ciclo settimanale, o addirittura mensile, per due ragioni precise. Innanzitutto, esso si rivela migliore dal punto di vista interpretativo: risulta di estremo interesse osservare i trend ricorrenti nei vari momenti della giornata, piuttosto che rifersi all'arco settimanale. Inoltre, il ciclo giornaliero ha il vantaggio di non risentire della distorsione provocata dagli eventi, siano essi previsti o imprevisti. Infatti, essendo in grado di assorbire l'interesse della gran parte dell'opinione pubblica per interi giorni e settimane, questi penalizzano l'analisi e concentrano tutti gli utenti verso un numero limitato di argomenti musicali.\ 
-Due esempi riguardanti tale problematica, e le sue conseguenze negative, possono essere citati per quanto concerne il genere \textit{"drone"}. Durante il periodo di raccolta, si sono succeduti due eventi particolarmente rilevanti. Il primo coincide con l'abbattimento di un drone americano, causa di nuove tensioni fra Stati Uniti e Iran\footnote{\url{http://www.ansa.it/sito/notizie/mondo/mediooriente/2019/06/20/iran-pasdaran-abbattuto-drone-usa_b8922ea0-e61c-436b-8f66-60f3be32ed21.html}}, mentre il secondo consiste in uno spettacolo di droni luminosi a Torino\footnote{\url{https://www.guidatorino.com/eventi-torino/san-giovanni-torino-droni-2019/}}. Raccogliendo la preoccupazione o l'interesse di centinaia di utenti, essi hanno fatto sì che il cluster del genere \textit{"drone"}, la cui parola presenta inoltre un evidente difetto di polisemia, fosse sproporzionato rispetto alle dimensioni delle altre comunità, se osservato nella settimana e nei giorni in corrispondenza dei due avvenimenti. Tuttavia, se vista su un arco giornaliero, questa distorsione non risulta eccessivamente grave. Per evitare che altri eventi, seppur riferiti effettivamente al mondo della musica, potessero nuocere alla bontà dello studio, si è pertanto deciso di adoperare queste quattro fasce orarie come intervalli temporali di riferimento.
+I traguardi posti dal progetto \textit{Sound of Data}\footnote{\url{https://github.com/pkasela/Sound-of-Data}}, hanno innanzitutto richiesto l'uso di uno \textit{knowledge graph} adeguato alla materia: scaricato un \textit{dump} di \url{musicbrainz.org}, versione \textit{semantic web} di \url{last.fm}, disponibile pubblicamente in formato \verb|.tsv| (\textit{Tabular Separated Values}), si è provveduto ad importarlo all'interno di Apache Hadoop\footnote{\url{https://hadoop.apache.org}} per effettuare una rapida pulizia preliminare.
+Fatto ciò, i dati sono stati importati in Neo4J\footnote{\url{https://neo4j.com}}, grazie al pratico programma \verb|neo4j-import|, in modo da costruire lo \textit{knowledge graph} richiesto per l'analisi dei \textit{tweet}, raccolti ed analizzati in tempo reale grazie ad Apache Kafka\footnote{\url{https://kafka.apache.org}}: grazie ad un efficiente plug-in che permette l'uso di \textit{Neo4j} come \textit{Consumer}, il singolo tweet è archiviato nativamente in uno schema a grafo.
+Durante il processo di \textit{streaming}, questi subiscono varie operazioni di \textit{preparation} e vengono filtrati da un rudimentale strumento di \textit{instance matching}.
 
+Dopo la complessa fase di gestione e raccolta dei dati, è stato possibile condurre un'analisi finale sulle dinamiche della discussione musicale instauratesi fra i singoli utenti all'interno di comunità, astratte ed estremamente mutevoli, e sulle relazioni, più o meno intense, esistenti fra di esse.
+Le progressiva composizione che i nodi associati ai \textit{tweet} assumono all'interno del grafo è studiata ad intervalli più o meno regolari, corrispondenti a quattro fasce orarie relative al mattino, pomeriggio, sera, notte.
+Si è preferito adoperare tale ciclo giornaliero, anziché un più ampio ciclo settimanale, o addirittura mensile, per due ragioni precise.
+Innanzitutto, questo garantisce una più facile interpretazione: risulta di estremo interesse osservare i trend ricorrenti nei vari momenti della giornata, piuttosto che riferiti all'arco settimanale.
+Inoltre, il ciclo giornaliero ha il vantaggio di non risentire della distorsione provocata dagli eventi, previsti o meno.
+Infatti, essendo gli eventi in grado di assorbire l'interesse della gran parte dell'opinione pubblica per interi giorni e settimane, questi penalizzano l'analisi e concentrano tutti gli utenti verso un numero limitato di argomenti musicali.
+Due esempi riguardanti tale problematica, e le sue conseguenze negative, possono essere citati per quanto concerne il genere \textit{drone}, per cui durante il periodo di raccolta, si sono succeduti due eventi particolarmente rilevanti: il primo riguarda l'abbattimento di un drone americano in territorio Iraniano, causando nuove tensioni fra i due Paesi\footnote{\url{http://www.ansa.it/sito/notizie/mondo/mediooriente/2019/06/20/iran-pasdaran-abbattuto-drone-usa_b8922ea0-e61c-436b-8f66-60f3be32ed21.html}}, mentre il secondo consiste in uno spettacolo di droni luminosi a Torino\footnote{\url{https://www.guidatorino.com/eventi-torino/san-giovanni-torino-droni-2019/}} per la festa patronale.
+
+Raccogliendo l'attenzione di centinaia di utenti, i due eventi e la polisemia della parola hanno fatto sì che la comunità di ascoltanti il genere musicale \textit{drone} fosse sproporzionatamente più grande rispetto alle altre nei giorni degli eventi; ma tale distorsione è diluita dalla divisione in fasce orarie e dalla moltitudine dei giorni in cui è stata effettuata la raccolta dati.
 \hfill
 \newpage
+
+
 \part{Costruzione dello \textit{knowledge graph}}
 
 \section{Data Cleaning con Python e Pig}
@@ -84,8 +99,9 @@ Due esempi riguardanti tale problematica, e le sue conseguenze negative, possono
 %https://tez.apache.org/
 
 
-I dati vengono scaricati dal sito di musicbrainz attraverso il file \textit{get\_data.py}\footnote{\url{https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz_data/Data_Cleaning/get_data.py}}, e, sempre al suo interno, gestiti preliminarmente, in modo da sostituire, attraverso il comando sed, tutti i caratteri "\\N" con campi vuoti in tutti i file, e salvare solamente i file necessari alla creazione del \textit{database} a grafo. 
-La lista dei generi è anch'essa presente sul sito di \textit{musicbrainz}. Pertanto, questa viene estratta e salvata all'interno del codice attraverso uno scraper. Poi, grazie al confronto con il file \textit{tag}, vengono individuati e rimossi tutti i \textit{tag} che non rappresentano un genere musicale.
+I dati sono scaricati dal sito di musicbrainz attraverso lo script python \verb|get_data.py|\footnote{\url{https://github.com/pkasela/Sound-of-Data/blob/master/musicbrainz_data/Data_Cleaning/get_data.py}} che cerca sul sito l'ultima versione del database e la scarica col comando \verb|wget| dei sistemi Unix.
+Decompressa quindi la cartella compressa con il dump del database e selezionati solamente i file necessari allo scopo, sono eseguite delle operazioni \verb|cat-sed| per effettuare una rapida pulizia preliminare (la gestione dei valori nulli \verb|\N|).
+È salvata inoltre una lista di generi musicali, già presente in una pagina HTML del sito, tramite uno \textit{scraper}, che ne analizza l'elenco per importarla in Python.
 
 %%%%%%
 %%%%%%%%%%%
@@ -96,25 +112,29 @@ La lista dei generi è anch'essa presente sul sito di \textit{musicbrainz}. Pert
 %%%%%%%%%%%
 %%%%%%
 
-I file vengono successivamente trasferiti e processati all'interno del \textit{file system} HDFS. Nel dettaglio, questa fase viene eseguita attraverso l'utilizzo di Apache Pig, una piattaforma atta proprio all'elaborazione dei dati. La decisione di utilizzare Pig anzichè SQL dipende principalmente dal fatto che il caricamento dei dati in un database relazionale sia molto più lenta, e dalla capacità di Pig di riuscire a sfruttare a pieno la potenza di HDFS.
-L'\textit{engine} adoperato in combinazione con Pig è Tez, che rende molto più veloce il \textit{processing} dei dati, saltando diverse fasi di scrittura dei risultati parziali su HDFS.
-Apache Tez è costruito direttamente sopra YARN, e migliora drasticamente la velocità rispetto a \textit{MapReduce}, mantenendo la sua stessa scalabilità [Figura 1]. 
+I file sono successivamente importati e processati all'interno del \textit{file system} HDFS.
+Nel dettaglio, questa fase viene eseguita attraverso l'utilizzo di Apache Pig, piattaforma atta all'elaborazione di grosse quantità di dati.
+La decisione di utilizzare Pig anzichè SQL dipende principalmente dalle migliori prestazioni del primo nella fase di caricamento, e dalla maggiore versatilità della suite Hadoop per la fase di elaborazione.
+L'\textit{engine} adoperato in combinazione con Pig non è MapReduce ma Tez: costruito sopra YARN, migliora drasticamente le prestazioni mantenendo la stessa scalabilità evitando alcune fasi di scrittura di risultati parziali sull'HDFS (vedere Figura \ref{fig:Hadoop} per maggiori dettagli).
 
 \begin{figure*}
-	\centering
-	\includegraphics{hadoop2.png}
-	\caption{Differenza archittetura di HADOOP 1.0 con MR e 2.0 con Tez}
+  \centering
+  \includegraphics[width=\linewidth]{hadoop2.png}
+  \caption{Differenza architteturale di HADOOP 1.0 con MapReduce rispetto alla versione 2.0 con Tez.}
+  \label{fig:Hadoop}
 \end{figure*}
 
-Più precisamente, la velocità di esecuzione è ottenuta grazie all'invio diretto dei dati da un processo all'altro, evitando la scrittura all'interno del file system, eccezion fatta per i checkpoints. Inoltre, la definizione del \textit{job} sfrutta i \textit{Directed Acyclic Graph}, dove i vertici rappresentano gli step del processo e gli archi la connessione tra i vertici \textit{Producer} e \textit{Consumer} [Figura 2].
+Più precisamente, la velocità di esecuzione è ottenuta grazie all'invio diretto dei dati da un processo all'altro, evitando la scrittura all'interno del file system, eccezion fatta per i \textit{checkpoints}.
+Inoltre, la definizione del \textit{job} sfrutta i \textit{Directed Acyclic Graph}, dove i vertici rappresentano gli step del processo e gli archi la connessione tra i vertici \textit{Producer} e \textit{Consumer} (come mostrato in Figura \ref{fig:Tez}).
 
 \begin{figure*}
-	\centering
-	\includegraphics{tez.png}
-	\caption{Archittetura di HADOOP 2.0 con Tez}
+  \centering
+  \includegraphics[width=0.9\linewidth]{tez.png}
+  \caption{Funzionamento di Tez.}
+  \label{fig:Tez}
 \end{figure*}
 
-Conclusa la fase di pulizia, i dati vengono trasferiti all'esterno di HDFS, sul filesystem, e i risultati di Pig sono uniti mediante il comando \textit{cat} di \textit{Linux}. 
+Conclusa la fase di pulizia, i dati sono trasferiti all'esterno di HDFS, sul filesystem reale, unendo i risultati di Pig  mediante il comando \textit{cat} di \textit{Unix}. 
 A questo punto i dati sono pronti per essere importati in Neo4j.
 
 %%%%%%
@@ -128,9 +148,12 @@ A questo punto i dati sono pronti per essere importati in Neo4j.
 \section{Import dei dati in Neo4J}
 %Reference
 %https://neo4j.com/docs/operations-manual/current/tutorial/import-tool/
-
-Infine, il risultato dell'elaborazione svolta da Pig viene caricato all'interno del \textit{DBMS Neo4j}, usando neo4j-import, aggiungendo degli indici sui \textit{gid} delle varie entità, in modo da velocizzare la ricerca da svolgere successivamente.
+Infine, il risultato dell'elaborazione svolta da Pig viene caricato all'interno del \textit{DBMS Neo4j}, usando il comando \verb|neo4j-import|, indicizzando i \textit{gid} delle varie entità, in modo da velocizzare la ricerca da svolgere successivamente.
 %cosa altro si deve scrivere hahaha
+
+Il risultato è un grafo dal peso approssimativo di 5Gb contenente i vari artisti, i relativi album e le relative case discografiche collegate in modo opportuno.
+Si è preferito ridurre la capillarità del database non inserendo le singole canzoni contenute negli album, sia perché una simile precisione sarebbe stata difficile da gestire in fase di analisi, sia a causa della mancanza nel dump del database di tale informazione (comunque presente nella versione online), che avrebbe richiesto un tempo superiore alla settimana (dovuto perlopiù alla latenza supportata dal sito) per poter essere recuperata.
+
 
 \hfill
 \newpage
@@ -139,73 +162,92 @@ Infine, il risultato dell'elaborazione svolta da Pig viene caricato all'interno 
 %Reference 
 %https://github.com/neo4j-contrib/neo4j-streams
 %https://riak-python-client.readthedocs.io/en/1.5-stable/tutorial.html
-Nella fase di analisi in tempo reale, i tweet vengono filtrati ed elaborati mediante una sequenza di operazioni, attraverso una \textit{pipeline} costituita dalla concatenazione di due coppie di processi Producer e Consumer. L'architettura di elaborazione in \textit{streaming} è stata configurata in questa maniera affinchè garantisse una maggiore scalabilità ed una migliore performance, riuscendo a reggere più alti volumi di \textit{tweet} in ingresso.\ 
-Questi vengono estratti grazie all'API \textit{Tweepy}\footnote{\url{https://tweepy.readthedocs.io/en/latest/}} per Python - utilizzando come parole chiave di ricerca 400 generi musicali fra i 419 ottenuti dallo scraping della pagina \textit{'https://musicbrainz.org/genres'}, e filtrando soltanto i testi pubblicati in lingua italiana - e inviati ad una prima Topic come messaggi di un \textit{Producer} di Kafka, inizializzato mediante la libreria \textit{Kafka-python}\footnote{\url{https://pypi.org/project/kafka-python/}}. 
-All'interno di un secondo file\footnote{\url{https://github.com/pkasela/Sound-of-Data/blob/master/NL/Kafka_Producer_2.py}}, associato ad un nuovo processo Producer, dunque ad una seconda Topic connessa in \textit{streaming} con la precedente, il JSON grezzo che costituisce ciascun \textit{tweet} in ingresso viene processato in vari step dalla funzione \textit{tweet\_preparations}. La prima fase coincide con l'estrazione dello \textit{"screen name"} dell'utente, del contenuto postato e dell'ora e data precisa di pubblicazione. 
+Nella fase di gestione e analisi in tempo reale, i \textit{tweet} sono filtrati ed elaborati mediante una sequenza di operazioni, attraverso una \textit{pipeline} costituita dalla concatenazione di due coppie di processi Producer e Consumer.
+L'architettura di elaborazione in \textit{streaming} è stata così configurata per garantire una maggiore scalabilità ed una migliore performance, riuscendo a reggere maggiori volumi di \textit{tweet} in ingresso.
+Questi vengono estratti grazie all'API \textit{Tweepy}\footnote{\url{https://tweepy.readthedocs.io/en/latest/}} per Python, utilizzando come parole chiave di ricerca una selezione di 400 generi musicali fra i 419 ottenuti dallo scraping della pagina \url{'https://musicbrainz.org/genres'}, e ricevendo soltanto i testi pubblicati in lingua italiana.
+
+Quindi sono inviati ad una prima Topic come messaggi di un \textit{Producer} di Kafka, inizializzato mediante la libreria \textit{Kafka-python}\footnote{\url{https://kafka-python.readthedocs.io/en/master/}}. 
+All'interno di un secondo file\footnote{\url{https://github.com/pkasela/Sound-of-Data/blob/master/NL/Kafka_Producer_2.py}}, associato ad un nuovo processo Producer, dunque ad una seconda Topic connessa in \textit{streaming} con la precedente, il JSON grezzo che costituisce ciascun \textit{tweet} in ingresso viene processato in vari step dalla funzione \verb|tweet_preparations|.
+
+La prima fase coincide con l'estrazione dello \textit{screen name} dell'utente, del contenuto postato e dell'ora e data precisa di pubblicazione. 
 In particolare, il testo viene modificato in modo da rendere leggibili i caratteri speciali e i cosiddetti \textit{escape characters}. 
-La seconda fase sfrutta l'API di \textit{Botometer}\footnote{\url{https://rapidapi.com/OSoMe/api/botometer/details}} per calcolare la probabilità - definita \textit{"score"} - che un profilo sia in realtà gestito da un BOT, osservandone il comportamento passato.
-Poiché questo tipo di gestione automatizzata degli account altera, spesso fortemente, la discussione mediatica, aumentando arbitrariamente il flusso di determinati contenuti, si è deciso di non archiviare i \textit{tweet} appartenenti a tali profili. 
-Nel dettaglio, se lo score associato all'utente di ogni \textit{tweet} supera una soglia fissata al 90\%, lo \textit{screen name} viene memorizzato all'interno di una \textit{blacklist}, altrimenti smistato in una \textit{whitelist}, in modo che il programma possa riconoscere più velocemente ogni profilo ed evitare inutili ricalcoli. 
-Per aumentare l'efficienza di questo \textit{storage} e garantire la scalabilità, si è scelto di adoperare il \textit{data store Riak}, di tipo \textit{NoSQL Key-Value}, attraverso la propria libreria in Python\footnote{\url{https://github.com/basho/riak-python-client}}. 
-La terza fase verifica che il testo sia effettivamente legato al tema musicale. 
-La quarta e ultima fase consiste nel riconoscimento delle parole riguardanti il contesto musicale, aggiungendo al dizionario prodotto dalle fasi precedenti tre chiavi corrispondenti rispettivamente alla lista di artisti, album o canzoni estratti dal testo analizzato. 
-Questi due step sono permessi dall'uso dell'API fornita dal sito \textit{musicbrainz.org}. 
-Per maggiori dettagli sul processo di analisi semantica, si rimanda alla sezione dedicata. 
-Infine, ogniqualvolta si verificano le due condizioni note, cioè che l'utente non abbia probabilità elevata di essere un BOT e che il testo pubblicato si riferisca effettivamente al mondo della musica, ciascun risultato della funzione \textit{tweet\_preparations} viene ricodificato e passato come messaggio al secondo \textit{Producer} di \textit{Apache Kafka} - menzionato in precedenza-, che effettuerà l'invio del dato finale alla \textit{topic} nominata \textit{"KafkaTopic"}. 
-Grazie all'utilizzo di questa piattaforma, il flusso di \textit{feed} viene gestito in tempo reale, assicurando bassissima latenza e grande scalabilità. 
+
+La seconda fase sfrutta l'API di \textit{Botometer}\footnote{\url{https://rapidapi.com/OSoMe/api/botometer/details}} per calcolare la probabilità - definita \textit{score} - che un profilo sia in realtà gestito da un BOT, osservandone il comportamento passato.
+Poiché i profili gestiti in modo automatico alterano, spesso fortemente, la discussione mediatica aumentando arbitrariamente il flusso di determinati contenuti, si è deciso di non archiviare i \textit{tweet} appartenenti a tali profili. 
+Nel dettaglio, se lo score associato all'utente di ogni \textit{tweet} supera una soglia (fissata arbitrariamente al $90\%$), lo \textit{screen name} viene memorizzato all'interno di una \textit{blacklist}, altrimenti smistato in una \textit{whitelist}, in modo che il programma possa riconoscere più velocemente ogni profilo ed evitare inutili ricalcoli e così da ridurre il numero di richieste fatte all'API, gratuita fino ad un certo volume e poi a pagamento.
+Per aumentare ulteriormente l'efficienza di questo processo e garantire la scalabilità, si è scelto di adoperare il \textit{data store Riak}, di tipo \textit{NoSQL Key-Value}, attraverso la propria libreria in Python\footnote{\url{https://github.com/basho/riak-python-client}}: è così archiviato lo \textit{score} di ogni utente e la richiesta all'API è effettuata solamente se non è trovata la chiave nel database.
+
+La terza fase verifica che il testo sia effettivamente legato al tema musicale grazie ad un rudimentale \textit{istance matcher} che tenta di riconoscere le parole riguardanti il contesto musicale, aggiungendo al dizionario prodotto dalle fasi precedenti tre chiavi corrispondenti rispettivamente alla lista di artisti, album o canzoni estratti dal testo analizzato.
+Ciò è permesso dall'uso dell'API\footnote{\url{https://python-musicbrainzngs.readthedocs.io/en/v0.6/api/}} fornita dal sito \textit{musicbrainz.org} e basata su Apache Lucene\footnote{\url{https://lucene.apache.org/}}.
+Per maggiori dettagli si rimanda alla sezione dedicata.
+
+Ogniqualvolta si verificano le due condizioni note, cioè che l'utente non abbia probabilità elevata di essere un BOT e che il testo pubblicato si riferisca effettivamente al mondo della musica, ciascun risultato della funzione \verb|tweet_preparations| è ricodificato e passato come messaggio al secondo \textit{Producer} di \textit{Apache Kafka} - menzionato in precedenza - che effettuerà l'invio del dato finale alla \textit{topic} nominata \textit{KafkaTopic}. 
+Grazie all'utilizzo di questa piattaforma, il flusso di \textit{feed} è gestito in tempo reale, assicurando bassissima latenza e grande scalabilità. 
 
 \section{Consuming dei Tweets in Neo4j}
-Un principale vantaggio di \textit{Apache Kafka} consiste nella capacità di connettersi efficientemente a sistemi esterni, garantendo in tal modo la continuità dello \textit{stream} di dati da una fonte - la class \textit{Listener} adoperata in Python per "ascoltare" i tweet grazie all'API Tweepy -, ad una \textit{"landing zone"}, che in questo caso corrisponde al DBMS \textit{Neo4j}. 
-Si è scelto di effettuare lo \textit{storage} dei tweets in un \textit{GraphDB}, e in particolare \textit{Neo4j}, tra le varie motivazioni, per le sue caratteristiche di estrema scalabilità, efficienza nella gestione, elevata capacità di adattamento al fenomeno di studio e interpretabilità dei dati.
-L'esportazione diretta dei tweets da \textit{Apache Kafka} all'interno del \textit{data store} avviene grazie al \textit{plug-in} di \textit{Neo4j} chiamato \textit{"Neo4j Streams Consumer"}. Questo si configura come un'applicazione che effettua un'ingestione diretta e automatizzata all'interno di \textit{Neo4j}, permettendo la lettura dei dati presenti nella \textit{topic} identicamente a qualsiasi applicazione \textit{Consumer} di \textit{Kafka}. 
-\textit{Neo4j Streams Consumer} permette all'utente di specificare arbitrariamente le relazioni, entità e proprietà in cui i \textit{payloads} di \textit{Apache Kafka}, corrispondenti al JSON di ciascun tweet importato, dovranno essere organizzati per costruire progressivamente il grafo.
-La struttura di quest'ultimo viene dichiarata attraverso un \textit{Cypher template}, ovvero un insieme di \textit{queries} semantiche di \textit{Cypher}, all'interno di un file di configurazione, che nel caso presentato è il \textit{"docker-compose.yml"}\footnote{\url{https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j\%20\%26\%20kafka/docker-compose\%20configuration.yml}}, poiché il progetto viene eseguito mediante \textit{Docker Desktop}, in quanto quest'ultimo presenta il vantaggio di riuscire a far comunicare automaticamente e in maniera trasparente i containers coinvolti. 
-Una volta specificato il \textit{Cypher template}, installato il \textit{plugin} all'interno del \textit{Docker}, e successivamente montati i container e i relativi collegamenti, la fase di mera esecuzione del progetto avviene mediante la funzione denominata \textit{"streams.consume"}, la quale crea immediatamente la struttura del grafo come indicato. 
-Nello specifico, all'arrivo di un \textit{tweet} verranno dunque aggiunti i nodi \textit{"Tweet"},\textit{"User"} ed un terzo che riporterà ora e data di pubblicazione. 
-Il primo conterrà le \textit{property keys} del testo \textit{"text"}, e dello \textit{"screen\_name"}. 
-Il secondo, invece, conterrà solamente la proprietà \textit{"name"}, che riporta lo \textit{screen name}. 
-Tra primi i due nuovi nodi verrà generata la relazione \textit{"BELONGS\_TO"}, ad indicare il profilo di appartenenza di ciascun post, mentre "User" sarà connesso all'ora/data di pubblicazione da un \textit{edge} etichettato come \textit{"Twitted"}.
-In più, il programma effettuerà automaticamente una \textit{merge} della coppia appena generata con i nodi già presenti all'interno del grafo, importati precedentemente da \textit{musicbrainz.org}, nella seguente maniera: quando il testo cita, ad esempio, un artista, il software crea la relazione \textit{"TALKS\_ABOUT",} rappresentata da un arco connesso al nodo a cui appartiene il \textit{"value"} di quel preciso artista - cioè il suo id -, il quale sarà già a sua volta collegato ai generi musicali cui appartengono le proprie produzioni. In questo modo, il nodo riferito al genere costituirà il centro di ogni cluster di utenti. 
-Lo stesso accade per quanto riguarda le \textit{labels} relative al titolo di una canzone, oppure di un album. 
-A questo punto, il grafo apparirà direttamente cosparso di nodi utente, raggruppati in comunità a seconda dell'oggetto dei propri \textit{tweet}, ingrandendosi e variando in base alle dinamiche interne alla discussione mediatica nell'arco di vari cicli orari e giornalieri. 
-Grazie a questa semplice struttura, l'analisi avviene già in maniera grafica e trasparente, e l'utente è in grado di distinguere la grandezza di queste comunità variabili, intendere quali legami esistano fra di esse, e quanto questi siano intensi.
-Per ottenere queste informazioni, è infatti sufficiente scaricare un \textit{dump} del grafo a intervalli regolari e confrontare i vari risultati. 
-Il risultato finale, dall'interfaccia web di \texti{Neo4j}, apparirà come nella Figura 3. \\
-\\
-Invece, la composizione dei cluster, delle comunità ben separate, verrà mostrata come nella Figura 4.
+Un principale vantaggio di \textit{Apache Kafka} consiste nella capacità di connettersi efficientemente a sistemi esterni, garantendo in tal modo la continuità dello \textit{stream} di dati da una fonte - la class \textit{Listener} adoperata in Python per "ascoltare" i tweet grazie all'API Tweepy - ad una \textit{"landing zone"}, che in questo caso corrisponde al DBMS \textit{Neo4j}. 
+Si è scelto di effettuare lo \textit{storage} dei tweets in un \textit{GraphDB}, e in particolare \textit{Neo4j}, tra le varie motivazioni, per le sue caratteristiche di estrema scalabilità, efficienza nella gestione dei dati, elevata capacità di adattamento al fenomeno di studio e facile interpretabilità.
+L'esportazione diretta dei tweet da \textit{Apache Kafka} all'interno del \textit{data store} avviene grazie a un \textit{plug-in} di \textit{Neo4j}, \textit{"Neo4j Streams Consumer"}. Questo si configura come un'applicazione che effettua un'ingestione diretta e automatizzata all'interno di \textit{Neo4j}, permettendo la lettura dei dati presenti nella \textit{topic} identicamente a qualsiasi applicazione \textit{Consumer} di \textit{Kafka}.
 
-\begin{figure*}
-	\centering
-	\includegraphics{small_graph.png}
-	\caption{Configurazione della struttura del grafo}
+\textit{Neo4j Streams Consumer} permette all'utente di specificare arbitrariamente le relazioni, entità e proprietà in cui i \textit{payloads} di \textit{Apache Kafka}, corrispondenti al JSON di ciascun tweet importato, dovranno essere organizzati per costruire progressivamente il grafo.
+La struttura di quest'ultimo viene dichiarata attraverso un \textit{Cypher template}, ovvero un insieme di \textit{queries} semantiche di \textit{Cypher}, all'interno di un file di configurazione, che nel caso presentato è \verb|docker-compose.yml|\footnote{\url{https://github.com/pkasela/Sound-of-Data/blob/master/Neo4j\%20\%26\%20kafka/docker-compose\%20configuration.yml}}, poiché il progetto viene eseguito mediante \textit{Docker Desktop}, in quanto quest'ultimo presenta il vantaggio di riuscire a far comunicare automaticamente e in maniera trasparente i containers coinvolti. 
+Una volta specificato il \textit{Cypher template}, installato il \textit{plugin} all'interno del \textit{Docker}, e successivamente montati i container e i relativi collegamenti, la fase di mera esecuzione del progetto avviene mediante la funzione denominata \verb|streams.consume|, la quale crea immediatamente la struttura del grafo come indicato.
+
+Nello specifico, all'arrivo di un \textit{tweet} verranno dunque aggiunti i nodi \textit{"Tweet"}, \textit{"User"} ed un terzo che riporterà ora e data di pubblicazione.
+Il primo conterrà le \textit{property keys} del testo \verb|"text"|, e dello \verb|"screen_name"|. 
+Il secondo, invece, conterrà solamente la proprietà \textit{"name"}, che riporta lo \textit{screen name}. 
+Tra primi i due nuovi nodi verrà generata la relazione \verb|BELONGS_TO|, ad indicare il profilo di appartenenza di ciascun post, mentre \textit{"User"} sarà connesso all'ora/data di pubblicazione da un \textit{edge} etichettato come \textit{"Twitted"}.
+
+In più il programma effettua automaticamente un'operazione di \textit{merge} della coppia appena generata coi nodi già presenti nel grafo: quanto è individuato l'\verb|id| di un'entità presente nel testo, il software collega il nodo del tweet all'entità con una relazione \verb|TALKS_ABOUT|.
+L'entità presente su musicbrainz è collegata al proprio genere musicale, così da svolgere da collegamento tra i nodi riguardanti genere e tweet, oggetto della presente analisi.
+
+Dunque il grafo conterrà una serie di nodi utente, raggruppati in comunità attorno ad artisti o generi a seconda dell'oggetto dei propri \textit{tweet}.
+Grazie a questa semplice struttura, l'analisi può avvenire già in maniera grafica e trasparente, e l'utente è in grado di distinguere la grandezza di queste comunità, intendere quali legami esistano fra di esse, e quanto questi siano intensi.
+Per ottenere queste informazioni, è infatti sufficiente scaricare un \textit{dump} del grafo a intervalli regolari e confrontare i vari risultati.
+Il risultato finale, dall'interfaccia web di \textit{Neo4j}, apparirà come nella Figura \ref{fig:neo4jmicro}; invece la composizione dei cluster, cioè delle comunità ben separate, verrà mostrata come nella Figura \ref{fig:neo4jmacro}.
+
+\begin{figure*}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{small_graph.png}
+  \caption{Configurazione della struttura del grafo.}
+  \label{fig:neo4jmicro}
 \end{figure*}
 
-\begin{figure*}
-	\centering
-	\includegraphics{big_graph.png}
-	\caption{Composizione parziale delle comunità all'interno del grafo}
+\begin{figure*}[h!]
+  \centering
+  \includegraphics{big_graph.png}
+  \caption{Composizione parziale delle comunità all'interno del grafo.}
+  \label{fig:neo4jmacro}
 \end{figure*}
 
 \section{Riconoscimento delle istanze nel testo}
-Data la mole di dati scaricabili, si è deciso di costruire un strumento di \textit{instance matching} creato \textit{ad hoc} per i tweet.
-Vista la scarsa abilità degli algoritmi basati su reti neurali e \textit{deep learning} nell'analisi del breve (e quindi decontestualizzato) testo di un tweet, si è costruito un modello per l'identificazione di ipotetiche entità su cui basarsi per confronti col database, sfruttando i \textit{gid}, i codici identificativi di musicbrainz disponibile grazie all'API\footnote{\url{https://python-musicbrainzngs.readthedocs.io/en/v0.6/}} offerta da \url{musicbrainz.org} stesso).
+Data la quantità e qualità dei dati, si è deciso di costruire un strumento di \textit{instance matching} creato \textit{ad hoc} per i tweet: le API disponibili basate su \textit{deep learning} sono spesso allenate su altri tipi di testo (articoli di giornale o opere letterarie) e spesso non offrono una velocità adeguata per l'analisi in tempo reale.
+Il problema della qualità del testo è fondamentale: serve uno strumento che riesca ad analizzare il testo e a trovare le entità corrispondenti senza bisogno di contestualizzazione.
+Per tale scopo, filtrati già in partenza i tweet grazie a parole chiave a tema musicale, si costruisce un modello che identifichi le istanze restituendone gli \verb|id| grazie all'API di musicbrainz disponibile per Python.
 
 \subsection{Identificazione delle entità}
-Le entità sono riconosciute non mediante \textit{machine learning} ma grazie a semplici stratagemmi linguistici.
-Prima di tutto il testo del tweet è ripulito da eventuali abbreviazioni gergali; subito dopo sono ricercate le parole nel testo che non risultano essere italiane: analizzando tweet in lingua italiana, si presume che una stringa in lingua diversa abbia una certa importanza.
-Per fare questo è usato un mero correttore ortografico che evidenzia quali parole non sono riconosciute; di aiuto nel compito è anche una semplice espressione regolare che tenta di stabilire quali parole non seguano la costruzione sillabica italiana (rientrando quindi o nella categoria dei sostantivi della quinta classe o, nei casi fortunati, nelle entità cercate): secondo le regole linguistiche, una sillaba correttamente formata è composta da un numero massimo di tre consonanti seguita da una vocale e da al più una sola consonante - o vocale con suono consonantico, formando quindi un dittongo.
-Alle entità così individuate si aggiungono tutte le parole scritte in maiuscolo - che in un testo di così bassa formalità non sempre coincidono coi nomi propri-, anche se a inizio frase.
-Grazie all'uso della punteggiatura - le virgolette - e delle preposizioni, si tenta inoltre di stabilire se l'entità rilevata è un presunto autore o una presunta opera.
-Per individuare gli id delle entità riconosciute con il metodo descritto precedentemente, è stato utilizzato Python con la libreria \textit{Musicbrainzngs}.
-Attraverso le funzioni \textit{search} è possibile consultare il database sfruttando un server di ricerca costruito utilizzando la tecnologia \text{Lucene}.
-\textit{Musicbrainz} è interrogato con la funzione search\_artists per le entità riconosciute come autori, search\_recordings per quelle individuate come canzoni, ed entrambe, con in aggiunta search\_release\_groups (funzione relativa alla ricerca degli album), per quelle la cui tipologia è incerta.
-La problematica principale emersa in questa parte è stata la difficoltà ad attribuire all’entità analizzata l’id che la caratterizza effettivamente.
-Sono infatti molto frequenti i casi di omonimia tra canzoni ed album relativi ad artisti differenti ed è quindi possibile che il risultato ottenuto non sia quello desiderato.
-Per cercare di aumentare le probabilità di restituire i \textit{gid} corretti è stato impostato un valore di similarità pari a 0.95 nell’interrogazione al database. Inoltre per le canzoni e per gli album si è provveduto a verificare la presenza di corrispondenze con le entità artisti precedentemente individuate nel testo.
+Le entità sono riconosciute non mediante \textit{machine learning} ma grazie a semplici stratagemmi linguistici e l'aiuto di un correttore ortografico.
+Prima di tutto il testo del tweet è ripulito da eventuali abbreviazioni gergali (che vengono sostituite dalla propria forma estesa), link e caratteri speciali.
+Subito dopo sono ricercate le parole nel testo che non risultano essere italiane: analizzando tweet in lingua italiana, il cui tema è sicuramente musicale, si presume che una stringa in lingua diversa abbia una certa importanza; ciò è fatto sia analizzandone l'ortografia sia verificando con un'espressione regolare che le parole rispecchino la regola di costruzione delle sillabe in italiano\footnote{Una sillaba in italiano è composta da un massimo di tre consonanti iniziali, vocale ed eventuale consonante finale.}.
+In tal caso, o la parola è un sostantivo della quinta classe (parole straniere entrate nell'uso comune) o un termine in lingua non italiana e quindi degno di attenzione.
+Infine sono analizzate le parole la cui iniziale è maiuscola, col supporto di un albero sintattico (costruito grazie ad un programma estero, \verb|TreeTagger|\footnote{\url{https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/}}, interfacciato con Python grazie ad un wrapper\footnote{\url{https://perso.limsi.fr/pointal/doku.php?id=dev:treetaggerwrapper}} fornito dagli stessi sviluppatori) per verificare che siano nomi propri.
+
+Grazie all'uso della punteggiatura e delle preposizioni, si tenta di stabilire se la presunta entità è un artista o un'opera, verificando poi con certezza confrontando con lo \textit{knowledge graph}. \newline
+
+Tramite le API di musicbrainz, attraverso una serie di funzioni \verb|search| è possibile consultare il database sfruttando un server di ricerca costruito utilizzando la tecnologia \textit{Lucene}.
+Analizzate le entità e tentato di stabilire cosa rappresentino, si interroga la base di conoscenza con le funzioni \verb|search_artists| e \verb|search_recordings| per le entità riconosciute rispettivamente come artisti e opere, a cui si aggiunge \verb|search_release_groups| (funzione relativa alla ricerca degli album), per quelle di tipologia incerta.
+Per verificare la corrispondenza tra entità e risultati di ricerca, si è scelta la politica di accettare il risultato la cui similarità coseno è maggiore, a patto che superi una soglia arbitraria di $0.95$.
+Inoltre, per aumentare la precisione, si sono incrociati i risultati parziali delle ricerche per testare se nello stesso testo compaia l'opera accompagnata dal proprio autore.
 
 \subsection{Prestazioni del modello e margini di miglioramento}
-Nonostante il modello semantico offra una buona \textit{performance} nella selezione dei testi riferiti al mondo musicale e nel riconoscimento delle istanze nel testo, continua a presentare alcune imperfezioni. Un primo difetto deriva dalla difficoltà nella gestione dei casi polisemici: i generi nominati \textit{"drone"}, \textit{"dance"}, \textit{"club"} e "opera" risultano, ovviamente, estremamente complessi da interpretare per uno strumento rudimentale, incapace di distinguere perfettamente il contesto all'interno del quale queste parole vengono utilizzate. Più nel dettaglio: il termine "club" viene più spesso citato all'interno di testi riguardanti qualsiasi tipo di associazione; la parola "drone", come già spiegato nell'introduzione, indica, nella maggior parte dei casi, l'aeromobile; "opera" possiede numerosi significati, oltre al genere musicale; l'espressione "dance" è frequentemente slegata alla musica. \\
-Una seconda problematica è sorta dopo aver rilevato alcuni \textit{tweet} in lingua straniera che citavano il termine \textit{trap} senza riferirsi al genere musicale, successivamente rimossi.\\
+La problematica principale emersa nella costruzione del modello è stata la corretta attribuzione dell'entità nei casi di omonimia: questi casi infatti sono molto frequenti tra canzoni ed album relativi ad artisti differenti ed è quindi possibile che il risultato ottenuto non sia quello desiderato.
+
+Inoltre, nonostante il modello offra una buona \textit{performance} nella selezione dei testi riferiti al mondo musicale e nel riconoscimento delle istanze nel testo, continua a presentare alcune imperfezioni.
+Un primo difetto deriva dalla difficoltà nella gestione dei casi polisemici: alcuni nomi di genere (in particolare \textit{drone}, \textit{dance}, \textit{club} e \textit{opera}) sono polisemici, distorcendo i valori dell'analisi.
+Il programma utilizzato è troppo rudimentale per distinguere il contesto e quindi mostra numerosi falsi positivi: il termine \textit{club} in particolare viene spesso citato all'interno di testi riguardanti qualsiasi tipo di associazione; la parola \textit{drone}, come già accennato nell'introduzione, indica, nella maggior parte dei casi, l'aeromobile; l'espressione "dance" è frequentemente slegata alla musica e \textit{opera} possiede troppi significati per poterli elencare.
+
+Un'altra problematica, non legata al modello ma a \verb|tweepy| è sorta dopo aver rilevato alcuni \textit{tweet} in lingua straniera (perlopiù spagnola) che citavano il termine \textit{trap} senza riferirsi al genere musicale.
+
 Pertanto, il modello raggiunge buoni risultati nell'ambito di tale progetto, rendendo comunque necessari ulteriori tentativi di miglioramento della sua capacità di riconoscere il contesto all'interno del quale le parole vengono citate.
 
 \hfill
