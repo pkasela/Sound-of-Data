@@ -25,6 +25,7 @@
 \usepackage[italian]{babel}
 \usepackage{float}
 \usepackage{wrapfig}
+\usepackage{graphicx}
 \setcounter{tocdepth}{0}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{main.bib}
@@ -210,7 +211,7 @@ Per tale scopo, filtrati già in partenza i tweet grazie a parole chiave a tema 
 \subsection{Identificazione delle entità}
 Le entità sono riconosciute non mediante \textit{machine learning} ma grazie a semplici stratagemmi linguistici e l'aiuto di un correttore ortografico.
 Prima di tutto il testo del tweet è ripulito da eventuali abbreviazioni gergali (che vengono sostituite dalla propria forma estesa), link e caratteri speciali.
-Subito dopo sono ricercate le parole nel testo che non risultano essere italiane: analizzando tweet in lingua italiana, il cui tema è sicuramente musicale, si presume che una stringa in lingua diversa abbia una certa importanza; ciò è fatto sia analizzandone l'ortografia sia verificando con un'espressione regolare che le parole rispecchino la regola di costruzione delle sillabe in italiano\footnote{Una sillaba in italiano è composta da un massimo di tre consonanti iniziali, vocale ed eventuale consonante finale.}.
+Subito dopo sono ricercate le parole nel testo che non risultano essere italiane: analizzando tweet in lingua italiana, il cui tema è sicuramente musicale, si presume che una stringa in lingua diversa abbia una certa importanza; ciò è fatto sia analizzandone l'ortografia sia verificando con un'espressione regolare che le parole rispecchino la regola di costruzione delle sillabe in italiano\footnote{Una sillaba in italiano è composta da un massimo di tre consonanti iniziali, vocale ed eventuale consonante finale\cite{linguistica}.}.
 In tal caso, la parola è un sostantivo di una lingua straniera e come tale quindi degna di attenzione.
 Infine sono analizzate le parole la cui iniziale è maiuscola, col supporto di un albero sintattico (costruito grazie ad un programma esterno, \verb|TreeTagger|\footnote{\url{https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/}}, interfacciato con Python grazie ad un wrapper\footnote{\url{https://perso.limsi.fr/pointal/doku.php?id=dev:treetaggerwrapper}} fornito dagli stessi sviluppatori) per verificare che siano nomi propri.
 
@@ -242,6 +243,8 @@ In alternativa, è disponibile una versione a pagamento di Neo4J\cite{neo4jEnter
 
 Per comodità, tuttavia, il lavoro svolto è stato fatto interamente sulla stessa macchina, grazie anche al basso volume dei \textit{tweet} ricevuti (dell'ordine di grandezza del Megabyte): ciò ha permesso di evitare tale problematica.
 
+\hfill
+\newpage
 \hfill
 \newpage
 \part{Visualizzazioni dei dati}
@@ -290,14 +293,75 @@ Per quanto riguarda il \textit{wordcloud}, le uniche critiche sono state mosse d
 Tuttavia, spiegato il funzionamento, questo è stato particolarmente apprezzato da tutti i fruitori, soprattutto a causa della sua semplicità.
 
 \section{Risultati dei questionari psicometrici}
+% introduzione: popolazione degli intervistati, numero e metodologia di ricerca
+Per valutare l'efficacia delle due infografiche, sono state intervistate 31 persone mediante un questionario, costruito con Google Form\footnote{\url{https://www.google.com/forms/about/}}, in cui dovevano essere attribuiti dei punteggi da 1 a 6 a cinque caratteristiche, seguiti da un punteggio complessivo.
+Inoltre è stata cronometrata la velocità a rispondere ad una semplice domanda (identificare il secondo genere più citato la mattina) a un numero più limitato di persone, per testare l'efficienza del grafico.
+Infine, ad un numero ancora più limitato, sono stati chiesti pareri (non strutturati) riguardo l'efficienza del grafico e possibili margini di miglioramento.
+
+\subsection{Punteggi al test psicometrico}
+% risultati: violin plot e barplot per mostrare i punteggi medi e la loro distribuzione
+I risultati ottenuti dalle interviste sono riassunti da un \textit{violin plot} (Figure \ref{plot:violin} e \ref{plot:violin_fm}), così da avere a colpo d'occhio la distribuzione dei punteggi e il loro valore medio.
+\begin{figure*}[p]
+  \includegraphics[width=\textwidth]{violin_plot.jpg}
+  \caption{Violin plot dei punteggi ottenuti al test in formato aggregato.}
+  \label{plot:violin}
+\end{figure*}
+\begin{figure*}[p]
+  \includegraphics[width=\textwidth]{violin_plot_fm.jpg}
+  \caption{Violin plot dei punteggi ottenuti al test divisi per sesso.}
+  \label{plot:violin_fm}
+\end{figure*}
+È stata testata la facilità di lettura del grafico da parte di persone con problemi di discromatopsia grazie ad un pratico simulatore online\footnote{\url{https://www.color-blindness.com/coblis-color-blindness-simulator/}}.
+
+Si nota subito dalla forma della distribuzione la presenza di code negative accentuate mentre i punteggi medi son sempre maggiori di 4 su 6.
+
+Per testare in modo migliore l'efficienza del grafico, si son costruiti degli intervalli di confidenza \textit{binarizzando} i risultati, ovvero stabilendo la percentuale di voti ricevuti maggiori di una certa soglia (pari a 3, così da dividere le risposte in due parti uguali) e costruendo in seguito gli intervalli di confidenza.
+\includegraphics[width=\linewidth]{barplot.png}
+
+Solo una variabile ha ricevuto tanti voti positivi quanti negativi: l'\textit{intuitività}, infatti come suggerito in seguito dai votanti stessi il grafico pare troppo ricco e complesso per essere intuitivo.
+In tutti gli altri casi invece il punteggio ottenuto mostra che l'infografica nel complesso è stata apprezzata.
+
+% correlogramma delle variabili: quali sono le più significative e quali sono collegate tra di loro
+Inoltre è stata calcolata la correlazione tra i punteggi ottenuti al test per capire quali punti migliorare per offrire un prodotto migliore.
+\includegraphics[width=\linewidth]{correlogramma.jpg}
+
+Di particolare rilievo sono alcune coppie che offrono risultati particolarmente significativi.
+% - chiarezza e intuitività: il grafico era poco chiaro perché poco intuitivo
+Le variabili \textit{chiarezza} e \textit{intuitività} sono particolarmente legate: questo nesso può mostrare che il pubblico ha trovato poco chiaro il grafico perché poco intuitivo.
+Intervistando in modo più dettagliato alcuni fruitori infatti è emerso che il primo grafico peccava in chiarezza in quanto conteneva troppe informazioni in troppo poco spazio; mentre nel secondo (il \textit{word cloud}) non tutti hanno compreso che la dimensione della parola fosse proporzionale alla frequenza del genere nei \textit{tweet}, obbligando quindi a inserire una rapida didascalia che lo esplicitasse.
+
+% - il grafico ha ottenuto quel punteggio (5/6) perché chiaro
+Tuttavia la variabile maggiormente legata al punteggio totale è la \textit{chiarezza}: il grafico deve gran parte del suo successo alla facilità di consultazione, dovuta principalmente dall'interattività con cui può essere consultato.
+Infatti questa caratteristica è stata molto apprezzata dal pubblico, ed è stata ugualmente sfruttata per la consultazione.
+% - totale e informativo: il grafico risulta essere molto informativo ma questo non implica un punteggio totale alto
+Di scarso rilievo invece nella formazione del punteggio totale sono state l'\textit{informatività} e l'\textit{utilità}: il pubblico non ha apprezzato l'uso che se ne può fare del grafico o l'informazione contenuta, preferendo altre caratteristiche nella formulazione del giudizio complessivo.
+Intervistando in modo più approfondito, è emerso che il pubblico sentiva un coinvolgimento maggiore quando era in grado di capire (intuitivamente o a seguito di ragionamento) l'informazione contenuta indipendentemente da quale questa fosse.
+
+% conclusione: per migliorare il punteggio è opportuno aumentare l'intuitività, come constatato sono racchiuse troppe informazioni in troppo poco spazio
+Dunque per migliorare l'efficienza del grafico è opportuno aumentarne l'intuitività, possibilmente togliendo alcune informazioni di scarso rilievo o rappresentandole in modo diverso, così da garantire la comprensione di un pubblico eterogeneo senza preparazione statistica.
+
+\subsection{Tempo impiegato nella risposta alla domanda}
+Ad un sottoinsieme (di cinque persone) degli intervistati è stata posta la seguente domanda: ``Qual è il secondo genere musicale più citato la mattina?'' così da testare il tempo di reazione.
+I tempi variano dai 5 ai 30 secondi, e sono correlati alla preparazione statistica dell'individuo.
+Infatti individui con una preparazione statistica, se pur minima, apprezzavano la chiarezza del grafico e lo trovavano di facile lettura, mentre al contrario chi non vanta una preparazione statistica ha trovato il grafico fortemente contro-intuitivo e di difficile lettura.
+
+\subsection{Interviste non strutturate}
+Ad un altro sottoinsieme (di tre persone) è stato chiesto di commentare il grafico in libertà, esponendo liberamente le proprie idee a riguardo.
+Apprezzata l'interattività del primo e la semplicità del secondo, è emersa una problematica principale: solo un individuo (che vanta una preparazione statistica) ha capito cosa rappresentasse l'intervallo di confidenza posto nel barplot dei generi più citati nell'arco della giornata (sulla destra del primo grafico), rendendo necessario ripensare se e come rappresentarlo.
 
 \hfill
 \newpage
-\hfill
-\newpage
+% \hfill
+% \newpage
 \part{Risultati e conclusioni}
 % Quanti tweet abbiamo raccolto? Cosa abbiamo osservato? 
 Il programma ha funzionato correttamente per tutto il breve periodo in cui la macchina virtuale è rimasta online, permettendo la raccolta di 2595 \textit{tweets}: nonostante il numero non sia particolarmente alto, è sufficiente per eseguire alcune analisi quali l'identificazione delle comunità.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{grafo.png}
+  \caption{Grafo delle comunità rilevate dal programma durante il periodo in cui è rimasto online. La dimensione dei nodi è proporzionale al numero dei componenti.}
+\end{figure}
 
 % Quali dinamiche esistono tra le comunità e quali sono quelle più grandi?
 Nonostante i tweet rappresentino la musica di cui si parla sul social e non quella ascoltata, si nota subito che non esistono comunità musicali particolarmente chiuse, se non in quattro casi.
@@ -305,9 +369,6 @@ Queste interagiscono col resto della piattaforma parlando principalmente della l
 Queste quattro comunità sono le minori per dimensioni: probabilmente il loro isolamento è dovuto più al basso numero di \textit{tweet} raccolti che ad una tendenza delle persone che la compongono.
 Al contrario, argomento di discussione comune alla maggior parte degli utenti è la musica \textit{dance}, tipica delle discoteche e di altri luoghi di ritrovo.
 Il risultato mostra che gli utenti preferiscono discutere delle esperienze in comune piuttosto che del proprio genere preferito, rendendo difficile quindi una clusterizzazione tramite il contenuto dei loro messaggi.
-
-\centering
-\includegraphics[width=0.9\textwidth]{grafo.png}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
