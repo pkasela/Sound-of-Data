@@ -1,7 +1,7 @@
 from kafka import KafkaProducer, KafkaConsumer
 import time
 import riak
-from musicbrainz_prova import get_musicbrainz_id as FunzioneMarco
+from musicbrainz_connector import get_musicbrainz_id
 import botometer
 import json
 import re
@@ -74,7 +74,7 @@ def tweet_preparations(data_):
         return "".encode("utf-8")
     else:
         try:
-            data = FunzioneMarco(data)
+            data = get_musicbrainz_id(data)
         except:
             data['genres']=[]
         if len(data['genres']) > 0:
