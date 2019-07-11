@@ -14,9 +14,21 @@ df_IBM$ci <- 1.96*sd(df$IBM_Accuracy)/sqrt(nrow(df))*100
 
 ggplot(rbind(df_our,df_IBM),aes(x=name,y=accuracy,fill=name)) + 
   geom_bar(stat='identity') +
-  #geom_text(aes(label=round(accuracy,2)),hjust=-1.7 ,vjust=0.5, color="black", size=4)+
   geom_pointrange(aes(x=name,ymax=accuracy+ci,ymin=accuracy-ci),color="black") +
   geom_errorbar(aes(x=name,ymax=accuracy+ci,ymin=accuracy-ci),color="black",width=0.2) +
   geom_text(aes(label=round(accuracy,2)),hjust=1.2 ,vjust=1.5, color="white", size=4) +
   guides(fill=FALSE) +
-  ylab("Accuracy") + xlab("Entity Extraction Model")
+  ylab("Musical Accuracy") + xlab("Entity Extraction Model")
+
+df_freq <- data.frame(musical_or_not = factor(c("yes","no"),levels=c("yes","no")) ,
+                                              frequency = c(60,40))
+#è una prova binomiale quindi si usa sqrt(p*(1-p)/N)*1.96 con p = 0.6
+df_freq$ci <- sqrt(0.6*(1-0.6)/100)*1.96*100
+
+ggplot(df_freq,aes(x=musical_or_not,y=frequency,fill=musical_or_not)) + 
+  geom_bar(stat='identity') +
+  geom_pointrange(aes(x=musical_or_not,ymax=frequency+ci,ymin=frequency-ci),color="black") +
+  geom_errorbar(aes(x=musical_or_not,ymax=frequency+ci,ymin=frequency-ci),
+                color="black",width=0.2) +
+  guides(fill=FALSE) +
+  ylab("Percentage") + xlab("Is Tweet Musical?")
