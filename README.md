@@ -6,6 +6,8 @@ ready for neo4j, You need to have a GitLab account!!
 
 Or use [GDrive Link to the Dataset](https://drive.google.com/drive/folders/1gk8Uev2mGyi2q3FZWG2QqSAFXqZYgoY_?usp=sharing)
 
+Link for the [presentation](https://prezi.com/view/xlqgIi2GMM0HE4Piy0hw)
+
 Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed.
 
 # Data Management
@@ -33,20 +35,20 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
 - [x] Rimozione bot
   - [x] indivuduare utenti e "bannarli" (Botometer)
   - [x] storage di whitelist e blacklist con RiakDB
-- [ ] Query interessanti
-  - [ ] generi
-  - [ ] artisti
-- [ ] Analisi
-  - [ ] trovare i cluster sulle parole musicali più twittati.    #    "comunità" musicali
-  - [ ] trovare cicli giornalieri
+- [x] Query interessanti
+- [x] Analisi
+  - [x] trovare i cluster sulle parole musicali più twittati.    #    "comunità" musicali
+  - [x] trovare cicli periodici (mattina, pomeriggio, sera, notte)
 
 # Data Visualization
-- [ ] Plot plot plot plot [link to the website](https://pkasela.github.io/Sound-of-Data/)
+- [x] Plot plot plot plot [link to the website](https://pkasela.github.io/Sound-of-Data/)
   - [x] Un possibile plot è work cloud (a forma di qualcosa di musica magari)[link](https://github.com/pkasela/Sound-of-Data/blob/master/docs/music_word_cloud.png)
   - [x] Barplot per la densità di distribuzione nei vari giorni (e periodo) [link](https://public.tableau.com/profile/pranav1988#!/vizhome/SoundofData/Story1)
-- [ ] Convalida plot
-  - [ ] noi stessi
-  - [ ] tante altre persone
+- [x] Convalida plot
+  - [x] noi stessi
+  - [x] tante altre persone
   
+ # Presentation
+  - [ ] complete the presentation
   
 Per segnare come fatto una casella, aggiungere una X all'interno delle parentesi quadre [ ] -> [X]
