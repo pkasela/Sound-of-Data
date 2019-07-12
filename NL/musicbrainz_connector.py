@@ -2,7 +2,7 @@
 #perdonate il codice di scarso livello
 
 import musicbrainzngs
-import prova2 as momo
+import Entity_Finder
 
 
 musicbrainzngs.set_useragent("Sound of Data", "0.1")
@@ -10,7 +10,7 @@ musicbrainzngs.set_useragent("Sound of Data", "0.1")
 
 def get_musicbrainz_id(dizionario):
     input = dizionario.get("text")
-    frase_input = momo.get_istances(input)
+    frase_input = Entity_Finder.get_istances(input)
     artisti = list(frase_input[0])
     recording = list(frase_input[1])
     NS = list(frase_input[2]) # lo si prova per album,artisti e recording
