@@ -49,6 +49,6 @@ Use maria_dev account in VM (HDP and not HDF) to recreate the database if needed
   - [x] tante altre persone
   
  # Presentation
-  - [ ] complete the presentation
+  - [x] complete the presentation
   
 Per segnare come fatto una casella, aggiungere una X all'interno delle parentesi quadre [ ] -> [X]
